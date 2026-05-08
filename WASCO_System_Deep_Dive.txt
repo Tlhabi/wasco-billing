@@ -1,0 +1,111 @@
+==========================================================================
+              WASCO BILLING SYSTEM: ARCHITECTURAL DEEP DIVE
+==========================================================================
+
+This document provides a comprehensive technical walkthrough of the WASCO 
+Billing System, detailing the interaction between the User Interface (UI) 
+and the Database layers for each functional portal.
+
+--------------------------------------------------------------------------
+1. CORE ARCHITECTURE OVERVIEW
+--------------------------------------------------------------------------
+The system utilizes a modern full-stack architecture designed for 
+scalability and data integrity:
+
+- Frontend: React (Vite) with a premium glassmorphic UI.
+- Backend: Node.js (Express) with Environment variable security (.env).
+- Dual-Database Strategy:
+  - MySQL (Primary): Handles sensitive transactional data (Customers, Bills, 
+    Rates, Accounts). Enforces strict Foreign Key constraints.
+  - SQLite (Edge/Telemetry): Handles high-frequency or operational data 
+    (Meter readings, Real-time notifications, Audit logs).
+
+--------------------------------------------------------------------------
+2. CUSTOMER PORTAL: THE END-USER EXPERIENCE
+--------------------------------------------------------------------------
+
+A. INTERFACE COMPONENTS:
+- Dashboard Banners: Real-time "Urgent Notice" banners fetched from the 
+  notifications table.
+- My Bills: A paginated list of all generated bills. Users can filter by 
+  status (Paid/Unpaid) and print official PDF-styled receipts.
+- Leakage Reporting: A simplified form to report issues.
+- Profile Management: Allows updating contact info directly.
+
+B. DATABASE LAYER:
+- Tables: `customers`, `bills`, `notifications`, `user_accounts`.
+- Logic: When a customer updates their profile, a PUT request triggers a 
+  MySQL UPDATE on the `customers` table.
+- Query Example (Bill Fetching):
+  SELECT * FROM bills WHERE account_number = ? ORDER BY due_date DESC;
+
+--------------------------------------------------------------------------
+3. MANAGER PORTAL: OPERATIONAL CONTROL
+--------------------------------------------------------------------------
+
+A. INTERFACE COMPONENTS:
+- Manual Meter Reading: 
+  - HOW IT WORKS: The Manager selects a customer and enters the current 
+    reading. 
+  - DB ACTION: An INSERT is made into the SQLite `water_usage` table. 
+    This decouples real-time field data from the sensitive billing ledger.
+- Run Bill Calculation:
+  - HOW IT WORKS: A batch process that iterates through usage records.
+  - HARDENING: The system now verifies every account against MySQL before 
+    inserting to prevent Foreign Key failures.
+  - DB ACTION: 
+    1. Reads usage from SQLite.
+    2. Reads progressive Rates from MySQL.
+    3. Calculates total using a multi-tier logic.
+    4. Inserts results into the MySQL `bills` table.
+- Analytics Dashboards: Dynamic charts (Recharts) showing Revenue by 
+  District and Usage Segments.
+
+B. DATABASE LAYER (Advanced SQL):
+- MySQL View (`view_customer_balances`): 
+  Calculates real-time outstanding debt per customer by joining 
+  `customers` and `bills` where `payment_status = 'Unpaid'`.
+- SQLite Table (`water_usage`): Stores high-volume telemetry.
+
+--------------------------------------------------------------------------
+4. ADMIN PORTAL: SYSTEM GOVERNANCE
+--------------------------------------------------------------------------
+
+A. INTERFACE COMPONENTS:
+- Rates Management: 
+  - HOW IT WORKS: Interactive UI to define progressive billing tiers (e.g., 
+    Tier 1 for low usage, Tier 2 for high).
+  - DB ACTION: CRUD operations on the `billing_rates` table.
+- Audit Log Dashboard:
+  - HOW IT WORKS: A chronological view of system actions (Broadcasts, 
+    Status changes).
+  - DB ACTION: Reads from the SQLite `audit_logs` table.
+- User/Customer Management: Complete lifecycle control (Create, Edit, Delete).
+
+B. DATABASE LAYER (Advanced SQL):
+- Cascading Deletes: The system is configured to clean up all related 
+  records (bills, accounts, usage) when a customer is removed.
+- Audit Triggers (via Code): The `logAudit()` helper function captures 
+  metadata (Who, What, When, Where) during critical POST/PUT requests.
+
+--------------------------------------------------------------------------
+5. ADVANCED SYSTEM LOGIC & DATA INTEGRITY
+--------------------------------------------------------------------------
+
+- Progressive Billing Calculation: 
+  The algorithm iterates through `billing_rates` tiers. If a customer 
+  exceeds a tier limit, only the excess units are billed at the higher rate, 
+  ensuring fair and regulated billing.
+  
+- Cross-Database Synchronization:
+  The Node.js backend acts as an orchestrator. For example, during 
+  "Bill Calculation", it pulls usage from SQLite (Usage DB) and validates 
+  the account in MySQL (Transactional DB) in a single workflow.
+
+- Security (Authentication):
+  Passwords are encrypted using `bcryptjs` before storage in the 
+  `user_accounts` table. Role-based Access Control (RBAC) is enforced 
+  on the frontend via the `view` state.
+
+==========================================================================
+End of Document
