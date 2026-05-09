@@ -93,10 +93,10 @@ function calculateBill(unitsUsed, rates, customerType = 'Residential') {
 }
 
 // ========== CONNECT TO SQLite ==========
-const sqlitePath = process.env.SQLITE_PATH || './wasco_usage.sqlite.db';
+const sqlitePath = './wasco_usage.sqlite.db';
 const sqliteConnection = new sqlite3.Database(sqlitePath, (err) => {
     if (err) console.error('SQLite connection error:', err);
-    else console.log('✅ Connected to SQLite usage database.');
+    else console.log(`✅ SQLite connected at: ${sqlitePath}`);
 });
 
 // Helper: promisified sqlite run/all
