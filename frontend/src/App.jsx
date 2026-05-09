@@ -251,18 +251,19 @@ export default function App() {
       setIsOffline(false);
 
       if (role === 'admin' || role === 'manager') {
-        const [usageRes, leakRes, custRes, payRes, distRes] = await Promise.all([
+        const [usageRes, leakRes, custRes, payRes, distRes, segRes] = await Promise.all([
           axios.get(`${API_BASE}/usage`),
           axios.get(`${API_BASE}/leakages`),
           axios.get(`${API_BASE}/customers`),
           axios.get(`${API_BASE}/payments`),
-          axios.get(`${API_BASE}/reports/districts`)
+          axios.get(`${API_BASE}/reports/districts`),
+          axios.get(`${API_BASE}/reports/segments`)
         ]);
         setUsageReports(usageRes.data);
         setLeakages(leakRes.data);
         setCustomers(custRes.data);
         setPayments(payRes.data);
-        setSegmentData([]); // No segment endpoint on backend, safely defaulting to empty
+        setSegmentData(segRes.data);
         setDistrictReports(distRes.data);
 
         // Fetch View-based insights
@@ -1129,9 +1130,34 @@ export default function App() {
   );
 
   // Summative Aggregations for Manager
-  const currentMonthUnits = usageReports.length > 0 ? usageReports[0].total_units : 0;
-  const currentQuarterUnits = usageReports.slice(0, 3).reduce((acc, curr) => acc + curr.total_units, 0);
-  const currentYearUnits = usageReports.reduce((acc, curr) => acc + curr.total_units, 0);
+  const currentMonthUnits = usageReports.length > 0 ? usageReports[0].total_units || 0 : 0;
+  const currentQuarterUnits = usageReports.slice(0, 3).reduce((acc, curr) => acc + (curr.total_units || 0), 0);
+  const currentYearUnits = usageReports.reduce((acc, curr) => acc + (curr.total_units || 0), 0);
+
+  const getUsageTrendsData = () => {
+    if (!usageReports || usageReports.length === 0) return [];
+    const grouped = {};
+    usageReports.forEach(r => {
+      const dateStr = r.reading_date || r.billing_month || '2026-01-01';
+      const d = new Date(dateStr);
+      let key = '';
+      if (insightTimeframe === 'Daily') {
+        key = dateStr.substring(0, 10);
+      } else if (insightTimeframe === 'Weekly') {
+        const wk = new Date(d);
+        wk.setDate(wk.getDate() - wk.getDay());
+        key = `Wk ${wk.toISOString().split('T')[0]}`;
+      } else if (insightTimeframe === 'Monthly') {
+        key = dateStr.substring(0, 7);
+      } else if (insightTimeframe === 'Quarterly') {
+        key = `Q${Math.floor(d.getMonth() / 3) + 1} ${d.getFullYear()}`;
+      } else if (insightTimeframe === 'Yearly') {
+        key = d.getFullYear().toString();
+      }
+      grouped[key] = (grouped[key] || 0) + (r.units_used || 0);
+    });
+    return Object.keys(grouped).sort().map(k => ({ period: k, total_units: grouped[k] }));
+  };
 
   return (
     <div className="app-container">
@@ -1222,9 +1248,9 @@ export default function App() {
               <div className="glass-card p-4">
                 <h4 className="mb-4 small text-muted uppercase fw-700">Usage Trends ({insightTimeframe})</h4>
                 <ResponsiveContainer width="100%" height="90%">
-                  <BarChart data={districtReports}>
+                  <BarChart data={getUsageTrendsData()}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.05)" />
-                    <XAxis dataKey="district" axisLine={false} tickLine={false} />
+                    <XAxis dataKey="period" axisLine={false} tickLine={false} />
                     <YAxis axisLine={false} tickLine={false} />
                     <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }} />
                     <Bar dataKey="total_units" fill="var(--primary)" radius={[4, 4, 0, 0]} />
@@ -1274,6 +1300,15 @@ export default function App() {
               </div>
             </div>
 
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* ADMIN VIEW */}
+      {view === 'admin' && (
+        <>
+          <div className="stats-grid mb-6">
             <div className="glass-card">
               <h3 className="mb-4">Batch Billing Process</h3>
               <p className="text-muted small mb-4">Finalize all readings into verified billing statements for the selected period.</p>
@@ -1288,14 +1323,6 @@ export default function App() {
                 {loading ? 'Processing Batch...' : 'Generate System Bills'}
               </button>
             </div>
-          </div>
-        </>
-      )}
-
-      {/* ADMIN VIEW */}
-      {view === 'admin' && (
-        <>
-          <div className="stats-grid mb-6">
             {/* Manual Meter Reading (Moved from Manager) */}
             <div className="glass-card" style={{ borderLeft: '4px solid var(--primary)' }}>
               <div className="stat-header mb-4">
@@ -1677,7 +1704,7 @@ export default function App() {
                       <td>{new Date(bill.due_date).toLocaleDateString()}</td>
                       <td><span className={`badge ${bill.payment_status === 'Paid' ? 'paid' : 'unpaid'}`}>{bill.payment_status}</span></td>
                       <td className="no-print" style={{ display: 'flex', gap: '0.5rem' }}>
-                        {bill.payment_status === 'Unpaid' && (
+                        {bill.payment_status === 'Unpaid' && view !== 'manager' && (
                           <button className="btn btn-primary" style={{ padding: '0.4rem 0.8rem' }} onClick={() => handlePay(bill.account_number, bill.billing_month, bill.total_amount)}>
                             Pay
                           </button>
@@ -1750,18 +1777,24 @@ export default function App() {
                       <td>{l.location}</td>
                       <td style={{ maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{l.description}</td>
                       <td className="text-right">
-                        <select
-                          className={`badge ${l.status === 'Fixed' ? 'success' : (l.status === 'Investigating' ? 'warning' : 'unpaid')}`}
-                          value={l.status}
-                          onChange={(e) => handleUpdateLeakage(l.report_id, e.target.value)}
-                          style={{ border: '1px solid var(--glass-border)', background: 'rgba(255,255,255,0.05)', cursor: 'pointer', fontWeight: 600, padding: '0.2rem 0.5rem' }}
-                        >
-                          <option value="Reported">Reported</option>
-                          <option value="Pending">Pending</option>
-                          <option value="Investigating">Investigating</option>
-                          <option value="In Progress">In Progress</option>
-                          <option value="Fixed">Fixed</option>
-                        </select>
+                        {view === 'manager' ? (
+                          <span className={`badge ${l.status === 'Fixed' ? 'success' : (l.status === 'Investigating' ? 'warning' : 'unpaid')}`}>
+                            {l.status}
+                          </span>
+                        ) : (
+                          <select
+                            className={`badge ${l.status === 'Fixed' ? 'success' : (l.status === 'Investigating' ? 'warning' : 'unpaid')}`}
+                            value={l.status}
+                            onChange={(e) => handleUpdateLeakage(l.report_id, e.target.value)}
+                            style={{ border: '1px solid var(--glass-border)', background: 'rgba(255,255,255,0.05)', cursor: 'pointer', fontWeight: 600, padding: '0.2rem 0.5rem' }}
+                          >
+                            <option value="Reported">Reported</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Investigating">Investigating</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Fixed">Fixed</option>
+                          </select>
+                        )}
                       </td>
                     </tr>
                   ))
