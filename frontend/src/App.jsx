@@ -1571,11 +1571,11 @@ export default function App() {
                         <td><strong className="text-main">{r.tier_name}</strong></td>
                         <td>
                           <span className="badge" style={{ 
-                            background: r.maximum_units > 900000 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(0,0,0,0.05)', 
-                            color: r.maximum_units > 900000 ? 'var(--success)' : 'var(--text-main)',
-                            border: r.maximum_units > 900000 ? '1px solid rgba(16, 185, 129, 0.2)' : 'none'
+                            background: r.maximum_units > 9000 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(0,0,0,0.05)', 
+                            color: r.maximum_units > 9000 ? 'var(--success)' : 'var(--text-main)',
+                            border: r.maximum_units > 9000 ? '1px solid rgba(16, 185, 129, 0.2)' : 'none'
                           }}>
-                            {r.maximum_units > 900000 ? 'Flat Rate (All Usage)' : `${r.minimum_units} — ${r.maximum_units} Units`}
+                            {r.maximum_units > 9000 ? 'Flat Rate (All Usage)' : `${r.minimum_units} — ${r.maximum_units} Units`}
                           </span>
                         </td>
                         <td style={{ color: 'var(--success)', fontWeight: 'bold' }}>{parseFloat(r.rate_per_unit).toFixed(2)}</td>
