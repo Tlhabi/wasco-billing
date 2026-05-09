@@ -385,6 +385,18 @@ app.get('/api/leakages', async (req, res) => {
     }
 });
 
+// 6b. Update Leakage Status
+app.put('/api/leakages/:id', async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    try {
+        await db.query('UPDATE leakage_reports SET status = ? WHERE report_id = ?', [status, id]);
+        res.json({ success: true, message: 'Status updated successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // 7. Get Customers
 app.get('/api/customers', async (req, res) => {
     try {
