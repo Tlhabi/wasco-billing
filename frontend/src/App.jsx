@@ -4,7 +4,14 @@ import { Droplets, Activity, Wallet, CreditCard, ChevronRight, User, LogOut, Ale
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import './index.css';
 
-const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://wasco-billing-nbph.onrender.com/api';
+const getApiBase = () => {
+  const hostname = window.location.hostname;
+  if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.startsWith('192.168.')) {
+    return 'http://localhost:5000/api';
+  }
+  return 'https://wasco-billing-nbph.onrender.com/api';
+};
+const API_BASE = getApiBase();
 
 // --- MOCK DATA FOR FALLBACK ---
 const MOCK_USERS = {
@@ -138,8 +145,21 @@ export default function App() {
 
   // Customer Management & Manual Usage State
   const [selectedCustomer, setSelectedCustomer] = useState(null);
-  const [manualUsage, setManualUsage] = useState({ units: '', date: '', month: 'March 2026' });
+  const [manualUsage, setManualUsage] = useState({ month: 'March 2026', date: new Date().toISOString().split('T')[0], units: '' });
   const [usageMsg, setUsageMsg] = useState('');
+
+  useEffect(() => {
+    // Initial health check to see if we should start in offline mode
+    const checkHealth = async () => {
+      try {
+        await axios.get(`${API_BASE}/rates`);
+        setIsOffline(false);
+      } catch (e) {
+        setIsOffline(true);
+      }
+    };
+    checkHealth();
+  }, []);
   const [insightTimeframe, setInsightTimeframe] = useState('Monthly'); // 'Daily', 'Weekly', 'Monthly', 'Quarterly', 'Yearly'
 
   const [editingCustomer, setEditingCustomer] = useState(null);
@@ -1208,7 +1228,40 @@ export default function App() {
         <div className="blob blob-3"></div>
       </div>
       {headerJSX}
-      {isOffline && <div className="glass-card mb-4" style={{ background: 'rgba(245, 158, 11, 0.1)', color: 'var(--warning)', padding: '1rem', textAlign: 'center', fontWeight: 'bold' }}>Backend connection failed. Using Offline Mock Mode.</div>}
+      {isOffline && (
+        <div className="glass-card mb-4" style={{ 
+          background: 'rgba(245, 158, 11, 0.08)', 
+          border: '1px solid rgba(245, 158, 11, 0.3)', 
+          padding: '1rem', 
+          textAlign: 'center', 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          gap: '1.5rem',
+          backdropFilter: 'blur(10px)',
+          borderRadius: '16px'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--warning)', fontWeight: 600 }}>
+            <AlertTriangle size={20} />
+            <span>Connection to Backend Failed. Showing Mock Data.</span>
+          </div>
+          <button 
+            className="btn" 
+            onClick={() => user ? fetchData(user.role.toLowerCase(), user.account_number) : fetchPublicData()} 
+            style={{ 
+              background: 'var(--warning)', 
+              color: 'white', 
+              padding: '0.5rem 1.25rem',
+              borderRadius: '10px',
+              fontSize: '0.85rem',
+              fontWeight: 600,
+              boxShadow: '0 4px 12px rgba(245, 158, 11, 0.2)'
+            }}
+          >
+            Reconnect Now
+          </button>
+        </div>
+      )}
       {paymentMsg && <div className="glass-card mb-4" style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', padding: '1rem', textAlign: 'center', fontWeight: 'bold' }}>{paymentMsg}</div>}
 
       {/* MANAGER VIEW */}
