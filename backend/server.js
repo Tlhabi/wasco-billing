@@ -6,7 +6,14 @@ const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcryptjs');
 
 const app = express();
-app.use(cors());
+
+// CORS configuration for Firebase
+app.use(cors({
+    origin: ['https://wasco-billing-fbf61.web.app', 'http://localhost:5173'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
+}));
+
 app.use(express.json());
 
 // Request logger
@@ -73,7 +80,7 @@ function calculateBill(unitsUsed, rates) {
 }
 
 // ========== CONNECT TO SQLite ==========
-const sqlitePath = process.env.SQLITE_PATH || 'C:\\\\Users\\\\Lenovo\\\\Desktop\\\\wasco_usage.sqlite.db';
+const sqlitePath = process.env.SQLITE_PATH || './wasco_usage.sqlite.db';
 const sqliteConnection = new sqlite3.Database(sqlitePath, (err) => {
     if (err) console.error('SQLite connection error:', err);
     else console.log('✅ Connected to SQLite usage database.');
