@@ -38,11 +38,18 @@ const pool = mysql.createPool({
 });
 
 // Test pool connection on startup
-pool.getConnection((err, connection) => {
+pool.getConnection(async (err, connection) => {
     if (err) {
         console.error('❌ MySQL connection error:', err.message);
     } else {
         console.log('✅ Connected to MySQL wasco_billing database (pool).');
+        try {
+            // Hotfix for live db: expand status column to fit 'Investigating' and 'In Progress'
+            await connection.query("ALTER TABLE leakage_reports MODIFY status varchar(50) DEFAULT 'Reported'");
+            console.log('✅ Adjusted leakage_reports status column size.');
+        } catch (e) {
+            console.error('Failed to adjust column size:', e.message);
+        }
         connection.release();
     }
 });
@@ -380,18 +387,6 @@ app.get('/api/leakages', async (req, res) => {
     try {
         const results = await db.query('SELECT * FROM leakage_reports ORDER BY report_date DESC', []);
         res.json(results);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// 6b. Update Leakage Status
-app.put('/api/leakages/:id', async (req, res) => {
-    const { id } = req.params;
-    const { status } = req.body;
-    try {
-        await db.query('UPDATE leakage_reports SET status = ? WHERE report_id = ?', [status, id]);
-        res.json({ success: true, message: 'Status updated successfully' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
