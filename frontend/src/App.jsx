@@ -4,7 +4,7 @@ import { Droplets, Activity, Wallet, CreditCard, ChevronRight, User, LogOut, Ale
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import './index.css';
 
-const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api';
+const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://wasco-billing-nbph.onrender.com/api';
 
 // --- MOCK DATA FOR FALLBACK ---
 const MOCK_USERS = {
@@ -251,19 +251,18 @@ export default function App() {
       setIsOffline(false);
 
       if (role === 'admin' || role === 'manager') {
-        const [usageRes, leakRes, custRes, payRes, segRes, distRes] = await Promise.all([
-          axios.get(`${API_BASE}/reports/usage`),
+        const [usageRes, leakRes, custRes, payRes, distRes] = await Promise.all([
+          axios.get(`${API_BASE}/usage`),
           axios.get(`${API_BASE}/leakages`),
           axios.get(`${API_BASE}/customers`),
           axios.get(`${API_BASE}/payments`),
-          axios.get(`${API_BASE}/reports/segments`),
           axios.get(`${API_BASE}/reports/districts`)
         ]);
         setUsageReports(usageRes.data);
         setLeakages(leakRes.data);
         setCustomers(custRes.data);
         setPayments(payRes.data);
-        setSegmentData(segRes.data);
+        setSegmentData([]); // No segment endpoint on backend, safely defaulting to empty
         setDistrictReports(distRes.data);
 
         // Fetch View-based insights
