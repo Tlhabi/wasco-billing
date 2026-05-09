@@ -424,12 +424,17 @@ app.put('/api/rates/:id', async (req, res) => {
     const { tier_name, minimum_units, maximum_units, rate_per_unit } = req.body;
     const { id } = req.params;
     try {
-        await db.query(
+        const result = await db.query(
             'UPDATE billing_rates SET tier_name = ?, minimum_units = ?, maximum_units = ?, rate_per_unit = ? WHERE rate_id = ?',
             [tier_name, minimum_units, maximum_units, rate_per_unit, id]
         );
+        if (result.affectedRows === 0) {
+            console.warn(`⚠️ Rate update failed: ID ${id} not found in MySQL.`);
+            return res.status(404).json({ error: `Rate tier ID ${id} not found in database.` });
+        }
         res.json({ success: true, message: 'Rate tier updated successfully' });
     } catch (err) {
+        console.error('❌ Rate update error:', err.message);
         res.status(500).json({ error: err.message });
     }
 });
@@ -441,6 +446,7 @@ app.delete('/api/rates/:id', async (req, res) => {
         await db.query('DELETE FROM billing_rates WHERE rate_id = ?', [id]);
         res.json({ success: true });
     } catch (err) {
+        console.error('❌ Delete rate error:', err.message);
         res.status(500).json({ error: err.message });
     }
 });

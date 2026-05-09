@@ -551,7 +551,8 @@ export default function App() {
       setNewTierName(''); setNewMinUnits(''); setNewMaxUnits(''); setNewRate('');
       fetchData(user.role.toLowerCase(), user.account_number);
     } catch (err) {
-      console.warn('Backend unavailable, updating rate locally.');
+      const errorMsg = err.response?.data?.error || err.message;
+      alert(`⚠️ FAILED TO SAVE TO SERVER: ${errorMsg}\n\nYour changes are only temporary and will be lost on refresh because you are currently in OFFLINE MOCK MODE.`);
       setRates(rates.map(r => r.rate_id === editingRate.rate_id ? { ...r, ...rateData } : r));
       setEditingRate(null);
       setNewTierName(''); setNewMinUnits(''); setNewMaxUnits(''); setNewRate('');
