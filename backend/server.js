@@ -166,9 +166,16 @@ sqliteConnection.serialize(() => {
                         "INSERT INTO water_usage (account_number, billing_month, reading_date, units_used) VALUES (?, ?, date('now'), ?)",
                         [acc, m, usage]
                     );
+                    // Also seed a matching payment for some records
+                    if (usage % 2 === 0) {
+                        sqliteConnection.run(
+                            "INSERT INTO payments (account_number, bill_month, amount_paid, payment_date, payment_method, reference_number) VALUES (?, ?, ?, date('now'), 'Online', ?)",
+                            [acc, m, usage * 5.5, 'REF-DEMO-' + Math.floor(Math.random()*10000)]
+                        );
+                    }
                 });
             });
-            console.log('✅ SQLite Demo Data seeded.');
+            console.log('✅ SQLite Demo Data seeded (Usage + Payments).');
         }
     });
 });

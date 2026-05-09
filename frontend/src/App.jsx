@@ -286,13 +286,15 @@ export default function App() {
         setSegmentData(segRes.data);
         setDistrictReports(distRes.data);
 
-        // Fetch View-based insights
-        const [balRes, lStatRes] = await Promise.all([
-          axios.get(`${API_BASE}/views/balances`),
-          axios.get(`${API_BASE}/views/leakage-stats`)
-        ]);
-        setBalances(balRes.data);
-        setLeakageStats(lStatRes.data);
+        // Fetch View-based insights (Non-critical)
+        try {
+          const [balRes, lStatRes] = await Promise.all([
+            axios.get(`${API_BASE}/views/balances`),
+            axios.get(`${API_BASE}/views/leakage-stats`)
+          ]);
+          setBalances(balRes.data);
+          setLeakageStats(lStatRes.data);
+        } catch (e) { console.warn('Analytical views unavailable'); }
       }
 
       if (role === 'customer') {
