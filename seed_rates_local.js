@@ -11,9 +11,9 @@ const localConfig = {
 const connection = mysql.createConnection(localConfig);
 
 const rates = [
-  { tier_name: 'Tier 1', minimum_units: 0, maximum_units: 10, rate_per_unit: 5.50 },
-  { tier_name: 'Tier 2', minimum_units: 11, maximum_units: 20, rate_per_unit: 7.00 },
-  { tier_name: 'Tier 3', minimum_units: 21, maximum_units: 999999, rate_per_unit: 9.00 }
+  { tier_name: 'Residential', minimum_units: 0, maximum_units: 999999, rate_per_unit: 5.50 },
+  { tier_name: 'Business', minimum_units: 0, maximum_units: 999999, rate_per_unit: 7.00 },
+  { tier_name: 'Industrial', minimum_units: 0, maximum_units: 999999, rate_per_unit: 9.00 }
 ];
 
 console.log('🚀 Seeding local billing rates...');

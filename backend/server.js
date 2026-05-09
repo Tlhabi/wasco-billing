@@ -64,7 +64,20 @@ const db = {
 };
 
 // ========== BILL CALCULATION HELPER ==========
-function calculateBill(unitsUsed, rates) {
+function calculateBill(unitsUsed, rates, customerType = 'Residential') {
+    // Check for a rate that matches the customer type
+    const specificRate = rates.find(r => 
+        r.tier_name.toLowerCase() === (customerType || 'Residential').toLowerCase() ||
+        (customerType?.toLowerCase() === 'residential' && r.tier_name === 'Tier 1') ||
+        (customerType?.toLowerCase() === 'business' && r.tier_name === 'Tier 2') ||
+        (customerType?.toLowerCase() === 'industrial' && r.tier_name === 'Tier 3')
+    );
+
+    if (specificRate) {
+        return unitsUsed * specificRate.rate_per_unit;
+    }
+
+    // Fallback to progressive tier calculation if no type-specific match
     let total = 0;
     for (const tier of rates) {
         if (unitsUsed > tier.maximum_units) {
@@ -294,9 +307,12 @@ app.post('/api/usage', async (req, res) => {
             [account_number, billing_month, reading_date, units_used]
         );
 
-        // 2. Auto-calculate bill from billing rates
+        // Get customer type to apply correct rate
+        const customer = await db.query('SELECT customer_type FROM customers WHERE account_number = ?', [account_number]);
+        const customerType = customer.length > 0 ? customer[0].customer_type : 'Residential';
+
         const rates = await db.query('SELECT * FROM billing_rates ORDER BY minimum_units ASC', []);
-        const totalAmount = calculateBill(parseInt(units_used), rates);
+        const totalAmount = calculateBill(parseInt(units_used), rates, customerType);
 
         // 3. Insert bill into MySQL (so it appears in customer's billing history)
         await db.query(
@@ -572,14 +588,14 @@ app.post('/api/calculate-bills', async (req, res) => {
         for (const record of usageRecords) {
             try {
                 // Verify customer exists in MySQL to avoid FK failure
-                const customer = await db.query('SELECT account_number FROM customers WHERE account_number = ?', [record.account_number]);
+                const customer = await db.query('SELECT account_number, customer_type FROM customers WHERE account_number = ?', [record.account_number]);
                 if (customer.length === 0) {
                     console.warn(`⚠️ Skipping bill for ${record.account_number}: Customer not found in MySQL.`);
                     skipped++;
                     continue;
                 }
 
-                const amount = calculateBill(record.units_used, rates);
+                const amount = calculateBill(record.units_used, rates, customer[0].customer_type);
                 
                 await db.query(
                     'INSERT INTO bills (account_number, billing_month, units_used, total_amount, due_date, payment_status) VALUES (?, ?, ?, ?, DATE_ADD(CURDATE(), INTERVAL 14 DAY), "Unpaid")',

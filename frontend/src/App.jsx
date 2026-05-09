@@ -33,9 +33,9 @@ const MOCK_LEAKAGES = [
 ];
 
 const MOCK_RATES = [
-  { rate_id: 1, tier_name: 'Tier 1', minimum_units: 0, maximum_units: 10, rate_per_unit: 5.50 },
-  { rate_id: 2, tier_name: 'Tier 2', minimum_units: 11, maximum_units: 20, rate_per_unit: 7.00 },
-  { rate_id: 3, tier_name: 'Tier 3', minimum_units: 21, maximum_units: 999999, rate_per_unit: 9.00 }
+  { rate_id: 1, tier_name: 'Residential', minimum_units: 0, maximum_units: 999999, rate_per_unit: 5.50 },
+  { rate_id: 2, tier_name: 'Business', minimum_units: 0, maximum_units: 999999, rate_per_unit: 7.00 },
+  { rate_id: 3, tier_name: 'Industrial', minimum_units: 0, maximum_units: 999999, rate_per_unit: 9.00 }
 ];
 
 let MOCK_CUSTOMERS = [
@@ -1003,6 +1003,23 @@ export default function App() {
             </div>
           )}
 
+          {/* QUICK SIGN OUT */}
+          <button
+            className="btn"
+            onClick={handleLogout}
+            title="Sign Out"
+            style={{
+              background: 'rgba(239, 68, 68, 0.08)',
+              color: 'var(--error)',
+              padding: '0.65rem',
+              borderRadius: '12px',
+              border: '1px solid rgba(239, 68, 68, 0.15)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center'
+            }}
+          >
+            <LogOut size={20} />
+          </button>
+
           {/* PROFILE DROPDOWN */}
           <div style={{ position: 'relative' }}>
             <button
@@ -1262,11 +1279,13 @@ export default function App() {
                 <ResponsiveContainer width="100%" height="90%">
                   <PieChart>
                     <Pie
-                      data={segmentData}
+                      data={segmentData.map(d => ({ name: d.segment, value: d.total_units }))}
                       innerRadius={60}
                       outerRadius={80}
                       paddingAngle={5}
-                      dataKey="total_units"
+                      dataKey="value"
+                      nameKey="name"
+                      label
                     >
                       {segmentData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={['#0ea5e9', '#10b981', '#f59e0b', '#8b5cf6'][index % 4]} />
@@ -1353,6 +1372,8 @@ export default function App() {
                 {usageMsg && <p className="text-success small fw-600 mt-2"><Check size={14} /> {usageMsg}</p>}
               </form>
             </div>
+          </div>
+          <div className="stats-grid mb-6">
             <div className="glass-card" style={{ gridColumn: 'span 2', height: '400px' }}>
               <div className="stat-header mb-4"><h3>Revenue by District</h3><BarChartIcon className="text-muted" /></div>
               <ResponsiveContainer width="100%" height="85%">
@@ -1487,14 +1508,18 @@ export default function App() {
               </div>
               <div className="table-container mb-6" style={{ border: '1px solid var(--glass-border)', background: 'rgba(255,255,255,0.02)' }}>
                 <table className="data-table">
-                  <thead><tr><th>Tier Name</th><th>Usage Range (Units)</th><th>Rate (LSL/Unit)</th><th className="text-right">Management</th></tr></thead>
+                  <thead><tr><th>Tier Name / Customer Type</th><th>Usage Scope</th><th>Rate (LSL/Unit)</th><th className="text-right">Management</th></tr></thead>
                   <tbody>
                     {rates.map(r => (
                       <tr key={r.rate_id} style={{ background: editingRate?.rate_id === r.rate_id ? 'rgba(245, 158, 11, 0.05)' : 'transparent' }}>
                         <td><strong className="text-main">{r.tier_name}</strong></td>
                         <td>
-                          <span className="badge" style={{ background: 'rgba(0,0,0,0.05)', color: 'var(--text-main)' }}>
-                            {r.minimum_units} — {r.maximum_units > 9999 ? '∞' : r.maximum_units}
+                          <span className="badge" style={{ 
+                            background: r.maximum_units > 900000 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(0,0,0,0.05)', 
+                            color: r.maximum_units > 900000 ? 'var(--success)' : 'var(--text-main)',
+                            border: r.maximum_units > 900000 ? '1px solid rgba(16, 185, 129, 0.2)' : 'none'
+                          }}>
+                            {r.maximum_units > 900000 ? 'Flat Rate (All Usage)' : `${r.minimum_units} — ${r.maximum_units} Units`}
                           </span>
                         </td>
                         <td style={{ color: 'var(--success)', fontWeight: 'bold' }}>{parseFloat(r.rate_per_unit).toFixed(2)}</td>
@@ -1539,6 +1564,9 @@ export default function App() {
                   <div className="input-group">
                     <label className="small text-muted mb-1 block">Rate (LSL)</label>
                     <input type="number" step="0.01" className="input-field" value={newRate} onChange={e => setNewRate(e.target.value)} required />
+                  </div>
+                  <div style={{ gridColumn: 'span 4', fontSize: '0.75rem', color: 'var(--text-muted)', background: 'rgba(0,0,0,0.03)', padding: '0.5rem 1rem', borderRadius: '8px', borderLeft: '3px solid var(--primary)' }}>
+                    <strong>Pro Tip:</strong> For flat customer-type rates (e.g. Residents), set <b>Min Units: 0</b> and <b>Max Units: 999999</b>.
                   </div>
                   <button className={`btn ${editingRate ? 'btn-warning' : 'btn-primary'}`} style={{ gridColumn: 'span 4', height: '48px' }}>
                     {editingRate ? 'Commit Rate Changes' : 'Publish Rate Tier'}
