@@ -1170,9 +1170,9 @@ export default function App() {
   );
 
   // Summative Aggregations for Manager
-  const currentMonthUnits = usageReports.length > 0 ? usageReports[0].total_units || 0 : 0;
-  const currentQuarterUnits = usageReports.slice(0, 3).reduce((acc, curr) => acc + (curr.total_units || 0), 0);
-  const currentYearUnits = usageReports.reduce((acc, curr) => acc + (curr.total_units || 0), 0);
+  const currentMonthUnits = usageReports.length > 0 ? (usageReports[0].total_units || usageReports[0].units_used || 0) : 0;
+  const currentQuarterUnits = usageReports.slice(0, 3).reduce((acc, curr) => acc + (curr.total_units || curr.units_used || 0), 0);
+  const currentYearUnits = usageReports.reduce((acc, curr) => acc + (curr.total_units || curr.units_used || 0), 0);
 
   const getUsageTrendsData = () => {
     if (!usageReports || usageReports.length === 0) return [];
