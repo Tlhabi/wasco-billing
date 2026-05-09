@@ -33,7 +33,7 @@ const pool = mysql.createPool({
     password: process.env.DB_PASS || '12345678',
     database: process.env.DB_NAME || 'wasco_billing',
     waitForConnections: true,
-    connectionLimit: 10,
+    connectionLimit: 3, // Safe for Clever Cloud free tier
     queueLimit: 0
 });
 
@@ -138,6 +138,26 @@ sqliteConnection.serialize(() => {
         details TEXT
     )`);
     console.log('✅ SQLite tables verified/created.');
+    
+    // AUTO-SEED DEMO DATA FOR HETEROGENEOUS DB PRESENTATION
+    sqliteConnection.get("SELECT COUNT(*) as count FROM water_usage", (err, row) => {
+        if (!err && row && row.count === 0) {
+            console.log('🌱 SQLite is empty. Seeding demo data for presentation...');
+            const months = ['2026-01', '2026-02', '2026-03', '2026-04'];
+            const accounts = ['WASCO-001', 'WASCO-002', 'WASCO-7301', 'WASCO-6389'];
+            
+            accounts.forEach(acc => {
+                months.forEach(m => {
+                    const usage = Math.floor(Math.random() * 50) + 10;
+                    sqliteConnection.run(
+                        "INSERT INTO water_usage (account_number, billing_month, reading_date, units_used) VALUES (?, ?, date('now'), ?)",
+                        [acc, m, usage]
+                    );
+                });
+            });
+            console.log('✅ SQLite Demo Data seeded.');
+        }
+    });
 });
 
 // Helper: Log system actions
