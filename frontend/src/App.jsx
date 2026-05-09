@@ -1178,7 +1178,7 @@ export default function App() {
     if (!usageReports || usageReports.length === 0) return [];
     const grouped = {};
     usageReports.forEach(r => {
-      const dateStr = r.reading_date || r.billing_month || '2026-01-01';
+      const dateStr = r.billing_month ? `${r.billing_month}-15` : (r.reading_date || '2026-01-01');
       const d = new Date(dateStr);
       let key = '';
       if (insightTimeframe === 'Daily') {
