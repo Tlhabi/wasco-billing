@@ -913,7 +913,7 @@ export default function App() {
                 {rates.map(r => (
                   <tr key={r.rate_id}>
                     <td><strong>{r.tier_name}</strong></td>
-                    <td>{r.minimum_units} - {r.maximum_units > 9999 ? 'Unlimited' : r.maximum_units}</td>
+                    <td>{r.minimum_units} - {r.maximum_units > 9000 ? 'Unlimited' : r.maximum_units}</td>
                     <td>{parseFloat(r.rate_per_unit).toFixed(2)}</td>
                   </tr>
                 ))}
