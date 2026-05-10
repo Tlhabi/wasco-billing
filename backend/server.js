@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcryptjs');
 
@@ -38,36 +38,35 @@ const pool = mysql.createPool({
 });
 
 // Test pool connection on startup
-pool.getConnection(async (err, connection) => {
-    if (err) {
-        console.error('❌ MySQL connection error:', err.message);
-    } else {
+(async () => {
+    try {
+        const connection = await pool.getConnection();
         console.log('✅ Connected to MySQL wasco_billing database (pool).');
+        
+        // Hotfix for live db: expand status column to fit 'Investigating' and 'In Progress'
         try {
-            // Hotfix for live db: expand status column to fit 'Investigating' and 'In Progress'
             await connection.query("ALTER TABLE leakage_reports MODIFY status varchar(50) DEFAULT 'Reported'");
             console.log('✅ Adjusted leakage_reports status column size.');
         } catch (e) {
-            console.error('Failed to adjust column size:', e.message);
+            console.error('Failed to adjust column size (might already be correct):', e.message);
         }
+        
         connection.release();
+    } catch (err) {
+        console.error('❌ MySQL connection error:', err.message);
     }
-});
+})();
 
-// Helper: promisified pool query
+// Helper: use pool directly (it's already promise-based now)
 const db = {
-    query: (sql, params) => new Promise((resolve, reject) => {
-        pool.query(sql, params, (err, results) => {
-            if (err) reject(err);
-            else resolve(results);
-        });
-    }),
-    execute: (sql, params) => new Promise((resolve, reject) => {
-        pool.execute(sql, params, (err, results) => {
-            if (err) reject(err);
-            else resolve(results);
-        });
-    })
+    query: async (sql, params) => {
+        const [results] = await pool.query(sql, params);
+        return results;
+    },
+    execute: async (sql, params) => {
+        const [results] = await pool.execute(sql, params);
+        return results;
+    }
 };
 
 // ========== BILL CALCULATION HELPER ==========
