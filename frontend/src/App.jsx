@@ -1183,8 +1183,10 @@ export default function App() {
   const getUsageTrendsData = () => {
     if (!usageReports || usageReports.length === 0) return [];
     const grouped = {};
+    const monthOrder = { 'January': 1, 'February': 2, 'March': 3, 'April': 4, 'May': 5, 'June': 6, 'July': 7, 'August': 8, 'September': 9, 'October': 10, 'November': 11, 'December': 12 };
+    
     usageReports.forEach(r => {
-      let key = r.billing_month || 'Unknown';
+      let key = (r.billing_month || 'Unknown').trim();
       if (insightTimeframe === 'Daily' && r.reading_date) {
         key = new Date(r.reading_date).toLocaleDateString();
       } else if (insightTimeframe === 'Weekly' && r.reading_date) {
@@ -1192,9 +1194,6 @@ export default function App() {
         const wk = new Date(d);
         wk.setDate(wk.getDate() - wk.getDay());
         key = `Wk ${wk.toISOString().split('T')[0]}`;
-      } else if (insightTimeframe === 'Monthly') {
-        // Keep the billing_month as is for grouping if it's already descriptive like "March 2026"
-        key = r.billing_month || 'Other';
       } else if (insightTimeframe === 'Quarterly' && r.reading_date) {
         const d = new Date(r.reading_date);
         key = `Q${Math.floor(d.getMonth() / 3) + 1} ${d.getFullYear()}`;
@@ -1203,7 +1202,18 @@ export default function App() {
       }
       grouped[key] = (grouped[key] || 0) + (r.units_used || 0);
     });
-    return Object.keys(grouped).sort().map(k => ({ period: k, total_units: grouped[k] }));
+
+    return Object.keys(grouped).sort((a, b) => {
+      // Monthly sort: "Month Year"
+      const partsA = a.split(' ');
+      const partsB = b.split(' ');
+      if (partsA.length === 2 && monthOrder[partsA[0]]) {
+        if (partsA[1] !== partsB[1]) return partsA[1] - partsB[1];
+        return monthOrder[partsA[0]] - monthOrder[partsB[0]];
+      }
+      // Fallback to alphabetical for other types or unknown
+      return a.localeCompare(b);
+    }).map(k => ({ period: k, total_units: grouped[k] }));
   };
 
   return (
