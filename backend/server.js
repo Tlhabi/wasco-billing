@@ -43,13 +43,24 @@ const pool = mysql.createPool({
         const connection = await pool.getConnection();
         console.log('✅ Connected to MySQL wasco_billing database (pool).');
         
-        // Hotfix for live db: expand status column to fit 'Investigating' and 'In Progress'
+        // Hotfix for live db: ensure persistent payments table exists
+        try {
+            await connection.query(`CREATE TABLE IF NOT EXISTS payments (
+                payment_id INT AUTO_INCREMENT PRIMARY KEY,
+                account_number VARCHAR(20),
+                bill_month VARCHAR(20),
+                amount_paid DECIMAL(10,2),
+                payment_date DATETIME,
+                payment_method VARCHAR(50),
+                reference_number VARCHAR(50)
+            )`);
+            console.log('✅ Persistent MySQL payments table verified.');
+        } catch (e) { console.error('Failed to create MySQL payments table:', e.message); }
+        
+        // Hotfix for leakage status column size
         try {
             await connection.query("ALTER TABLE leakage_reports MODIFY status varchar(50) DEFAULT 'Reported'");
-            console.log('✅ Adjusted leakage_reports status column size.');
-        } catch (e) {
-            console.error('Failed to adjust column size (might already be correct):', e.message);
-        }
+        } catch (e) {}
         
         connection.release();
     } catch (err) {
@@ -298,8 +309,10 @@ app.post('/api/pay', async (req, res) => {
 
         const refNumber = 'REF-' + Math.floor(Math.random() * 1000000);
         const payMethod = payment_method || 'Online';
-        await lite.run(
-            'INSERT INTO payments (account_number, bill_month, amount_paid, payment_date, payment_method, reference_number) VALUES (?, ?, ?, date("now"), ?, ?)',
+        
+        // Save to persistent MySQL
+        await db.query(
+            'INSERT INTO payments (account_number, bill_month, amount_paid, payment_date, payment_method, reference_number) VALUES (?, ?, ?, NOW(), ?, ?)',
             [account_number, billing_month, amount, payMethod, refNumber]
         );
 
@@ -550,9 +563,9 @@ app.get('/api/payments', async (req, res) => {
     try {
         let results;
         if (account) {
-            results = await lite.all('SELECT * FROM payments WHERE account_number = ? ORDER BY payment_date DESC', [account]);
+            results = await db.query('SELECT * FROM payments WHERE account_number = ? ORDER BY payment_date DESC', [account]);
         } else {
-            results = await lite.all('SELECT * FROM payments ORDER BY payment_date DESC', []);
+            results = await db.query('SELECT * FROM payments ORDER BY payment_date DESC');
         }
         res.json(results);
     } catch (err) {
