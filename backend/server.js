@@ -273,12 +273,20 @@ app.get('/api/usage', async (req, res) => {
 
 // 3. Mark a bill as paid & track payment in SQLite
 app.post('/api/pay', async (req, res) => {
-    const { account_number, billing_month, amount, payment_method } = req.body;
+    const { bill_id, account_number, billing_month, amount, payment_method } = req.body;
     try {
-        await db.query(
-            'UPDATE bills SET payment_status = "Paid", payment_date = CURDATE() WHERE account_number = ? AND billing_month = ?',
-            [account_number, billing_month]
-        );
+        // Use bill_id if available for precision, otherwise fallback to account+month
+        if (bill_id) {
+            await db.query(
+                'UPDATE bills SET payment_status = "Paid", payment_date = CURDATE() WHERE bill_id = ?',
+                [bill_id]
+            );
+        } else {
+            await db.query(
+                'UPDATE bills SET payment_status = "Paid", payment_date = CURDATE() WHERE account_number = ? AND billing_month = ?',
+                [account_number, billing_month]
+            );
+        }
 
         const refNumber = 'REF-' + Math.floor(Math.random() * 1000000);
         const payMethod = payment_method || 'Online';
@@ -611,6 +619,14 @@ app.post('/api/calculate-bills', async (req, res) => {
                 const customer = await db.query('SELECT account_number, customer_type FROM customers WHERE account_number = ?', [record.account_number]);
                 if (customer.length === 0) {
                     console.warn(`⚠️ Skipping bill for ${record.account_number}: Customer not found in MySQL.`);
+                    skipped++;
+                    continue;
+                }
+
+                // Check if bill already exists for this month to prevent duplicates
+                const existingBill = await db.query('SELECT bill_id FROM bills WHERE account_number = ? AND billing_month = ?', [record.account_number, month]);
+                if (existingBill.length > 0) {
+                    console.log(`⚠️ Bill already exists for ${record.account_number} in ${month}. Skipping.`);
                     skipped++;
                     continue;
                 }

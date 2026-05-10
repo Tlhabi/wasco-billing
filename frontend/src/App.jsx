@@ -318,18 +318,18 @@ export default function App() {
     } catch (err) {
       console.warn('Backend unavailable, using mock data.');
       setIsOffline(true);
-      setBills(MOCK_BILLS);
-      setRates(MOCK_RATES);
+      
+      // Only use mock data if the state is currently empty to avoid overwriting real data (the "flash" bug)
+      if (bills.length === 0) setBills(MOCK_BILLS);
+      if (rates.length === 0) setRates(MOCK_RATES);
+      
       if (role === 'admin' || role === 'manager') {
-        setUsageReports(MOCK_USAGE_REPORTS);
-        setLeakages(MOCK_LEAKAGES);
-        setCustomers(MOCK_CUSTOMERS);
-        setPayments(MOCK_PAYMENTS);
-        setDistrictReports(MOCK_DISTRICT_REPORTS);
-        setSegmentData(MOCK_SEGMENT_DATA);
+        if (usageReports.length === 0) setUsageReports(MOCK_USAGE_REPORTS);
+        if (leakages.length === 0) setLeakages(MOCK_LEAKAGES);
+        if (customers.length === 0) setCustomers(MOCK_CUSTOMERS);
       }
       if (role === 'customer') {
-        setPayments(MOCK_PAYMENTS.filter(p => p.account_number === account_number));
+        if (payments.length === 0) setPayments(MOCK_PAYMENTS.filter(p => p.account_number === account_number));
       }
     } finally {
       setLoading(false);
@@ -351,9 +351,9 @@ export default function App() {
     }
   };
 
-  const handlePay = async (account_number, billing_month, amount) => {
+  const handlePay = async (bill_id, account_number, billing_month, amount) => {
     try {
-      const res = await axios.post(`${API_BASE}/pay`, { account_number, billing_month, amount });
+      const res = await axios.post(`${API_BASE}/pay`, { bill_id, account_number, billing_month, amount });
       setPaymentMsg(`Payment successful! Ref: ${res.data.reference}`);
       setTimeout(() => setPaymentMsg(''), 5000);
       fetchData(user.role.toLowerCase(), user.account_number);
@@ -391,6 +391,10 @@ export default function App() {
       setLeakageLocation('');
       setLeakageDesc('');
       setTimeout(() => setLeakageMsg(''), 5000);
+      
+      // Fetch the updated list of leakages so the new "Pending" report shows immediately
+      const leakRes = await axios.get(`${API_BASE}/leakages`);
+      setLeakages(leakRes.data);
     } catch (err) {
       console.warn('Backend unavailable, using mock leakage report.');
       setLeakageMsg('Leakage reported successfully! (Mocked offline)');
@@ -1787,7 +1791,7 @@ export default function App() {
                       <td><span className={`badge ${bill.payment_status === 'Paid' ? 'paid' : 'unpaid'}`}>{bill.payment_status}</span></td>
                       <td className="no-print" style={{ display: 'flex', gap: '0.5rem' }}>
                         {bill.payment_status === 'Unpaid' && view !== 'manager' && (
-                          <button className="btn btn-primary" style={{ padding: '0.4rem 0.8rem' }} onClick={() => handlePay(bill.account_number, bill.billing_month, bill.total_amount)}>
+                          <button className="btn btn-primary" style={{ padding: '0.4rem 0.8rem' }} onClick={() => handlePay(bill.bill_id, bill.account_number, bill.billing_month, bill.total_amount)}>
                             Pay
                           </button>
                         )}

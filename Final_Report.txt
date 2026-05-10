@@ -1,0 +1,133 @@
+DISTRIBUTED ONLINE WATER BILL MANAGEMENT DATABASE APPLICATION
+FINAL REPORT
+
+1. Title of the System
+Distributed Online Water Bill Management Database Application for WASCO
+
+2. Table of Contents
+[To be auto-generated/completed]
+
+3. List of Figures
+[To be added based on system diagrams, GUI screenshots, etc.]
+
+4. List of Tables
+[To be added based on database schemas, data dictionaries, etc.]
+
+5. List of Abbreviations
+WASCO: Water and Sewerage Company
+GUI: Graphical User Interface
+DBMS: Database Management System
+SQL: Structured Query Language
+API: Application Programming Interface
+OLAP: Online Analytical Processing
+TCL: Transaction Control Language
+DDL: Data Definition Language
+DML: Data Manipulation Language
+DCL: Data Control Language
+
+6. Abstract
+This project involves the development of a distributed internet database application designed to manage customer information, billing data (including water consumption rates), and payment history for water bills for the Water and Sewerage Company (WASCO) in Lesotho. The system features secure user authentication, modules for bill notifications across all districts, advanced embedded SQL for bill generation and payment tracking, and integration with online payment gateways. By utilizing a heterogeneous distributed database architecture (MySQL and SQLite), the application stores fragments of WASCO’s database to ensure high availability, data synchronization, and reliability, ultimately enhancing the convenience and experience for local water service consumers.
+
+7. Introduction
+1.1 Problem Statement
+Managing water consumption data, billing, and payment tracking manually or through centralized, outdated systems presents significant challenges in scalability, accessibility, and reliability. Customers lack a convenient platform to view consumption rates, pay bills, and report issues. Furthermore, the absence of a distributed architecture makes the current infrastructure susceptible to single points of failure.
+
+1.2 Problem Solving
+To address these issues, this project implements a distributed web database application that serves as the main interface for WASCO's services. It leverages internet databases, secure APIs, and OLAP to provide an accessible, user-friendly platform. We implemented embedded SQL to calculate bills dynamically based on tiered rates and synchronize data between persistent and temporary databases.
+
+1.3 Objectives
+- Develop a distributed internet database to manage customer info, billing, and payment history.
+- Design modules for sending bill notifications to customers across all districts of Lesotho.
+- Use embedded queries to calculate bills based on consumption and applicable rates.
+- Track customer payment history and identify outstanding balances.
+- Generate reports on water usage patterns for different customer segments using advanced SQL views.
+- Implement secure user accounts and login functionality.
+- Distribute the application across at least two (2) different databases (heterogeneous database management systems).
+- Incorporate secure APIs for online payment processing.
+
+1.4 Scope & Constraint
+Scope: 
+The system targets registered and unregistered customers, administrators, and branch managers. It covers core functions such as viewing water and sewerage services, managing user accounts, processing payments via API, generating bills based on tiered rates, and viewing analytical summaries on a live Manager Dashboard.
+Constraints: 
+The application must securely handle heterogeneous database fragmentation. It must synchronize SQLite usage records with the MySQL customer database accurately and handle potential foreign key constraint issues during bulk operations.
+
+8. Technologies Justification
+2.1 Web application technologies
+Frontend: React, hosted on Firebase. React provides a dynamic, state-driven GUI that allows for seamless data visualization on the Manager Dashboard and interactive billing portals for customers. 
+Backend: Node.js, hosted on Render. Node.js facilitates rapid, non-blocking I/O operations, which is crucial for handling multiple API requests for bill calculation and synchronizing our distributed databases. Secure APIs were developed using Express.
+
+2.2 Database Management System
+Heterogeneous Distributed Database Architecture: 
+- MySQL: Used as the persistent, primary database for storing Customers, Billing Rates, Bills, and Payment history. MySQL ensures ACID compliance and robust relational data integrity.
+- SQLite: Used as a temporary, auto-seeding database specifically for handling Water Usage records.
+This heterogeneous setup simulates a real-world distributed environment where branch data (usage) is captured locally (SQLite) and synchronized with the central server (MySQL), reducing load and preventing single points of failure.
+
+9. System Design
+3.1 Data Models
+The application includes the following basic entities and their attributes:
+- Customers (account_number, name, address, district)
+- Billing_Rates (rate_tier, usage_range_start, usage_range_end, cost_per_unit)
+- Water_Usage (account_number, month, meter_reading) [Stored in SQLite]
+- Bills (bill_ID, account_number, month, total_amount_due, payment_status) [Stored in MySQL]
+- Payments (payment_ID, bill_ID, date, amount, method)
+
+[Include ER Diagrams and Distributed Database Schema Fragmentation logic here]
+
+10. Database Implementation Details (Advanced SQL & Embedded SQL)
+To fulfill the requirements, extensive SQL operations were embedded within the Node.js backend:
+
+- Advanced SQL & Views:
+We utilized SQL Views and aggregations to power the Manager dashboard analytical charts. Queries were designed to group water usage and revenue by district and month, functioning as an OLAP mechanism to extract actionable insights from the heterogeneous databases.
+
+- Embedded SQL for Bill Generation:
+Embedded SQL was heavily utilized to calculate bills based on consumption. The Node.js application dynamically constructs SQL statements to fetch the user's `Water_Usage` from SQLite, queries the `Billing_Rates` from MySQL to determine the applicable tier, and then performs a bulk insert/update into the `Bills` table in MySQL. 
+Example logic implemented:
+  `SELECT meter_reading FROM sqlite_db.Water_Usage WHERE account_number = ?`
+  `SELECT cost_per_unit FROM mysql_db.Billing_Rates WHERE ? BETWEEN usage_range_start AND usage_range_end`
+  `INSERT INTO mysql_db.Bills (account_number, month, total_amount_due, payment_status) VALUES (?, ?, ?, 'Pending')`
+
+- Distributed Database Connectivity & Synchronization:
+We developed an integration layer to synchronize data across the two databases. This involved complex TCL (Transaction Control Language) operations to ensure that when usage data is aggregated and billed, foreign key constraints between the SQLite data and MySQL data are respected, avoiding data corruption during bulk generation. 
+
+- Security & Access Control:
+Data Definition Language (DDL) and Data Control Language (DCL) were used to create restricted database users. The application connects using least-privilege credentials, and embedded SQL queries use parameterized inputs to prevent SQL Injection attacks.
+
+14 Conclusion
+4.1 Advantages of the System
+- Enhanced user convenience for bill payments and consumption tracking.
+- Robust data management through a distributed database architecture (MySQL + SQLite).
+- Secure processing of transactions via integrated APIs.
+- Real-time analytical dashboard powered by complex SQL views.
+
+4.2 Future Enhancement of the System
+- Integration of IoT for automated meter reading.
+- Mobile application development for better accessibility.
+- Advanced predictive analytics for water leakage detection.
+
+4.3 Potential Benefit
+The system significantly reduces administrative overhead for WASCO, improves revenue collection through easier payment methods, and increases customer satisfaction by providing transparent access to usage and billing histories.
+
+4.4 Conclusion
+The Distributed Online Water Bill Management Database Application successfully applies advanced database concepts including web database development, advanced SQL (Views, Access control, Embedded SQL, TCL, DDL, DML), and distributed databases. By integrating React, Node.js, MySQL, and SQLite, it meets all the core requirements of providing a reliable, user-friendly, and secure platform for water service management in Lesotho.
+
+15 References
+[To be populated with API documentation, database management textbooks, and web framework resources]
+
+16 Appendices
+[To include Code Snippets, Full SQL Scripts for Table Creation and Embedded Queries, API Integration details, and User Manual]
+
+---
+MARKING CRITERIA AND ASSIGNMENT DETAILS (For Reference):
+- Heterogeneous distributed database creation and connectivity (10 marks)
+- Hosted app online (10 marks)
+- GUI (10 marks)
+- Embedded SQL and Advanced SQL (10 marks)
+- Online water billing functions and features (15 marks)
+- Report/Document and data models (25 marks)
+- Confidence (5 marks)
+- Audibility (5 marks)
+- Qs&As (5 marks)
+- Teamwork (5 marks)
+- Time management (5 marks)
+- Dress Code (5 marks)
+Total: 110 marks
