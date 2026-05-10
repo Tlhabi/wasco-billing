@@ -1184,21 +1184,22 @@ export default function App() {
     if (!usageReports || usageReports.length === 0) return [];
     const grouped = {};
     usageReports.forEach(r => {
-      const dateStr = r.billing_month ? `${r.billing_month}-15` : (r.reading_date || '2026-01-01');
-      const d = new Date(dateStr);
-      let key = '';
-      if (insightTimeframe === 'Daily') {
-        key = dateStr.substring(0, 10);
-      } else if (insightTimeframe === 'Weekly') {
+      let key = r.billing_month || 'Unknown';
+      if (insightTimeframe === 'Daily' && r.reading_date) {
+        key = new Date(r.reading_date).toLocaleDateString();
+      } else if (insightTimeframe === 'Weekly' && r.reading_date) {
+        const d = new Date(r.reading_date);
         const wk = new Date(d);
         wk.setDate(wk.getDate() - wk.getDay());
         key = `Wk ${wk.toISOString().split('T')[0]}`;
       } else if (insightTimeframe === 'Monthly') {
-        key = dateStr.substring(0, 7);
-      } else if (insightTimeframe === 'Quarterly') {
+        // Keep the billing_month as is for grouping if it's already descriptive like "March 2026"
+        key = r.billing_month || 'Other';
+      } else if (insightTimeframe === 'Quarterly' && r.reading_date) {
+        const d = new Date(r.reading_date);
         key = `Q${Math.floor(d.getMonth() / 3) + 1} ${d.getFullYear()}`;
-      } else if (insightTimeframe === 'Yearly') {
-        key = d.getFullYear().toString();
+      } else if (insightTimeframe === 'Yearly' && r.reading_date) {
+        key = new Date(r.reading_date).getFullYear().toString();
       }
       grouped[key] = (grouped[key] || 0) + (r.units_used || 0);
     });
@@ -1394,8 +1395,10 @@ export default function App() {
               <div className="input-group mb-4">
                 <label className="small fw-600 text-muted mb-1 block">Billing Period</label>
                 <select value={calculationMonth} onChange={e => setCalculationMonth(e.target.value)} className="input-field">
+                  <option value="April 2026">April 2026</option>
                   <option value="March 2026">March 2026</option>
                   <option value="February 2026">February 2026</option>
+                  <option value="January 2026">January 2026</option>
                 </select>
               </div>
               <button className="btn btn-primary w-full" onClick={handleCalculateBills} disabled={loading} style={{ justifyContent: 'center' }}>
@@ -1577,11 +1580,11 @@ export default function App() {
                         <td><strong className="text-main">{r.tier_name}</strong></td>
                         <td>
                           <span className="badge" style={{ 
-                            background: r.maximum_units > 9000 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(0,0,0,0.05)', 
-                            color: r.maximum_units > 9000 ? 'var(--success)' : 'var(--text-main)',
-                            border: r.maximum_units > 9000 ? '1px solid rgba(16, 185, 129, 0.2)' : 'none'
+                            background: r.maximum_units > 9000 ? 'rgba(14, 165, 233, 0.1)' : 'rgba(0,0,0,0.05)', 
+                            color: r.maximum_units > 9000 ? 'var(--primary)' : 'var(--text-main)',
+                            border: r.maximum_units > 9000 ? '1px solid rgba(14, 165, 233, 0.2)' : 'none'
                           }}>
-                            {r.maximum_units > 9000 ? 'Flat Rate (All Usage)' : `${r.minimum_units} — ${r.maximum_units} Units`}
+                            {r.maximum_units > 9000 ? 'Unlimited Usage' : `${r.minimum_units} — ${r.maximum_units} Units`}
                           </span>
                         </td>
                         <td style={{ color: 'var(--success)', fontWeight: 'bold' }}>{parseFloat(r.rate_per_unit).toFixed(2)}</td>

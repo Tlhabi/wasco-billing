@@ -159,15 +159,24 @@ sqliteConnection.serialize(() => {
     console.log('✅ SQLite tables verified/created.');
     
     // AUTO-SEED DEMO DATA FOR HETEROGENEOUS DB PRESENTATION
-    sqliteConnection.get("SELECT COUNT(*) as count FROM water_usage", (err, row) => {
+    sqliteConnection.get("SELECT COUNT(*) as count FROM water_usage", async (err, row) => {
         if (!err && row && row.count === 0) {
             console.log('🌱 SQLite is empty. Seeding demo data for presentation...');
-            const months = ['2026-01', '2026-02', '2026-03', '2026-04'];
-            const accounts = ['WASCO-001', 'WASCO-002', 'WASCO-7301', 'WASCO-6389'];
+            
+            // Try to get real account numbers from MySQL to avoid "Unknown" segments
+            let accounts = ['WASCO-001', 'WASCO-002', 'WASCO-7301', 'WASCO-6389'];
+            try {
+                const realCustomers = await db.query('SELECT account_number FROM customers LIMIT 5', []);
+                if (realCustomers && realCustomers.length > 0) {
+                    accounts = realCustomers.map(c => c.account_number);
+                }
+            } catch (e) { console.log('Using default mock accounts for seeding.'); }
+
+            const months = ['January 2026', 'February 2026', 'March 2026', 'April 2026'];
             
             accounts.forEach(acc => {
                 months.forEach(m => {
-                    const usage = Math.floor(Math.random() * 50) + 10;
+                    const usage = Math.floor(Math.random() * 25) + 5;
                     sqliteConnection.run(
                         "INSERT INTO water_usage (account_number, billing_month, reading_date, units_used) VALUES (?, ?, date('now'), ?)",
                         [acc, m, usage]
@@ -176,7 +185,7 @@ sqliteConnection.serialize(() => {
                     if (usage % 2 === 0) {
                         sqliteConnection.run(
                             "INSERT INTO payments (account_number, bill_month, amount_paid, payment_date, payment_method, reference_number) VALUES (?, ?, ?, date('now'), 'Online', ?)",
-                            [acc, m, usage * 5.5, 'REF-DEMO-' + Math.floor(Math.random()*10000)]
+                            [acc, m, usage * 8.5, 'REF-DEMO-' + Math.floor(Math.random()*10000)]
                         );
                     }
                 });
