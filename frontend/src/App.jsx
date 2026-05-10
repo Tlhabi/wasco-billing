@@ -299,12 +299,14 @@ export default function App() {
 
       if (role === 'customer') {
         try {
-          const [payRes, notifRes] = await Promise.all([
+          const [payRes, notifRes, leakRes] = await Promise.all([
             axios.get(`${API_BASE}/payments?account=${account_number}`),
-            axios.get(`${API_BASE}/notifications?account=${account_number}`)
+            axios.get(`${API_BASE}/notifications?account=${account_number}`),
+            axios.get(`${API_BASE}/leakages`)
           ]);
           setPayments(payRes.data);
           setNotifications(notifRes.data);
+          setLeakages(leakRes.data);
         } catch (e) {
           console.warn('Customer specific data failed to load');
         }
