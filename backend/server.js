@@ -33,7 +33,7 @@ const pool = mysql.createPool({
     password: process.env.DB_PASS || '12345678',
     database: process.env.DB_NAME || 'wasco_billing',
     waitForConnections: true,
-    connectionLimit: 3, // Safe for Clever Cloud free tier
+    connectionLimit: 2, // Reduced to stay within Clever Cloud 5-conn limit (Local + Prod)
     queueLimit: 0
 });
 
@@ -43,23 +43,10 @@ const pool = mysql.createPool({
         const connection = await pool.getConnection();
         console.log('✅ Connected to MySQL wasco_billing database (pool).');
         
-        // Hotfix for live db: ensure persistent payments table exists
-        try {
-            await connection.query(`CREATE TABLE IF NOT EXISTS payments (
-                payment_id INT AUTO_INCREMENT PRIMARY KEY,
-                account_number VARCHAR(20),
-                bill_month VARCHAR(20),
-                amount_paid DECIMAL(10,2),
-                payment_date DATETIME,
-                payment_method VARCHAR(50),
-                reference_number VARCHAR(50)
-            )`);
-            console.log('✅ Persistent MySQL payments table verified.');
-        } catch (e) { console.error('Failed to create MySQL payments table:', e.message); }
-        
         // Hotfix for leakage status column size
         try {
             await connection.query("ALTER TABLE leakage_reports MODIFY status varchar(50) DEFAULT 'Reported'");
+            console.log('✅ Adjusted leakage_reports status column size.');
         } catch (e) {}
         
         connection.release();
@@ -310,11 +297,18 @@ app.post('/api/pay', async (req, res) => {
         const refNumber = 'REF-' + Math.floor(Math.random() * 1000000);
         const payMethod = payment_method || 'Online';
         
-        // Save to persistent MySQL
-        await db.query(
-            'INSERT INTO payments (account_number, bill_month, amount_paid, payment_date, payment_method, reference_number) VALUES (?, ?, ?, NOW(), ?, ?)',
-            [account_number, billing_month, amount, payMethod, refNumber]
-        );
+        // SMART STORAGE: Use MySQL on Render (persistent), SQLite locally (transient)
+        if (process.env.RENDER || process.env.NODE_ENV === 'production') {
+            await db.query(
+                'INSERT INTO payments (account_number, bill_month, amount_paid, payment_date, payment_method, reference_number) VALUES (?, ?, ?, NOW(), ?, ?)',
+                [account_number, billing_month, amount, payMethod, refNumber]
+            );
+        } else {
+            await lite.run(
+                'INSERT INTO payments (account_number, bill_month, amount_paid, payment_date, payment_method, reference_number) VALUES (?, ?, ?, date("now"), ?, ?)',
+                [account_number, billing_month, amount, payMethod, refNumber]
+            );
+        }
 
         console.log(`✅ Payment successful for ${account_number}, Ref: ${refNumber}`);
         res.json({ success: true, message: 'Payment recorded successfully', reference: refNumber });
@@ -562,10 +556,16 @@ app.get('/api/payments', async (req, res) => {
     const account = req.query.account;
     try {
         let results;
+        const isProd = process.env.RENDER || process.env.NODE_ENV === 'production';
+        
         if (account) {
-            results = await db.query('SELECT * FROM payments WHERE account_number = ? ORDER BY payment_date DESC', [account]);
+            results = isProd 
+                ? await db.query('SELECT * FROM payments WHERE account_number = ? ORDER BY payment_date DESC', [account])
+                : await lite.all('SELECT * FROM payments WHERE account_number = ? ORDER BY payment_date DESC', [account]);
         } else {
-            results = await db.query('SELECT * FROM payments ORDER BY payment_date DESC');
+            results = isProd
+                ? await db.query('SELECT * FROM payments ORDER BY payment_date DESC')
+                : await lite.all('SELECT * FROM payments ORDER BY payment_date DESC', []);
         }
         res.json(results);
     } catch (err) {
