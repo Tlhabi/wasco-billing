@@ -134,9 +134,7 @@ export default function App() {
   const [billSearch, setBillSearch] = useState('');
   const [billStatusFilter, setBillStatusFilter] = useState('All');
   const [calculationMonth, setCalculationMonth] = useState('March 2026');
-  const [payingBill, setPayingBill] = useState(null);
-  const [payAmount, setPayAmount] = useState('');
-  const [payMethod, setPayMethod] = useState('Online (Card)');
+  const [billToPrint, setBillToPrint] = useState(null);
 
   // Rates Management State
   const [newTierName, setNewTierName] = useState('');
@@ -355,45 +353,31 @@ export default function App() {
     }
   };
 
-  const handlePay = async () => {
-    if (!payingBill) return;
-    const amount = parseFloat(payAmount);
-    if (isNaN(amount) || amount <= 0) {
-      alert("Please enter a valid payment amount.");
-      return;
-    }
-
+  const handlePay = async (bill_id, account_number, billing_month, amount) => {
     try {
-      const res = await axios.post(`${API_BASE}/pay`, { 
-        bill_id: payingBill.bill_id, 
-        account_number: payingBill.account_number, 
-        billing_month: payingBill.billing_month, 
-        amount: amount,
-        payment_method: payMethod
-      });
-      if (res.data.success) {
-        alert(`Payment successful! Reference: ${res.data.reference}`);
-        setPayingBill(null);
-        fetchData(user?.role?.toLowerCase(), user?.account_number);
-      }
+      const res = await axios.post(`${API_BASE}/pay`, { bill_id, account_number, billing_month, amount });
+      setPaymentMsg(`Payment successful! Ref: ${res.data.reference}`);
+      setTimeout(() => setPaymentMsg(''), 5000);
+      fetchData(user.role.toLowerCase(), user.account_number);
     } catch (err) {
       console.warn('Backend unavailable, using mock payment.');
       const ref = `REF-MOCK-${Math.floor(Math.random() * 10000)}`;
-      alert(`Payment successful! Ref: ${ref}`);
+      setPaymentMsg(`Payment successful! Ref: ${ref}`);
+      setTimeout(() => setPaymentMsg(''), 5000);
+
       setBills(bills.map(b =>
-        (b.account_number === payingBill.account_number && b.billing_month === payingBill.billing_month)
+        (b.account_number === account_number && b.billing_month === billing_month)
           ? { ...b, payment_status: 'Paid' } : b
       ));
       setPayments([{
         payment_id: Date.now(),
-        account_number: payingBill.account_number,
-        bill_month: payingBill.billing_month,
+        account_number,
+        bill_month: billing_month,
         amount_paid: amount,
         payment_date: new Date().toISOString(),
-        payment_method: payMethod,
+        payment_method: 'Online',
         reference_number: ref
       }, ...payments]);
-      setPayingBill(null);
     }
   };
 
@@ -435,7 +419,7 @@ export default function App() {
     try {
       const res = await axios.post(`${API_BASE}/calculate-bills`, { month: calculationMonth });
       alert(res.data.message);
-      fetchData(user?.role?.toLowerCase(), user?.account_number);
+      fetchData(user.role.toLowerCase(), user.account_number);
     } catch (err) {
       console.error('Calculation error:', err);
       alert('Failed to calculate bills. Check backend logs.');
@@ -514,12 +498,12 @@ export default function App() {
   const handleUpdateLeakage = async (id, status) => {
     if (!id) {
       alert('Cannot update: leakage ID is missing. Try refreshing the data.');
-      fetchData(user?.role?.toLowerCase(), user?.account_number);
+      fetchData(user.role.toLowerCase(), user.account_number);
       return;
     }
     try {
       await axios.put(`${API_BASE}/leakages/${id}`, { status });
-      fetchData(user?.role?.toLowerCase(), user?.account_number);
+      fetchData(user.role.toLowerCase(), user.account_number);
     } catch (err) {
       console.error('Update leakage error:', err);
       alert('Failed to update leakage status.');
@@ -552,7 +536,7 @@ export default function App() {
     if (!window.confirm('Are you sure you want to delete this rate tier?')) return;
     try {
       await axios.delete(`${API_BASE}/rates/${id}`);
-      fetchData(user?.role?.toLowerCase(), user?.account_number);
+      fetchData(user.role.toLowerCase(), user.account_number);
     } catch (err) {
       console.warn('Backend unavailable, deleting rate locally.');
       setRates(rates.filter(r => r.rate_id !== id));
@@ -571,7 +555,7 @@ export default function App() {
       await axios.put(`${API_BASE}/rates/${editingRate.rate_id}`, rateData);
       setEditingRate(null);
       setNewTierName(''); setNewMinUnits(''); setNewMaxUnits(''); setNewRate('');
-      fetchData(user?.role?.toLowerCase(), user?.account_number);
+      fetchData(user.role.toLowerCase(), user.account_number);
     } catch (err) {
       const errorMsg = err.response?.data?.error || err.message;
       alert(`⚠️ FAILED TO SAVE TO SERVER: ${errorMsg}\n\nYour changes are only temporary and will be lost on refresh because you are currently in OFFLINE MOCK MODE.`);
@@ -620,7 +604,7 @@ export default function App() {
       });
       setUsageMsg(res.data.message || 'Usage recorded and bill generated!');
       setTimeout(() => setUsageMsg(''), 5000);
-      fetchData(user?.role?.toLowerCase(), user?.account_number);
+      fetchData(user.role.toLowerCase(), user.account_number);
     } catch (err) {
       alert(`Failed to record usage: ${err.response?.data?.error || err.message}`);
     }
@@ -643,7 +627,7 @@ export default function App() {
       await axios.post(`${API_BASE}/customers`, custData);
       setNewCustomer({ username: '', password: '', first_name: '', last_name: '', email: '', address: '', district: '', phone: '', customer_type: 'Residential' });
       alert('Customer added successfully!');
-      fetchData(user?.role?.toLowerCase(), user?.account_number);
+      fetchData(user.role.toLowerCase(), user.account_number);
     } catch (err) {
       if (err.response) {
         alert(`Failed to add customer: ${err.response.data.error || err.message}`);
@@ -678,7 +662,7 @@ export default function App() {
       await axios.put(`${API_BASE}/customers/${editingCustomer.account_number}`, custData);
       setEditingCustomer(null);
       alert('Customer updated successfully!');
-      fetchData(user?.role?.toLowerCase(), user?.account_number);
+      fetchData(user.role.toLowerCase(), user.account_number);
     } catch (err) {
       if (err.response) {
         alert(`Failed to update customer: ${err.response.data.error || err.message}`);
@@ -695,7 +679,7 @@ export default function App() {
     try {
       await axios.delete(`${API_BASE}/customers/${account_number}`);
       alert('Customer deleted successfully!');
-      fetchData(user?.role?.toLowerCase(), user?.account_number);
+      fetchData(user.role.toLowerCase(), user.account_number);
     } catch (err) {
       if (err.response) {
         alert(`Failed to delete customer: ${err.response.data.error || err.message}`);
@@ -943,10 +927,10 @@ export default function App() {
 
   const headerJSX = (
     <header className="glass-card" style={{ padding: '0.75rem 2rem', borderRadius: '24px', position: 'sticky', top: '1rem', zIndex: 1000, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-      <div className="logo" style={{ cursor: 'pointer' }} onClick={() => user?.role && setView(user.role.toLowerCase())}>
+      <div className="logo" style={{ cursor: 'pointer' }} onClick={() => setView(user.role.toLowerCase())}>
         <Droplets size={32} className="logo-icon" />
         <h1 style={{ fontSize: '1.5rem', letterSpacing: '-0.02em' }}>
-          WASCO <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>{user?.role} Portal</span>
+          WASCO <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>{user.role} Portal</span>
         </h1>
       </div>
 
@@ -972,7 +956,7 @@ export default function App() {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
           {/* NOTIFICATION BELL — Customer Only */}
-          {user?.role?.toLowerCase() === 'customer' && (
+          {user.role?.toLowerCase() === 'customer' && (
             <div style={{ position: 'relative' }}>
               <button className="btn" onClick={() => { setShowNotifications(!showNotifications); setShowProfile(false); }} style={{ background: 'rgba(14, 165, 233, 0.1)', color: 'var(--primary)', padding: '0.6rem', borderRadius: '12px' }}>
                 <Bell size={20} />
@@ -1103,50 +1087,50 @@ export default function App() {
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     margin: '0 auto 0.75rem', color: 'white', fontSize: '1.25rem', fontWeight: 700
                   }}>
-                    {user?.first_name ? user.first_name[0].toUpperCase() + (user?.last_name ? user.last_name[0].toUpperCase() : '') : user?.role?.[0]?.toUpperCase()}
+                    {user.first_name ? user.first_name[0].toUpperCase() + (user.last_name ? user.last_name[0].toUpperCase() : '') : user.role[0].toUpperCase()}
                   </div>
-                  <h4 style={{ margin: '0 0 0.25rem' }}>{user?.first_name ? `${user.first_name} ${user.last_name}` : user?.role}</h4>
-                  <span className="badge" style={{ fontSize: '0.7rem', background: 'rgba(14, 165, 233, 0.1)', color: 'var(--primary)' }}>{user?.role}</span>
+                  <h4 style={{ margin: '0 0 0.25rem' }}>{user.first_name ? `${user.first_name} ${user.last_name}` : user.role}</h4>
+                  <span className="badge" style={{ fontSize: '0.7rem', background: 'rgba(14, 165, 233, 0.1)', color: 'var(--primary)' }}>{user.role}</span>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.85rem' }}>
-                  {user?.account_number && (
+                  {user.account_number && (
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span className="text-muted">Account</span>
                       <span style={{ fontWeight: 600, fontFamily: 'monospace', color: 'var(--primary)' }}>{user.account_number}</span>
                     </div>
                   )}
-                  {user?.username && (
+                  {user.username && (
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span className="text-muted">Username</span>
                       <span style={{ fontWeight: 500 }}>@{user.username}</span>
                     </div>
                   )}
-                  {user?.email && (
+                  {user.email && (
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span className="text-muted">Email</span>
                       <span style={{ fontWeight: 500 }}>{user.email}</span>
                     </div>
                   )}
-                  {user?.phone && (
+                  {user.phone && (
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span className="text-muted">Phone</span>
                       <span style={{ fontWeight: 500 }}>{user.phone}</span>
                     </div>
                   )}
-                  {user?.address && (
+                  {user.address && (
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span className="text-muted">Address</span>
                       <span style={{ fontWeight: 500, textAlign: 'right', maxWidth: '180px' }}>{user.address}</span>
                     </div>
                   )}
-                  {user?.district && (
+                  {user.district && (
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span className="text-muted">District</span>
                       <span style={{ fontWeight: 500 }}>{user.district}</span>
                     </div>
                   )}
-                  {user?.customer_type && (
+                  {user.customer_type && (
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span className="text-muted">Account Type</span>
                       <span className="badge" style={{ fontSize: '0.7rem' }}>{user.customer_type}</span>
@@ -1182,7 +1166,7 @@ export default function App() {
     });
   };
 
-  const displayedBills = view === 'customer' ? filterBills(bills.filter(b => b.account_number === user?.account_number)) : filterBills(bills);
+  const displayedBills = view === 'customer' ? filterBills(bills.filter(b => b.account_number === user.account_number)) : filterBills(bills);
 
   const filteredCustomers = customers.filter(c =>
     (c.account_number || '').toLowerCase().includes(customerSearch.toLowerCase()) ||
@@ -1225,7 +1209,7 @@ export default function App() {
       const partsB = b.split(' ');
       if (partsA.length === 2 && monthOrder[partsA[0]]) {
         if (partsA[1] !== partsB[1]) return partsA[1] - partsB[1];
-        return monthOrder[partsA[0]] - monthOrder[partsA[0]];
+        return monthOrder[partsA[0]] - monthOrder[partsB[0]];
       }
       // Fallback to alphabetical for other types or unknown
       return a.localeCompare(b);
@@ -1283,7 +1267,7 @@ export default function App() {
           </div>
           <button 
             className="btn" 
-            onClick={() => user ? fetchData(user?.role?.toLowerCase(), user?.account_number) : fetchPublicData()} 
+            onClick={() => user ? fetchData(user.role.toLowerCase(), user.account_number) : fetchPublicData()} 
             style={{ 
               background: 'var(--warning)', 
               color: 'white', 
@@ -1708,7 +1692,7 @@ export default function App() {
             <div className="glass-card" style={{ gridColumn: 'span 2', height: '400px' }}>
               <div className="stat-header mb-4"><h3>Usage Trends</h3><Activity className="text-muted" /></div>
               <ResponsiveContainer width="100%" height="85%">
-                <BarChart data={bills.filter(b => b.account_number === user?.account_number).reverse().slice(0, 6)}>
+                <BarChart data={bills.filter(b => b.account_number === user.account_number).reverse().slice(0, 6)}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
                   <XAxis dataKey="billing_month" stroke="var(--text-muted)" />
                   <YAxis stroke="var(--text-muted)" />
@@ -1729,8 +1713,8 @@ export default function App() {
             <div className="glass-card">
               <div className="stat-header mb-4"><h3>Update My Profile</h3><Settings className="text-muted" /></div>
               <form onSubmit={handleUpdateProfile} className="grid grid-cols-1 gap-3">
-                <input className="input-field" value={user?.email || ''} onChange={e => setUser({...user, email: e.target.value})} placeholder="Email" />
-                <input className="input-field" value={user?.phone || ''} onChange={e => setUser({...user, phone: e.target.value})} placeholder="Phone" />
+                <input className="input-field" value={user.email} onChange={e => setUser({...user, email: e.target.value})} placeholder="Email" />
+                <input className="input-field" value={user.phone} onChange={e => setUser({...user, phone: e.target.value})} placeholder="Phone" />
                 <button className="btn btn-primary" style={{ justifyContent: 'center' }}>Save Changes</button>
               </form>
             </div>
@@ -1743,10 +1727,10 @@ export default function App() {
                   <tr><th>Date</th><th>Location</th><th>Status</th><th>Notes</th></tr>
                 </thead>
                 <tbody>
-                  {leakages.filter(l => l.account_number === user?.account_number).length === 0 ? (
+                  {leakages.filter(l => l.account_number === user.account_number).length === 0 ? (
                     <tr><td colSpan={4} className="text-center text-muted">You haven't reported any leakages.</td></tr>
                   ) : (
-                    leakages.filter(l => l.account_number === user?.account_number).map(l => (
+                    leakages.filter(l => l.account_number === user.account_number).map(l => (
                       <tr key={l.report_id}>
                         <td>{new Date(l.report_date).toLocaleDateString()}</td>
                         <td>{l.location}</td>
@@ -1784,7 +1768,7 @@ export default function App() {
               ))}
             </div>
           </div>
-          <button className="btn" onClick={() => fetchData(user?.role?.toLowerCase(), user?.account_number)} style={{ background: 'rgba(14, 165, 233, 0.1)', color: 'var(--primary)' }}>Refresh Data</button>
+          <button className="btn" onClick={() => fetchData(user.role.toLowerCase(), user.account_number)} style={{ background: 'rgba(14, 165, 233, 0.1)', color: 'var(--primary)' }}>Refresh Data</button>
         </div>
 
         {loading ? (
@@ -1822,8 +1806,8 @@ export default function App() {
                       <td><span className={`badge ${bill.payment_status === 'Paid' ? 'paid' : 'unpaid'}`}>{bill.payment_status}</span></td>
                       <td className="no-print" style={{ display: 'flex', gap: '0.5rem' }}>
                         {bill.payment_status === 'Unpaid' && view !== 'manager' && (
-                          <button className="btn small" onClick={() => { setPayingBill(bill); setPayAmount(bill.total_amount); }} title="Pay Now" style={{ background: 'var(--primary)', color: 'white' }}>
-                            <CreditCard size={14} /> Pay
+                          <button className="btn btn-primary" style={{ padding: '0.4rem 0.8rem' }} onClick={() => handlePay(bill.bill_id, bill.account_number, bill.billing_month, bill.total_amount)}>
+                            Pay
                           </button>
                         )}
                         <button className="btn" style={{ padding: '0.4rem 0.8rem', background: 'rgba(0,0,0,0.05)' }} onClick={() => { setBillToPrint(bill); setTimeout(() => window.print(), 100); setTimeout(() => setBillToPrint(null), 1000); }}>
@@ -1966,43 +1950,7 @@ export default function App() {
           </div>
         </div>
       )}
-      {/* Payment Modal */}
-      {payingBill && (
-        <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(5px)' }}>
-          <div className="glass-card" style={{ width: '100%', maxWidth: '400px', padding: '2rem', borderTop: '4px solid var(--success)' }}>
-            <div className="flex-between mb-4">
-              <h3 style={{ margin: 0 }}>Secure Payment</h3>
-              <button onClick={() => setPayingBill(null)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}><LogOut size={20} /></button>
-            </div>
-            
-            <p className="small text-muted mb-6">Paying for <strong>{payingBill.billing_month}</strong> bill.</p>
-            
-            <div className="input-group mb-4">
-              <label className="small fw-600 text-muted mb-1 block">Amount to Pay (LSL)</label>
-              <input 
-                type="number" 
-                className="input-field" 
-                value={payAmount} 
-                onChange={(e) => setPayAmount(e.target.value)} 
-                placeholder="0.00"
-              />
-            </div>
 
-            <div className="input-group mb-6">
-              <label className="small fw-600 text-muted mb-1 block">Payment Method</label>
-              <select className="input-field" value={payMethod} onChange={(e) => setPayMethod(e.target.value)}>
-                <option value="Online (Card)">💳 Online (Card)</option>
-                <option value="M-Pesa">📱 M-Pesa</option>
-                <option value="Eco-Cash">💰 Eco-Cash</option>
-              </select>
-            </div>
-
-            <button className="btn btn-primary w-full" onClick={handlePay} style={{ justifyContent: 'center', height: '48px' }}>
-              Confirm Payment
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
