@@ -134,7 +134,9 @@ export default function App() {
   const [billSearch, setBillSearch] = useState('');
   const [billStatusFilter, setBillStatusFilter] = useState('All');
   const [calculationMonth, setCalculationMonth] = useState('March 2026');
-  const [billToPrint, setBillToPrint] = useState(null);
+  const [payingBill, setPayingBill] = useState(null);
+  const [payAmount, setPayAmount] = useState('');
+  const [payMethod, setPayMethod] = useState('Online (Card)');
 
   // Rates Management State
   const [newTierName, setNewTierName] = useState('');
@@ -353,31 +355,45 @@ export default function App() {
     }
   };
 
-  const handlePay = async (bill_id, account_number, billing_month, amount) => {
+  const handlePay = async () => {
+    if (!payingBill) return;
+    const amount = parseFloat(payAmount);
+    if (isNaN(amount) || amount <= 0) {
+      alert("Please enter a valid payment amount.");
+      return;
+    }
+
     try {
-      const res = await axios.post(`${API_BASE}/pay`, { bill_id, account_number, billing_month, amount });
-      setPaymentMsg(`Payment successful! Ref: ${res.data.reference}`);
-      setTimeout(() => setPaymentMsg(''), 5000);
-      fetchData(user.role.toLowerCase(), user.account_number);
+      const res = await axios.post(`${API_BASE}/pay`, { 
+        bill_id: payingBill.bill_id, 
+        account_number: payingBill.account_number, 
+        billing_month: payingBill.billing_month, 
+        amount: amount,
+        payment_method: payMethod
+      });
+      if (res.data.success) {
+        alert(`Payment successful! Reference: ${res.data.reference}`);
+        setPayingBill(null);
+        fetchData(user.role.toLowerCase(), user.account_number);
+      }
     } catch (err) {
       console.warn('Backend unavailable, using mock payment.');
       const ref = `REF-MOCK-${Math.floor(Math.random() * 10000)}`;
-      setPaymentMsg(`Payment successful! Ref: ${ref}`);
-      setTimeout(() => setPaymentMsg(''), 5000);
-
+      alert(`Payment successful! Ref: ${ref}`);
       setBills(bills.map(b =>
-        (b.account_number === account_number && b.billing_month === billing_month)
+        (b.account_number === payingBill.account_number && b.billing_month === payingBill.billing_month)
           ? { ...b, payment_status: 'Paid' } : b
       ));
       setPayments([{
         payment_id: Date.now(),
-        account_number,
-        bill_month: billing_month,
+        account_number: payingBill.account_number,
+        bill_month: payingBill.billing_month,
         amount_paid: amount,
         payment_date: new Date().toISOString(),
-        payment_method: 'Online',
+        payment_method: payMethod,
         reference_number: ref
       }, ...payments]);
+      setPayingBill(null);
     }
   };
 
@@ -1806,8 +1822,8 @@ export default function App() {
                       <td><span className={`badge ${bill.payment_status === 'Paid' ? 'paid' : 'unpaid'}`}>{bill.payment_status}</span></td>
                       <td className="no-print" style={{ display: 'flex', gap: '0.5rem' }}>
                         {bill.payment_status === 'Unpaid' && view !== 'manager' && (
-                          <button className="btn btn-primary" style={{ padding: '0.4rem 0.8rem' }} onClick={() => handlePay(bill.bill_id, bill.account_number, bill.billing_month, bill.total_amount)}>
-                            Pay
+                          <button className="btn small" onClick={() => { setPayingBill(bill); setPayAmount(bill.total_amount); }} title="Pay Now" style={{ background: 'var(--primary)', color: 'white' }}>
+                            <CreditCard size={14} /> Pay
                           </button>
                         )}
                         <button className="btn" style={{ padding: '0.4rem 0.8rem', background: 'rgba(0,0,0,0.05)' }} onClick={() => { setBillToPrint(bill); setTimeout(() => window.print(), 100); setTimeout(() => setBillToPrint(null), 1000); }}>
@@ -1950,7 +1966,43 @@ export default function App() {
           </div>
         </div>
       )}
+      {/* Payment Modal */}
+      {payingBill && (
+        <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(5px)' }}>
+          <div className="glass-card" style={{ width: '100%', maxWidth: '400px', padding: '2rem', borderTop: '4px solid var(--success)' }}>
+            <div className="flex-between mb-4">
+              <h3 style={{ margin: 0 }}>Secure Payment</h3>
+              <button onClick={() => setPayingBill(null)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}><LogOut size={20} /></button>
+            </div>
+            
+            <p className="small text-muted mb-6">Paying for <strong>{payingBill.billing_month}</strong> bill.</p>
+            
+            <div className="input-group mb-4">
+              <label className="small fw-600 text-muted mb-1 block">Amount to Pay (LSL)</label>
+              <input 
+                type="number" 
+                className="input-field" 
+                value={payAmount} 
+                onChange={(e) => setPayAmount(e.target.value)} 
+                placeholder="0.00"
+              />
+            </div>
 
+            <div className="input-group mb-6">
+              <label className="small fw-600 text-muted mb-1 block">Payment Method</label>
+              <select className="input-field" value={payMethod} onChange={(e) => setPayMethod(e.target.value)}>
+                <option value="Online (Card)">💳 Online (Card)</option>
+                <option value="M-Pesa">📱 M-Pesa</option>
+                <option value="Eco-Cash">💰 Eco-Cash</option>
+              </select>
+            </div>
+
+            <button className="btn btn-primary w-full" onClick={handlePay} style={{ justifyContent: 'center', height: '48px' }}>
+              Confirm Payment
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
