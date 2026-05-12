@@ -100,7 +100,7 @@ export default function App() {
   const [balances, setBalances] = useState([]); // From view_customer_balances
   const [payingBill, setPayingBill] = useState(null); // Track bill currently being paid
   const [selectedPayMethod, setSelectedPayMethod] = useState('M-Pesa');
-  const [auditLogs, setAuditLogs] = useState([
+  const [forensicLogs, setForensicLogs] = useState([
     { id: 1, type: 'SYSTEM', msg: 'Core Kernel initialized successfully', time: new Date().toLocaleTimeString() },
     { id: 2, type: 'DB', msg: 'MySQL Connection Pool: 2/2 Active', time: new Date().toLocaleTimeString() },
     { id: 3, type: 'AUTH', msg: 'Security firewall active', time: new Date().toLocaleTimeString() }
@@ -177,7 +177,7 @@ export default function App() {
   const [editingRate, setEditingRate] = useState(null);
 
   const addAuditLog = (type, msg) => {
-    setAuditLogs(prev => [{ id: Date.now(), type, msg, time: new Date().toLocaleTimeString() }, ...prev].slice(0, 50));
+    setForensicLogs(prev => [{ id: Date.now(), type, msg, time: new Date().toLocaleTimeString() }, ...prev].slice(0, 50));
   };
 
   const handleLogin = async (e) => {
@@ -1479,7 +1479,7 @@ export default function App() {
               <span className="badge" style={{ background: '#00ff4133', color: '#00ff41', fontSize: '0.65rem' }}>LIVE_STREAM</span>
             </div>
             <div style={{ height: '180px', overflowY: 'auto', fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              {auditLogs.map(log => (
+              {forensicLogs.map(log => (
                 <div key={log.id}>
                   <span style={{ opacity: 0.5 }}>[{log.time}]</span>{' '}
                   <span style={{ color: log.type === 'SECURITY' ? '#ff3e3e' : '#0ea5e9', fontWeight: 'bold' }}>{log.type}:</span>{' '}
