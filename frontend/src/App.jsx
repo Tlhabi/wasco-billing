@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Droplets, Activity, Wallet, CreditCard, ChevronRight, User, LogOut, AlertTriangle, BarChart as BarChartIcon, FileText, Settings, Users, History, UserPlus, Bell, Check } from 'lucide-react';
+import { Droplets, Activity, Wallet, CreditCard, ChevronRight, User, LogOut, AlertTriangle, BarChart as BarChartIcon, FileText, Settings, Users, History, UserPlus, Bell, Check, Sun, Moon, LayoutDashboard } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import './index.css';
 
@@ -72,6 +72,14 @@ const MOCK_SEGMENT_DATA = [
 export default function App() {
   const [user, setUser] = useState(null);
   const [view, setView] = useState('landing'); // 'landing', 'login', 'register', 'public', 'customer', 'admin', 'manager'
+  
+  // Theme & Layout State
+  const [theme, setTheme] = useState('light');
+  const [activeTab, setActiveTab] = useState('dashboard');
+
+  useEffect(() => {
+    document.body.classList.toggle('dark-theme', theme === 'dark');
+  }, [theme]);
 
   // Auth State
   const [username, setUsername] = useState('');
@@ -710,50 +718,85 @@ export default function App() {
 
   if (view === 'landing') {
     return (
-      <div className="app-container">
+      <div className="landing-wrapper">
         <div className="bg-blobs">
           <div className="blob blob-1"></div>
           <div className="blob blob-2"></div>
           <div className="blob blob-3"></div>
         </div>
 
-        <div className="hero">
-          <div className="hero-eyebrow">
-            <Droplets size={14} /> Lesotho's Water Utility Portal
+        <div className="landing-content">
+          <header className="top-nav" style={{ margin: '0 0 4rem 0', maxWidth: '100%' }}>
+            <div className="logo"><Droplets className="logo-icon" size={26} /> WASCO Portal</div>
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+              <button className="theme-toggle" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+                {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+              </button>
+            </div>
+          </header>
+
+          <div className="hero" style={{ padding: '0', textAlign: 'left', alignItems: 'flex-start', minHeight: 'auto', marginBottom: '4rem' }}>
+            <div className="hero-eyebrow">
+              <Droplets size={14} /> Lesotho's Water Utility Portal
+            </div>
+            <h1 style={{ fontSize: 'clamp(3rem, 5vw, 4.5rem)' }}>Pure Water,<br />Smartly Managed.</h1>
+            <p style={{ maxWidth: '500px', fontSize: '1.1rem' }}>Experience seamless utility management across Lesotho's districts — real-time usage tracking, instant bill payments, and live leakage alerts all in one platform.</p>
+            <div className="hero-btns" style={{ justifyContent: 'flex-start', marginTop: '1rem' }}>
+              <button className="btn btn-primary" style={{ padding: '0.85rem 2rem', fontSize: '1rem', borderRadius: '14px' }} onClick={() => setView('login')}>
+                <Droplets size={18} /> Access My Portal
+              </button>
+              <button className="btn" onClick={fetchPublicData} style={{ padding: '0.85rem 2rem', fontSize: '1rem', borderRadius: '14px', background: 'var(--surface)', border: '1.5px solid var(--glass-border)', backdropFilter: 'blur(12px)' }}>
+                View Service Rates
+              </button>
+            </div>
           </div>
-          <h1>Pure Water,<br />Smartly Managed.</h1>
-          <p>Experience seamless utility management across Lesotho's districts — real-time usage tracking, instant bill payments, and live leakage alerts all in one platform.</p>
-          <div className="hero-btns">
-            <button className="btn btn-primary" style={{ padding: '0.85rem 2rem', fontSize: '1rem', borderRadius: '14px' }} onClick={() => setView('login')}>
-              <Droplets size={18} /> Access My Portal
-            </button>
-            <button className="btn" onClick={fetchPublicData} style={{ padding: '0.85rem 2rem', fontSize: '1rem', borderRadius: '14px', background: 'rgba(255,255,255,0.6)', border: '1.5px solid var(--glass-border)', backdropFilter: 'blur(12px)' }}>
-              View Service Rates
-            </button>
+
+          <div className="feature-grid" style={{ marginBottom: '2rem' }}>
+            <div className="glass-card feature-card" style={{ padding: '1.5rem' }}>
+              <div className="feature-icon" style={{ width: '40px', height: '40px', marginBottom: '1rem' }}><Activity size={18} /></div>
+              <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>Real-time Usage</h3>
+              <p className="text-muted" style={{ fontSize: '0.85rem', lineHeight: '1.5' }}>Monitor consumption with edge reading technology.</p>
+            </div>
+            <div className="glass-card feature-card" style={{ padding: '1.5rem' }}>
+              <div className="feature-icon" style={{ width: '40px', height: '40px', marginBottom: '1rem', background: 'linear-gradient(135deg,rgba(16,185,129,0.12),rgba(14,165,233,0.12))', color: 'var(--success)' }}><Wallet size={18} /></div>
+              <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>Instant Payments</h3>
+              <p className="text-muted" style={{ fontSize: '0.85rem', lineHeight: '1.5' }}>Secure digital gateways with instant receipts.</p>
+            </div>
           </div>
+          
+          <footer style={{ marginTop: 'auto', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+            <p>© 2026 Water and Sewerage Company (WASCO) · All rights reserved.</p>
+          </footer>
         </div>
 
-        <div className="feature-grid">
-          <div className="glass-card feature-card">
-            <div className="feature-icon"><Activity size={22} /></div>
-            <h3 style={{ marginBottom: '0.5rem' }}>Real-time Usage</h3>
-            <p className="text-muted" style={{ lineHeight: 1.6, fontSize: '0.9rem' }}>Monitor your water consumption daily with our distributed edge reading technology across all districts.</p>
-          </div>
-          <div className="glass-card feature-card">
-            <div className="feature-icon" style={{ background: 'linear-gradient(135deg,rgba(16,185,129,0.12),rgba(14,165,233,0.12))', color: 'var(--success)' }}><Wallet size={22} /></div>
-            <h3 style={{ marginBottom: '0.5rem' }}>Instant Payments</h3>
-            <p className="text-muted" style={{ lineHeight: 1.6, fontSize: '0.9rem' }}>Pay bills securely using integrated digital gateways with instant receipts and transaction history.</p>
-          </div>
-          <div className="glass-card feature-card">
-            <div className="feature-icon" style={{ background: 'linear-gradient(135deg,rgba(245,158,11,0.12),rgba(239,68,68,0.08))', color: 'var(--warning)' }}><AlertTriangle size={22} /></div>
-            <h3 style={{ marginBottom: '0.5rem' }}>Leakage Reporting</h3>
-            <p className="text-muted" style={{ lineHeight: 1.6, fontSize: '0.9rem' }}>Spot a burst pipe? Report it instantly to your district branch through our mobile-ready portal.</p>
+        <div className="landing-visual">
+          <div className="landing-card animate-in">
+            <h2 style={{ marginBottom: '1.5rem', color: '#fff' }}>Transforming Utility Operations</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '12px' }}>
+                <div style={{ background: 'rgba(255,255,255,0.2)', padding: '0.5rem', borderRadius: '8px' }}><Settings size={20} /></div>
+                <div>
+                  <h4 style={{ color: '#fff', fontSize: '0.9rem' }}>Smart Grids</h4>
+                  <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem' }}>AI-driven pressure management</p>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '12px' }}>
+                <div style={{ background: 'rgba(255,255,255,0.2)', padding: '0.5rem', borderRadius: '8px' }}><Users size={20} /></div>
+                <div>
+                  <h4 style={{ color: '#fff', fontSize: '0.9rem' }}>Self-Service</h4>
+                  <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem' }}>Empowering 100k+ customers</p>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '12px' }}>
+                <div style={{ background: 'rgba(255,255,255,0.2)', padding: '0.5rem', borderRadius: '8px' }}><BarChartIcon size={20} /></div>
+                <div>
+                  <h4 style={{ color: '#fff', fontSize: '0.9rem' }}>Predictive Analytics</h4>
+                  <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem' }}>Preventing leaks before they happen</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-
-        <footer style={{ textAlign: 'center', padding: '3rem 0', color: 'var(--text-muted)', fontSize: '0.85rem', borderTop: '1px solid rgba(14,165,233,0.1)', marginTop: '2rem' }}>
-          <p>© 2026 Water and Sewerage Company (WASCO) · Lesotho · All rights reserved.</p>
-        </footer>
       </div>
     );
   }
@@ -941,233 +984,96 @@ export default function App() {
     );
   }
 
-  const headerJSX = (
-    <header className="glass-card" style={{ padding: '0.75rem 2rem', borderRadius: '24px', position: 'sticky', top: '1rem', zIndex: 1000, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-      <div className="logo" style={{ cursor: 'pointer' }} onClick={() => setView(user.role.toLowerCase())}>
-        <Droplets size={32} className="logo-icon" />
-        <h1 style={{ fontSize: '1.5rem', letterSpacing: '-0.02em' }}>
-          WASCO <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>{user.role} Portal</span>
-        </h1>
+  const topNavJSX = (
+    <header className="top-nav" style={{ margin: '0 0 2rem 0', maxWidth: '100%' }}>
+      <div>
+        <h2 style={{ fontSize: '1.2rem', margin: 0, color: 'var(--text-main)', fontFamily: 'Outfit' }}>
+          {activeTab === 'dashboard' ? 'Dashboard Overview' : 
+           activeTab === 'users' ? 'Customer Management' : 
+           activeTab === 'audit' ? 'System Audit Log' : 
+           activeTab === 'intelligence' ? 'Network Intelligence' :
+           activeTab === 'history' ? 'Billing History' : 
+           activeTab === 'reports' ? 'Incident Reports' : 
+           activeTab === 'rates' ? 'Rates & Billing' : 'Portal'}
+        </h2>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
         <div className="search-box" style={{
-          display: 'flex',
-          alignItems: 'center',
-          background: 'rgba(0,0,0,0.03)',
-          borderRadius: '16px',
-          padding: '0.5rem 1.25rem',
-          border: '1px solid var(--glass-border)',
-          transition: 'all 0.3s ease'
+          display: 'flex', alignItems: 'center', background: 'var(--surface-solid)',
+          borderRadius: '16px', padding: '0.5rem 1.25rem', border: '1px solid var(--border-color)',
         }}>
           <Activity size={18} className="text-muted" style={{ marginRight: '10px' }} />
           <input
-            type="text"
-            placeholder="Search Account..."
-            value={billSearch}
-            onChange={e => setBillSearch(e.target.value)}
+            type="text" placeholder="Search Account..." value={billSearch} onChange={e => setBillSearch(e.target.value)}
             style={{ background: 'transparent', border: 'none', color: 'var(--text-main)', outline: 'none', width: '180px', fontWeight: 500 }}
           />
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-          {/* NOTIFICATION BELL — Customer Only */}
-          {user.role?.toLowerCase() === 'customer' && (
-            <div style={{ position: 'relative' }}>
-              <button className="btn" onClick={() => { setShowNotifications(!showNotifications); setShowProfile(false); }} style={{ background: 'rgba(14, 165, 233, 0.1)', color: 'var(--primary)', padding: '0.6rem', borderRadius: '12px' }}>
-                <Bell size={20} />
-                {notifications.filter(n => !n.is_read).length > 0 && (
-                  <span style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'var(--error)', color: 'white', borderRadius: '50%', width: '18px', height: '18px', fontSize: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
-                    {notifications.filter(n => !n.is_read).length}
-                  </span>
-                )}
-              </button>
-              {showNotifications && (
-                <div className="glass-card dropdown-panel" style={{
-                  position: 'absolute',
-                  top: '60px',
-                  right: '0',
-                  width: '360px',
-                  zIndex: 2000,
-                  padding: '1.5rem',
-                  maxHeight: '450px',
-                  overflowY: 'auto',
-                  boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
-                  border: '1px solid var(--primary)'
-                }}>
-                  <div className="flex-between mb-3">
-                    <h4 style={{ margin: 0 }}>Notifications</h4>
-                    {notifications.filter(n => !n.is_read).length > 0 && (
-                      <span className="badge unpaid" style={{ fontSize: '0.7rem' }}>
-                        {notifications.filter(n => !n.is_read).length} new
-                      </span>
-                    )}
-                  </div>
-                  {notifications.length === 0 ? (
-                    <p className="text-muted small">No notifications yet.</p>
-                  ) : (
-                    notifications.map(n => (
-                      <div
-                        key={n.notification_id}
-                        onClick={() => {
-                          if (!n.is_read) handleMarkRead(n.notification_id);
-                          setShowNotifications(false);
-                          const billsSection = document.querySelector('.table-container');
-                          if (billsSection) billsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }}
-                        style={{
-                          padding: '0.75rem',
-                          borderBottom: '1px solid var(--glass-border)',
-                          marginBottom: '0.5rem',
-                          background: n.is_read ? 'transparent' : 'rgba(14, 165, 233, 0.08)',
-                          borderRadius: '8px',
-                          borderLeft: n.is_read ? 'none' : '3px solid var(--primary)',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s ease'
-                        }}
-                      >
-                        <div className="flex-between">
-                          <span className="small text-muted">{n.sent_date}</span>
-                          {!n.is_read && <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--primary)', display: 'inline-block' }}></span>}
-                        </div>
-                        <p style={{ margin: '0.4rem 0 0.2rem', fontWeight: n.is_read ? 'normal' : '600', fontSize: '0.85rem' }}>
-                          {n.notification_type.startsWith('Bill Generated') ? (
-                            <span>💧 New bill for <strong>{n.bill_month}</strong> — <span style={{ color: 'var(--warning)' }}>{n.notification_type.replace('Bill Generated - ', '')}</span>. Tap to view.</span>
-                          ) : (
-                            <span>📊 Your water usage for <strong>{n.bill_month}</strong> has been recorded.</span>
-                          )}
-                        </p>
-                        {!n.is_read && n.notification_type.startsWith('Bill Generated') && (
-                          <span className="small" style={{ color: 'var(--primary)', fontWeight: 600 }}>View Bill →</span>
-                        )}
-                      </div>
-                    ))
-                  )}
-                </div>
-              )}
-            </div>
-          )}
+        <button className="theme-toggle" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+          {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+        </button>
 
-          {/* QUICK SIGN OUT */}
-          <button
-            className="btn"
-            onClick={handleLogout}
-            title="Sign Out"
-            style={{
-              background: 'rgba(239, 68, 68, 0.08)',
-              color: 'var(--error)',
-              padding: '0.65rem',
-              borderRadius: '12px',
-              border: '1px solid rgba(239, 68, 68, 0.15)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center'
-            }}
-          >
-            <LogOut size={20} />
-          </button>
-
-          {/* PROFILE DROPDOWN */}
+        {user.role?.toLowerCase() === 'customer' && (
           <div style={{ position: 'relative' }}>
-            <button
-              className="btn"
-              onClick={() => { setShowProfile(!showProfile); setShowNotifications(false); }}
-              style={{
-                display: 'flex', alignItems: 'center', gap: '0.75rem',
-                padding: '0.5rem 1rem', borderRadius: '12px',
-                background: showProfile ? 'rgba(14, 165, 233, 0.15)' : 'rgba(255,255,255,0.4)',
-                border: showProfile ? '1px solid var(--primary)' : '1px solid transparent',
-                cursor: 'pointer', transition: 'all 0.2s ease'
-              }}
-            >
-              <div style={{ background: 'var(--primary)', color: 'white', borderRadius: '10px', padding: '0.4rem' }}>
-                <User size={18} />
-              </div>
-              <span style={{ fontWeight: 600, color: 'var(--text-main)' }}>{user.first_name ? `${user.first_name} ${user.last_name}` : (user.account_number || user.role)}</span>
-              <ChevronRight size={14} style={{ transform: showProfile ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease', color: 'var(--text-muted)' }} />
+            <button className="btn" onClick={() => { setShowNotifications(!showNotifications); setShowProfile(false); }} style={{ background: 'var(--surface-solid)', color: 'var(--primary)', padding: '0.5rem', borderRadius: '50%', border: '1px solid var(--border-color)' }}>
+              <Bell size={20} />
+              {notifications.filter(n => !n.is_read).length > 0 && (
+                <span style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'var(--error)', color: 'white', borderRadius: '50%', width: '18px', height: '18px', fontSize: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
+                  {notifications.filter(n => !n.is_read).length}
+                </span>
+              )}
             </button>
-
-            {showProfile && (
-              <div className="glass-card dropdown-panel" style={{
-                position: 'absolute',
-                top: '60px',
-                right: '0',
-                width: '320px',
-                zIndex: 2000,
-                padding: '1.5rem',
-                boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
-                border: '1px solid var(--glass-border)'
+            {showNotifications && (
+              <div className="glass-card dropdown-panel animate-in" style={{
+                position: 'absolute', top: '60px', right: '0', width: '360px', zIndex: 2000,
+                padding: '1.5rem', maxHeight: '450px', overflowY: 'auto'
               }}>
-                <div style={{ textAlign: 'center', marginBottom: '1.25rem', paddingBottom: '1rem', borderBottom: '1px solid var(--glass-border)' }}>
-                  <div style={{
-                    width: '56px', height: '56px', borderRadius: '16px',
-                    background: 'linear-gradient(135deg, var(--primary), #6366f1)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    margin: '0 auto 0.75rem', color: 'white', fontSize: '1.25rem', fontWeight: 700
-                  }}>
-                    {user.first_name ? user.first_name[0].toUpperCase() + (user.last_name ? user.last_name[0].toUpperCase() : '') : user.role[0].toUpperCase()}
-                  </div>
-                  <h4 style={{ margin: '0 0 0.25rem' }}>{user.first_name ? `${user.first_name} ${user.last_name}` : user.role}</h4>
-                  <span className="badge" style={{ fontSize: '0.7rem', background: 'rgba(14, 165, 233, 0.1)', color: 'var(--primary)' }}>{user.role}</span>
+                <div className="flex-between mb-3">
+                  <h4 style={{ margin: 0 }}>Notifications</h4>
                 </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.85rem' }}>
-                  {user.account_number && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span className="text-muted">Account</span>
-                      <span style={{ fontWeight: 600, fontFamily: 'monospace', color: 'var(--primary)' }}>{user.account_number}</span>
+                {notifications.length === 0 ? (
+                  <p className="text-muted small">No notifications yet.</p>
+                ) : (
+                  notifications.map(n => (
+                    <div
+                      key={n.notification_id}
+                      onClick={() => {
+                        if (!n.is_read) handleMarkRead(n.notification_id);
+                        setShowNotifications(false);
+                      }}
+                      style={{
+                        padding: '0.75rem', borderBottom: '1px solid var(--border-color)', marginBottom: '0.5rem',
+                        background: n.is_read ? 'transparent' : 'rgba(14, 165, 233, 0.08)', borderRadius: '8px',
+                        borderLeft: n.is_read ? 'none' : '3px solid var(--primary)', cursor: 'pointer'
+                      }}
+                    >
+                      <p style={{ margin: '0', fontWeight: n.is_read ? 'normal' : '600', fontSize: '0.85rem' }}>{n.notification_type}</p>
                     </div>
-                  )}
-                  {user.username && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span className="text-muted">Username</span>
-                      <span style={{ fontWeight: 500 }}>@{user.username}</span>
-                    </div>
-                  )}
-                  {user.email && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span className="text-muted">Email</span>
-                      <span style={{ fontWeight: 500 }}>{user.email}</span>
-                    </div>
-                  )}
-                  {user.phone && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span className="text-muted">Phone</span>
-                      <span style={{ fontWeight: 500 }}>{user.phone}</span>
-                    </div>
-                  )}
-                  {user.address && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span className="text-muted">Address</span>
-                      <span style={{ fontWeight: 500, textAlign: 'right', maxWidth: '180px' }}>{user.address}</span>
-                    </div>
-                  )}
-                  {user.district && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span className="text-muted">District</span>
-                      <span style={{ fontWeight: 500 }}>{user.district}</span>
-                    </div>
-                  )}
-                  {user.customer_type && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span className="text-muted">Account Type</span>
-                      <span className="badge" style={{ fontSize: '0.7rem' }}>{user.customer_type}</span>
-                    </div>
-                  )}
-                </div>
-
-                <button className="btn" onClick={handleLogout} style={{
-                  width: '100%', marginTop: '1.25rem',
-                  background: 'rgba(245, 158, 11, 0.1)',
-                  color: 'var(--warning)',
-                  padding: '0.6rem',
-                  borderRadius: '10px',
-                  border: '1px solid rgba(245, 158, 11, 0.2)',
-                  justifyContent: 'center'
-                }}>
-                  <LogOut size={16} /> Sign Out
-                </button>
+                  ))
+                )}
               </div>
             )}
           </div>
+        )}
+
+        <div style={{ position: 'relative' }}>
+          <button className="btn" onClick={() => { setShowProfile(!showProfile); setShowNotifications(false); }} style={{ background: 'linear-gradient(135deg, var(--primary), var(--secondary))', color: 'white', padding: '0.5rem', borderRadius: '50%', border: 'none', boxShadow: '0 4px 10px var(--primary-glow)' }}>
+            <User size={20} />
+          </button>
+          {showProfile && (
+            <div className="glass-card dropdown-panel animate-in" style={{
+              position: 'absolute', top: '60px', right: '0', width: '280px', zIndex: 2000, padding: '1.5rem',
+            }}>
+              <div style={{ textAlign: 'center', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid var(--border-color)' }}>
+                <h4 style={{ margin: '0 0 0.25rem' }}>{user.first_name ? `${user.first_name} ${user.last_name}` : user.role}</h4>
+                <span className="badge primary" style={{ fontSize: '0.7rem' }}>{user.role}</span>
+              </div>
+              <button className="btn w-full" onClick={handleLogout} style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--error)', border: 'none' }}>
+                <LogOut size={16} /> Sign Out
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>
@@ -1233,14 +1139,14 @@ export default function App() {
   };
 
   return (
-    <div className="app-container">
+    <div className="app-layout"> {/* TEST COMMENT */}
       {/* TOAST SYSTEM */}
-      <div className="toast-container" style={{ position: 'fixed', top: '2rem', right: '2rem', zIndex: 10000, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+      <div className="toast-container" style={{ position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 10000, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
         {toasts.map(t => (
           <div key={t.id} className={`toast-card ${t.type}`} style={{ 
-            background: t.type === 'success' ? 'rgba(16, 185, 129, 0.9)' : 'rgba(239, 68, 68, 0.9)',
+            background: t.type === 'success' ? 'var(--success)' : 'var(--error)',
             color: 'white', padding: '1rem 1.5rem', borderRadius: '12px', backdropFilter: 'blur(10px)',
-            boxShadow: '0 10px 25px rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)',
+            boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
             animation: 'toast-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
           }}>
             {t.message}
@@ -1248,534 +1154,530 @@ export default function App() {
         ))}
       </div>
 
-      {/* BROADCAST BANNER FOR CUSTOMERS */}
-      {view === 'customer' && notifications.some(n => !n.is_read && n.notification_type === 'Urgent Notice') && (
-        <div className="broadcast-banner" style={{
-          background: 'linear-gradient(90deg, #ef4444, #f97316)', color: 'white', padding: '0.75rem',
-          textAlign: 'center', fontWeight: 600, borderRadius: '12px', marginBottom: '1.5rem',
-          boxShadow: '0 4px 15px rgba(239, 68, 68, 0.3)', animation: 'pulse-red 2s infinite'
-        }}>
-          ⚠️ {notifications.find(n => !n.is_read && n.notification_type === 'Urgent Notice').sent_to}
-        </div>
-      )}
       <div className="bg-blobs">
         <div className="blob blob-1"></div>
         <div className="blob blob-2"></div>
         <div className="blob blob-3"></div>
       </div>
-      {headerJSX}
-      {isOffline && (
-        <div className="glass-card mb-4" style={{ 
-          background: 'rgba(245, 158, 11, 0.08)', 
-          border: '1px solid rgba(245, 158, 11, 0.3)', 
-          padding: '1rem', 
-          textAlign: 'center', 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          gap: '1.5rem',
-          backdropFilter: 'blur(10px)',
-          borderRadius: '16px'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--warning)', fontWeight: 600 }}>
-            <AlertTriangle size={20} />
-            <span>Connection to Backend Failed. Showing Mock Data.</span>
-          </div>
-          <button 
-            className="btn" 
-            onClick={() => user ? fetchData(user.role.toLowerCase(), user.account_number) : fetchPublicData()} 
-            style={{ 
-              background: 'var(--warning)', 
-              color: 'white', 
-              padding: '0.5rem 1.25rem',
-              borderRadius: '10px',
-              fontSize: '0.85rem',
-              fontWeight: 600,
-              boxShadow: '0 4px 12px rgba(245, 158, 11, 0.2)'
-            }}
-          >
-            Reconnect Now
-          </button>
+
+      {/* SIDEBAR NAVIGATION */}
+      <aside className="sidebar">
+        <div className="logo" style={{ marginBottom: '3rem', cursor: 'pointer' }} onClick={() => setView(user.role.toLowerCase())}>
+          <Droplets size={32} className="logo-icon" />
+          <h1 style={{ fontSize: '1.5rem', margin: 0 }}>WASCO</h1>
         </div>
-      )}
-      {paymentMsg && <div className="glass-card mb-4" style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', padding: '1rem', textAlign: 'center', fontWeight: 'bold' }}>{paymentMsg}</div>}
 
-      {/* MANAGER VIEW */}
-      {view === 'manager' && (
-        <>
-          {/* Branch Insights Dashboard */}
-          <div className="glass-card mb-6" style={{ background: 'linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%)', border: '1px solid var(--primary)' }}>
-            <div className="flex-between mb-6">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <div style={{ background: 'var(--primary)', color: 'white', padding: '0.75rem', borderRadius: '14px', boxShadow: '0 8px 16px rgba(14, 165, 233, 0.3)' }}>
-                  <BarChartIcon size={24} />
-                </div>
-                <div>
-                  <h2 className="mb-0" style={{ color: 'var(--text-main)', fontSize: '1.5rem' }}>Branch Insights Dashboard</h2>
-                  <p className="text-muted small">Summative analysis of water usage and billing performance</p>
-                </div>
-              </div>
-              <div className="glass-card" style={{ padding: '4px', display: 'flex', gap: '4px', background: 'rgba(0,0,0,0.1)', borderRadius: '12px' }}>
-                {['Daily', 'Weekly', 'Monthly', 'Quarterly', 'Yearly'].map(tf => (
-                  <button 
-                    key={tf}
-                    onClick={() => setInsightTimeframe(tf)}
-                    className={`btn small ${insightTimeframe === tf ? 'btn-primary' : ''}`}
-                    style={{ 
-                      borderRadius: '8px', 
-                      padding: '0.4rem 0.8rem',
-                      background: insightTimeframe === tf ? 'var(--primary)' : 'transparent',
-                      border: 'none',
-                      boxShadow: insightTimeframe === tf ? '0 4px 10px rgba(14, 165, 233, 0.4)' : 'none'
-                    }}
-                  >
-                    {tf}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-              {[
-                { label: 'Units Used (kl)', value: bills.reduce((acc, b) => acc + (b.units_used || 0), 0).toLocaleString(), icon: Activity, color: '#0ea5e9' },
-                { label: 'Total Revenue', value: `LSL ${bills.reduce((acc, b) => acc + parseFloat(b.total_amount || 0), 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`, icon: Wallet, color: '#10b981' },
-                { label: 'Payment Rate', value: `${bills.length > 0 ? ((bills.filter(b => b.payment_status === 'Paid').length / bills.length) * 100).toFixed(1) : 0}%`, icon: Check, color: '#f59e0b' },
-                { label: 'Active Reports', value: leakages.filter(l => l.status !== 'Fixed').length, icon: AlertTriangle, color: '#ef4444' }
-              ].map((stat, i) => (
-                <div key={i} className="glass-card" style={{ textAlign: 'center', padding: '1.25rem' }}>
-                  <div style={{ color: stat.color, marginBottom: '0.5rem', display: 'flex', justifyContent: 'center' }}><stat.icon size={20} /></div>
-                  <div className="small text-muted fw-600 mb-1 uppercase">{stat.label}</div>
-                  <div style={{ fontSize: '1.25rem', fontWeight: 800 }}>{stat.value}</div>
-                </div>
-              ))}
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6" style={{ height: '400px' }}>
-              <div className="glass-card p-4">
-                <h4 className="mb-4 small text-muted uppercase fw-700">Usage Trends ({insightTimeframe})</h4>
-                <ResponsiveContainer width="100%" height="90%">
-                  <BarChart data={getUsageTrendsData()}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.05)" />
-                    <XAxis dataKey="period" axisLine={false} tickLine={false} />
-                    <YAxis axisLine={false} tickLine={false} />
-                    <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }} />
-                    <Bar dataKey="total_units" fill="var(--primary)" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="glass-card p-4">
-                <h4 className="mb-4 small text-muted uppercase fw-700">Segmented Contribution</h4>
-                <ResponsiveContainer width="100%" height="90%">
-                  <PieChart>
-                    <Pie
-                      data={segmentData.map(d => ({ name: d.segment, value: d.total_units }))}
-                      innerRadius={60}
-                      outerRadius={80}
-                      paddingAngle={5}
-                      dataKey="value"
-                      nameKey="name"
-                      label
-                    >
-                      {segmentData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={['#0ea5e9', '#10b981', '#f59e0b', '#8b5cf6'][index % 4]} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                    <Legend />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveTab('dashboard')}>
+            <LayoutDashboard size={18} /> <span>Dashboard</span>
           </div>
 
-          <div className="stats-grid mb-6">
-            <div className="glass-card" style={{ gridColumn: 'span 2' }}>
-              <div className="stat-header mb-4">
-                <h3>Branch Operational Summary</h3>
-                <Activity className="text-muted" />
-              </div>
-              <div className="table-container">
-                <table>
-                  <thead>
-                    <tr><th>Metric Scope</th><th>Current Period</th><th>Variance</th><th>Status</th></tr>
-                  </thead>
-                  <tbody>
-                    <tr><td>Total Consumption</td><td>{currentMonthUnits} kl</td><td className="text-success">↓ 4.2%</td><td><span className="badge success">Normal</span></td></tr>
-                    <tr><td>Calculated Revenue</td><td>LSL {bills.reduce((acc, b) => acc + parseFloat(b.total_amount || 0), 0).toFixed(2)}</td><td className="text-success">↑ 12.1%</td><td><span className="badge primary">Growing</span></td></tr>
-                    <tr><td>Outstanding Balance</td><td>LSL {balances.reduce((acc, b) => acc + parseFloat(b.total_outstanding || 0), 0).toFixed(2)}</td><td className="text-error">↑ 5.3%</td><td><span className="badge warning">Action Required</span></td></tr>
-                  </tbody>
-                </table>
-              </div>
+          {(view === 'admin' || view === 'manager') && (
+            <div className={`nav-item ${activeTab === 'users' ? 'active' : ''}`} onClick={() => setActiveTab('users')}>
+              <Users size={18} /> <span>Customers</span>
             </div>
-
-            {/* NETWORK INTELLIGENCE & HEATMAP (NEW) */}
-            <div className="glass-card" style={{ borderLeft: '4px solid var(--secondary)', background: 'rgba(99, 102, 241, 0.03)' }}>
-              <div className="stat-header mb-6">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <div style={{ background: 'var(--secondary)', color: 'white', padding: '0.5rem', borderRadius: '12px' }}>
-                    <Activity size={20} />
-                  </div>
-                  <h3>Network Intelligence & Risk Analysis</h3>
-                </div>
-                <div className="badge secondary">PROACTIVE_MODE</div>
+          )}
+          {view === 'admin' && (
+            <div className={`nav-item ${activeTab === 'rates' ? 'active' : ''}`} onClick={() => setActiveTab('rates')}>
+              <Settings size={18} /> <span>Rates & Billing</span>
+            </div>
+          )}
+          {(view === 'admin' || view === 'manager') && (
+            <div className={`nav-item ${activeTab === 'reports' ? 'active' : ''}`} onClick={() => setActiveTab('reports')}>
+              <AlertTriangle size={18} /> <span>Incidents</span>
+            </div>
+          )}
+          {view === 'admin' && (
+            <div className={`nav-item ${activeTab === 'audit' ? 'active' : ''}`} onClick={() => setActiveTab('audit')}>
+              <FileText size={18} /> <span>Audit Log</span>
+            </div>
+          )}
+          {view === 'manager' && (
+            <div className={`nav-item ${activeTab === 'intelligence' ? 'active' : ''}`} onClick={() => setActiveTab('intelligence')}>
+              <Activity size={18} /> <span>Intelligence</span>
+            </div>
+          )}
+          {view === 'customer' && (
+            <>
+              <div className={`nav-item ${activeTab === 'history' ? 'active' : ''}`} onClick={() => setActiveTab('history')}>
+                <History size={18} /> <span>Billing History</span>
               </div>
+              <div className={`nav-item ${activeTab === 'reports' ? 'active' : ''}`} onClick={() => setActiveTab('reports')}>
+                <AlertTriangle size={18} /> <span>Report Leakage</span>
+              </div>
+            </>
+          )}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                  <h4 className="mb-4 small text-muted uppercase">District Risk Heatmap</h4>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                    {[
-                      { district: 'Maseru', risk: 'High', score: 82, color: 'var(--error)' },
-                      { district: 'Leribe', risk: 'Moderate', score: 45, color: 'var(--warning)' },
-                      { district: 'Berea', risk: 'Low', score: 18, color: 'var(--success)' },
-                      { district: 'Mafeteng', risk: 'Stable', score: 12, color: 'var(--primary)' }
-                    ].map(d => (
-                      <div key={d.district} style={{ padding: '1rem', background: 'white', borderRadius: '14px', border: '1px solid var(--glass-border)' }}>
-                        <div className="flex-between mb-2">
-                          <span style={{ fontWeight: 700 }}>{d.district}</span>
-                          <span className="badge" style={{ background: `${d.color}15`, color: d.color }}>{d.risk}</span>
-                        </div>
-                        <div style={{ width: '100%', height: '6px', background: 'rgba(0,0,0,0.05)', borderRadius: '99px', overflow: 'hidden' }}>
-                          <div style={{ width: `${d.score}%`, height: '100%', background: d.color }}></div>
-                        </div>
-                      </div>
-                    ))}
+        </div>
+
+        <button className="btn" onClick={handleLogout} style={{ marginTop: 'auto', background: 'rgba(239, 68, 68, 0.1)', color: 'var(--error)', border: 'none', justifyContent: 'center' }}>
+          <LogOut size={18} /> <span>Sign Out</span>
+        </button>
+      </aside>
+
+      <main className="main-content">
+        {topNavJSX}
+
+        {view === 'manager' && (
+          <>
+            {activeTab === 'dashboard' && (
+              <>
+                <div className="flex-between mb-6">
+                  <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                    <button className="btn" onClick={handleCalculateBills} disabled={loading} style={{ background: 'var(--surface-solid)', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }}><Settings size={16} /> Calculate Bills</button>
+                    <form onSubmit={handleBroadcast} style={{ display: 'flex', gap: '0.5rem' }}>
+                      <input className="input-field" placeholder="Broadcast message..." value={broadcastMsg} onChange={e => setBroadcastMsg(e.target.value)} style={{ padding: '0.45rem 1rem', width: '220px' }} />
+                      <button type="submit" className="btn btn-primary" disabled={isBroadcasting} style={{ padding: '0.45rem 1rem' }}>{isBroadcasting ? 'Sending...' : 'Broadcast'}</button>
+                    </form>
                   </div>
                 </div>
-                <div style={{ background: 'rgba(255,255,255,0.4)', padding: '1.5rem', borderRadius: '20px', border: '1px dashed var(--secondary)' }}>
-                  <h4 className="mb-3">Predictive Pipe-Health Analysis</h4>
-                  <p className="small text-muted mb-6">Algorithm detecting anomalous usage spikes vs. report frequency.</p>
-                  
-                  <div style={{ padding: '1rem', background: 'var(--secondary)', color: 'white', borderRadius: '16px', marginBottom: '1rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                      <AlertTriangle size={16} />
-                      <span style={{ fontWeight: 800, fontSize: '0.85rem' }}>BURST PREDICTION: MASERU WEST</span>
+
+                <div className="stats-grid mb-6">
+                  <div className="glass-card flex-between">
+                    <div><h3 className="stat-value">{customers.length}</h3><p className="stat-label">Total Customers</p></div>
+                    <div className="stat-icon-wrap"><Users size={22} /></div>
+                  </div>
+                  <div className="glass-card flex-between">
+                    <div><h3 className="stat-value">{leakages.filter(l => l.status === 'Pending').length}</h3><p className="stat-label">Pending Incidents</p></div>
+                    <div className="stat-icon-wrap" style={{ color: 'var(--warning)' }}><AlertTriangle size={22} /></div>
+                  </div>
+                  <div className="glass-card flex-between">
+                    <div><h3 className="stat-value">LSL {(payments.reduce((acc, p) => acc + parseFloat(p.amount_paid), 0) / 1000).toFixed(1)}k</h3><p className="stat-label">Revenue Collected</p></div>
+                    <div className="stat-icon-wrap" style={{ color: 'var(--success)' }}><Wallet size={22} /></div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <div className="glass-card">
+                    <div className="flex-between mb-4">
+                      <h4 className="small text-muted uppercase fw-700">Usage Analytics Dashboard</h4>
+                      <select className="input-field" value={insightTimeframe} onChange={(e) => setInsightTimeframe(e.target.value)} style={{ width: '120px', padding: '0.2rem', fontSize: '0.75rem' }}>
+                        <option value="Daily">Daily</option><option value="Weekly">Weekly</option><option value="Monthly">Monthly</option><option value="Quarterly">Quarterly</option><option value="Yearly">Yearly</option>
+                      </select>
                     </div>
-                    <p style={{ fontSize: '0.75rem', opacity: 0.9 }}>92% confidence of subterranean leak near Plot 552 based on 14% pressure variance.</p>
+                    <ResponsiveContainer width="100%" height={260}>
+                      <BarChart data={getUsageTrendsData()}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
+                        <XAxis dataKey="period" stroke="var(--text-muted)" fontSize={11} />
+                        <YAxis stroke="var(--text-muted)" fontSize={11} />
+                        <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: 'var(--shadow-md)' }} />
+                        <Bar dataKey="total_units" fill="var(--primary)" name="Units (kl)" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
                   </div>
 
-                  <div className="small" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <div className="flex-between"><span>Infrastructure Integrity</span><span className="fw-700">76%</span></div>
-                    <div className="flex-between"><span>Sensor Confidence</span><span className="fw-700">99.8%</span></div>
-                    <div className="flex-between"><span>Maintenance ROI</span><span className="fw-700">+22.4%</span></div>
+                  <div className="glass-card p-4">
+                    <h4 className="mb-4 small text-muted uppercase fw-700">Segmented Contribution</h4>
+                    <ResponsiveContainer width="100%" height="90%">
+                      <PieChart>
+                        <Pie data={segmentData.map(d => ({ name: d.segment, value: d.total_units }))} innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value" nameKey="name" label>
+                          {segmentData.map((entry, index) => (<Cell key={"cell-" + index} fill={['#0ea5e9', '#10b981', '#f59e0b', '#8b5cf6'][index % 4]} />))}
+                        </Pie>
+                        <Tooltip />
+                        <Legend />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                <div className="stats-grid mb-6">
+                  <div className="glass-card" style={{ gridColumn: 'span 2' }}>
+                    <div className="stat-header mb-4">
+                      <h3>Branch Operational Summary</h3>
+                      <Activity className="text-muted" />
+                    </div>
+                    <div className="table-container">
+                      <table>
+                        <thead><tr><th>Metric Scope</th><th>Current Period</th><th>Variance</th><th>Status</th></tr></thead>
+                        <tbody>
+                          <tr><td>Total Consumption</td><td>{currentMonthUnits} kl</td><td className="text-success">↓ 4.2%</td><td><span className="badge success">Normal</span></td></tr>
+                          <tr><td>Calculated Revenue</td><td>LSL {bills.reduce((acc, b) => acc + parseFloat(b.total_amount || 0), 0).toFixed(2)}</td><td className="text-success">↑ 12.1%</td><td><span className="badge primary">Growing</span></td></tr>
+                          <tr><td>Outstanding Balance</td><td>LSL {balances.reduce((acc, b) => acc + parseFloat(b.total_outstanding || 0), 0).toFixed(2)}</td><td className="text-error">↑ 5.3%</td><td><span className="badge warning">Action Required</span></td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {activeTab === 'intelligence' && (
+              <div className="glass-card" style={{ borderLeft: '4px solid var(--secondary)', background: 'rgba(99, 102, 241, 0.03)' }}>
+                <div className="stat-header mb-6">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <div style={{ background: 'var(--secondary)', color: 'white', padding: '0.5rem', borderRadius: '12px' }}>
+                      <Activity size={20} />
+                    </div>
+                    <h3>Network Intelligence & Risk Analysis</h3>
+                  </div>
+                  <div className="badge secondary">PROACTIVE_MODE</div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div>
+                    <h4 className="mb-4 small text-muted uppercase">District Risk Heatmap</h4>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                      {[
+                        { district: 'Maseru', risk: 'High', score: 82, color: 'var(--error)' },
+                        { district: 'Leribe', risk: 'Moderate', score: 45, color: 'var(--warning)' },
+                        { district: 'Berea', risk: 'Low', score: 18, color: 'var(--success)' },
+                        { district: 'Mafeteng', risk: 'Stable', score: 12, color: 'var(--primary)' }
+                      ].map(d => (
+                        <div key={d.district} style={{ padding: '1rem', background: 'var(--surface-solid)', borderRadius: '14px', border: '1px solid var(--glass-border)' }}>
+                          <div className="flex-between mb-2">
+                            <span style={{ fontWeight: 700 }}>{d.district}</span>
+                            <span className="badge" style={{ background: d.color + '15', color: d.color }}>{d.risk}</span>
+                          </div>
+                          <div style={{ width: '100%', height: '6px', background: 'rgba(0,0,0,0.05)', borderRadius: '99px', overflow: 'hidden' }}>
+                            <div style={{ width: d.score + '%', height: '100%', background: d.color }}></div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{ background: 'rgba(255,255,255,0.4)', padding: '1.5rem', borderRadius: '20px', border: '1px dashed var(--secondary)' }}>
+                    <h4 className="mb-3">Predictive Pipe-Health Analysis</h4>
+                    <p className="small text-muted mb-6">Algorithm detecting anomalous usage spikes vs. report frequency.</p>
+                    
+                    <div style={{ padding: '1rem', background: 'var(--secondary)', color: 'white', borderRadius: '16px', marginBottom: '1rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                        <AlertTriangle size={16} />
+                        <span style={{ fontWeight: 800, fontSize: '0.85rem' }}>BURST PREDICTION: MASERU WEST</span>
+                      </div>
+                      <p style={{ fontSize: '0.75rem', opacity: 0.9 }}>92% confidence of subterranean leak near Plot 552 based on 14% pressure variance.</p>
+                    </div>
+
+                    <div className="small" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      <div className="flex-between"><span>Infrastructure Integrity</span><span className="fw-700">76%</span></div>
+                      <div className="flex-between"><span>Sensor Confidence</span><span className="fw-700">99.8%</span></div>
+                      <div className="flex-between"><span>Maintenance ROI</span><span className="fw-700">+22.4%</span></div>
+                    </div>
                   </div>
                 </div>
               </div>
+            )}
+
+            {activeTab === 'users' && (
+              <>
+                <div className="glass-card mb-6">
+                  <div className="flex-between mb-6">
+                    <h3>Usage Recording System</h3>
+                    <Activity className="text-muted" size={20} />
+                  </div>
+                  {usageMsg && <div style={{ color: 'var(--success)', marginBottom: '1rem', fontWeight: 600 }}>{usageMsg}</div>}
+                  <form onSubmit={handleManualUsage} className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="input-group">
+                      <label className="small text-muted mb-1 block">Select Account</label>
+                      <select className="input-field" value={selectedCustomer || ''} onChange={e => setSelectedCustomer(e.target.value)} required>
+                        <option value="" disabled>-- Choose --</option>
+                        {customers.map(c => <option key={c.account_number} value={c.account_number}>{c.account_number} - {c.first_name}</option>)}
+                      </select>
+                    </div>
+                    <div className="input-group">
+                      <label className="small text-muted mb-1 block">Billing Cycle</label>
+                      <input className="input-field" value={manualUsage.month} onChange={e => setManualUsage({ ...manualUsage, month: e.target.value })} placeholder="e.g. March 2026" required />
+                    </div>
+                    <div className="input-group">
+                      <label className="small text-muted mb-1 block">Usage Volume (kl)</label>
+                      <input type="number" className="input-field" value={manualUsage.units} onChange={e => setManualUsage({ ...manualUsage, units: e.target.value })} placeholder="Units" required />
+                    </div>
+                    <button type="submit" className="btn btn-primary" style={{ height: '48px', marginTop: 'auto' }}>Commit Entry</button>
+                  </form>
+                </div>
+
+                <div className="glass-card mb-6">
+                  <div className="flex-between mb-4">
+                    <h3>Customer Management</h3>
+                    <Users className="text-muted" size={20} />
+                  </div>
+                  <div className="table-container">
+                    <table className="data-table">
+                      <thead><tr><th>Account Number</th><th>Full Name</th><th>Customer Type</th></tr></thead>
+                      <tbody>
+                        {customers.map(c => (
+                          <tr key={c.account_number}>
+                            <td><span className="badge primary" style={{ fontFamily: 'monospace' }}>{c.account_number}</span></td>
+                            <td className="fw-600">{c.first_name} {c.last_name}</td>
+                            <td><span className="badge" style={{ background: 'var(--surface-hover)' }}>{c.customer_type}</span></td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {activeTab === 'reports' && (
+              <div className="glass-card">
+                <div className="flex-between mb-4">
+                  <h3>Incident Management Hub</h3>
+                  <AlertTriangle className="text-warning" size={20} />
+                </div>
+                <div className="table-container">
+                  <table className="data-table">
+                    <thead><tr><th>Incident ID</th><th>Date Logged</th><th>Location</th><th>Status</th><th>Resolution</th></tr></thead>
+                    <tbody>
+                      {leakages.map(l => (
+                        <tr key={l.report_id}>
+                          <td><strong>#L-{l.report_id}</strong></td>
+                          <td className="small text-muted">{new Date(l.report_date).toLocaleDateString()}</td>
+                          <td>{l.location}</td>
+                          <td><span className={"badge " + (l.status === 'Fixed' ? 'success' : 'warning')}>{l.status}</span></td>
+                          <td>
+                            {l.status !== 'Fixed' ? (
+                              <button className="btn btn-primary small" onClick={() => handleUpdateLeakageStatus(l.report_id, 'Fixed')}>Mark as Resolved</button>
+                            ) : <span className="text-success"><Check size={16} /> Resolved</span>}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
+        {view === 'admin' && (
+  <>
+    {activeTab === 'dashboard' && (
+      <>
+        <div className="stats-grid mb-6">
+          <div className="glass-card flex-between">
+            <div><h3 className="stat-value">{customers.length}</h3><p className="stat-label">Total Accounts</p></div>
+            <div className="stat-icon-wrap"><Users size={22} /></div>
+          </div>
+          <div className="glass-card flex-between">
+            <div><h3 className="stat-value">LSL {(bills.reduce((acc, b) => acc + parseFloat(b.total_amount), 0) / 1000).toFixed(1)}k</h3><p className="stat-label">Total Billed</p></div>
+            <div className="stat-icon-wrap" style={{ color: 'var(--success)' }}><Wallet size={22} /></div>
+          </div>
+        </div>
+      </>
+    )}
+
+    {activeTab === 'audit' && (
+      <>
+        <div className="glass-card mb-6" style={{ background: '#0c1a2e', color: '#00ff41', fontFamily: 'monospace', border: '1px solid #00ff41' }}>
+          <div className="flex-between mb-4" style={{ borderBottom: '1px solid #00ff4133', paddingBottom: '0.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Activity size={18} />
+              <span style={{ fontWeight: 800 }}>CORE_SYSTEM_AUDIT_LOG_V2.0</span>
+            </div>
+            <span className="badge" style={{ background: '#00ff4133', color: '#00ff41', fontSize: '0.65rem' }}>LIVE_STREAM</span>
+          </div>
+          <div style={{ height: '180px', overflowY: 'auto', fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            {forensicLogs.map(log => (
+              <div key={log.id}>
+                <span style={{ opacity: 0.5 }}>[{log.time}]</span>{' '}
+                <span style={{ color: log.type === 'SECURITY' ? '#ff3e3e' : '#0ea5e9', fontWeight: 'bold' }}>{log.type}:</span>{' '}
+                {log.msg}
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        <div className="glass-card mb-6" style={{ borderTop: '4px solid var(--primary)' }}>
+          <div className="stat-header mb-6">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <div style={{ background: 'rgba(14, 165, 233, 0.1)', padding: '0.5rem', borderRadius: '12px' }}>
+                <History className="text-primary" size={20} />
+              </div>
+              <h3>Historical DB Audit Logs</h3>
             </div>
           </div>
-        </>
-      )}
+          <div className="table-container" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+            <table className="data-table">
+              <thead><tr><th>Timestamp</th><th>Performed By</th><th>Action</th><th>Target</th><th>Details</th></tr></thead>
+              <tbody>
+                {auditLogs.length === 0 ? (
+                  <tr><td colSpan={5} className="text-center text-muted p-4">No audit logs found.</td></tr>
+                ) : (
+                  auditLogs.map(log => (
+                    <tr key={log.id}>
+                      <td className="small text-muted">{new Date(log.timestamp).toLocaleString()}</td>
+                      <td><span className="badge" style={{ background: 'rgba(0,0,0,0.05)' }}>{log.performed_by}</span></td>
+                      <td className="fw-600">{log.action}</td>
+                      <td>{log.target}</td>
+                      <td className="small text-muted">{log.details}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </>
+    )}
 
-      {/* ADMIN VIEW */}
-      {view === 'admin' && (
-        <>
-          {/* FORENSIC AUDIT LOG (NEW) */}
-          <div className="glass-card mb-6" style={{ background: '#0c1a2e', color: '#00ff41', fontFamily: 'monospace', border: '1px solid #00ff41' }}>
-            <div className="flex-between mb-4" style={{ borderBottom: '1px solid #00ff4133', paddingBottom: '0.5rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Activity size={18} />
-                <span style={{ fontWeight: 800 }}>CORE_SYSTEM_AUDIT_LOG_V2.0</span>
-              </div>
-              <span className="badge" style={{ background: '#00ff4133', color: '#00ff41', fontSize: '0.65rem' }}>LIVE_STREAM</span>
-            </div>
-            <div style={{ height: '180px', overflowY: 'auto', fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              {forensicLogs.map(log => (
-                <div key={log.id}>
-                  <span style={{ opacity: 0.5 }}>[{log.time}]</span>{' '}
-                  <span style={{ color: log.type === 'SECURITY' ? '#ff3e3e' : '#0ea5e9', fontWeight: 'bold' }}>{log.type}:</span>{' '}
-                  {log.msg}
-                </div>
+    {activeTab === 'users' && (
+      <div className="glass-card mb-6">
+        <div className="flex-between mb-6">
+          <h3>Customer Management</h3>
+          <div className="search-box">
+            <input type="text" placeholder="Search customer..." value={customerSearch} onChange={e => setCustomerSearch(e.target.value)} className="input-field" style={{ width: '220px', padding: '0.5rem 1rem' }} />
+          </div>
+        </div>
+        <div className="table-container" style={{ maxHeight: '350px', overflowY: 'auto' }}>
+          <table className="data-table">
+            <thead>
+              <tr><th>Account Number</th><th>Full Name</th><th>Customer Type</th><th className="text-right">Actions</th></tr>
+            </thead>
+            <tbody>
+              {customers.map(c => (
+                <tr key={c.account_number} style={{ background: editingCustomer?.account_number === c.account_number ? 'rgba(14, 165, 233, 0.05)' : 'transparent' }}>
+                  <td><span className="badge primary" style={{ fontFamily: 'monospace' }}>{c.account_number}</span></td>
+                  <td className="fw-600">{c.first_name} {c.last_name}</td>
+                  <td>
+                    <span className={'badge ' + (c.customer_type === 'Industrial' ? 'error' : (c.customer_type === 'Commercial' ? 'warning' : 'success'))} style={{ opacity: 0.8 }}>
+                      {c.customer_type}
+                    </span>
+                  </td>
+                  <td className="text-right">
+                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+                      <button className="btn small" onClick={() => setEditingCustomer(c)} style={{ background: 'rgba(14, 165, 233, 0.1)' }}><Settings size={14} /></button>
+                      <button className="btn small" onClick={() => handleDeleteCustomer(c.account_number)} style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--error)' }}><LogOut size={14} /></button>
+                    </div>
+                  </td>
+                </tr>
               ))}
-            </div>
+            </tbody>
+          </table>
+        </div>
+        <div className={'mt-8 p-6 ' + (editingCustomer ? 'edit-mode-active' : '')} style={{
+          background: editingCustomer ? 'rgba(14, 165, 233, 0.03)' : 'var(--surface-solid)',
+          borderRadius: '20px', border: editingCustomer ? '1px solid var(--primary)' : '1px solid var(--border-color)',
+        }}>
+          <div className="flex-between mb-4">
+            <h4 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              {editingCustomer ? <Settings size={18} className="text-primary" /> : <UserPlus size={18} className="text-primary" />}
+              {editingCustomer ? 'Editing Account: ' + editingCustomer.account_number : 'Onboard New Customer'}
+            </h4>
+            {editingCustomer && <button className="badge" onClick={() => setEditingCustomer(null)} style={{ cursor: 'pointer', border: 'none' }}>Cancel Edit</button>}
           </div>
-
-          <div className="stats-grid mb-6">
-            <div className="glass-card">
-              <h3 className="mb-4">Batch Billing Process</h3>
-              <p className="text-muted small mb-4">Finalize all readings into verified billing statements for the selected period.</p>
-              <div className="input-group mb-4">
-                <label className="small fw-600 text-muted mb-1 block">Billing Period</label>
-                <select value={calculationMonth} onChange={e => setCalculationMonth(e.target.value)} className="input-field">
-                  <option value="April 2026">April 2026</option>
-                  <option value="March 2026">March 2026</option>
-                  <option value="February 2026">February 2026</option>
-                  <option value="January 2026">January 2026</option>
-                </select>
-              </div>
-              <button className="btn btn-primary w-full" onClick={handleCalculateBills} disabled={loading} style={{ justifyContent: 'center' }}>
-                {loading ? 'Processing Batch...' : 'Generate System Bills'}
-              </button>
+          <form onSubmit={editingCustomer ? handleUpdateCustomer : handleAddCustomer} className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-3">
+            <div className="input-group">
+              <label className="small text-muted mb-1 block">First Name</label>
+              <input className="input-field" value={editingCustomer ? editingCustomer.first_name : newCustomer.first_name} onChange={e => editingCustomer ? setEditingCustomer({ ...editingCustomer, first_name: e.target.value }) : setNewCustomer({ ...newCustomer, first_name: e.target.value })} required />
             </div>
-            {/* Manual Meter Reading (Moved from Manager) */}
-            <div className="glass-card" style={{ borderLeft: '4px solid var(--primary)' }}>
-              <div className="stat-header mb-4">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <div style={{ background: 'rgba(14, 165, 233, 0.1)', padding: '0.5rem', borderRadius: '12px' }}>
-                    <History className="text-primary" size={20} />
-                  </div>
-                  <h3>Manual Meter Reading</h3>
-                </div>
-              </div>
-              <form onSubmit={handleManualUsage} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div className="input-group">
+              <label className="small text-muted mb-1 block">Last Name</label>
+              <input className="input-field" value={editingCustomer ? editingCustomer.last_name : newCustomer.last_name} onChange={e => editingCustomer ? setEditingCustomer({ ...editingCustomer, last_name: e.target.value }) : setNewCustomer({ ...newCustomer, last_name: e.target.value })} required />
+            </div>
+            <div className="input-group">
+              <label className="small text-muted mb-1 block">Email Address</label>
+              <input type="email" className="input-field" value={editingCustomer ? editingCustomer.email : newCustomer.email} onChange={e => editingCustomer ? setEditingCustomer({ ...editingCustomer, email: e.target.value }) : setNewCustomer({ ...newCustomer, email: e.target.value })} />
+            </div>
+            <div className="input-group">
+              <label className="small text-muted mb-1 block">Category</label>
+              <select className="input-field" value={editingCustomer ? editingCustomer.customer_type : newCustomer.customer_type} onChange={e => editingCustomer ? setEditingCustomer({ ...editingCustomer, customer_type: e.target.value }) : setNewCustomer({ ...newCustomer, customer_type: e.target.value })}>
+                <option value="Residential">Residential</option>
+                <option value="Commercial">Commercial</option>
+                <option value="Industrial">Industrial</option>
+              </select>
+            </div>
+            <div className="input-group" style={{ gridColumn: 'span 2' }}>
+              <label className="small text-muted mb-1 block">Physical Address</label>
+              <input className="input-field" value={editingCustomer ? editingCustomer.address : newCustomer.address} onChange={e => editingCustomer ? setEditingCustomer({ ...editingCustomer, address: e.target.value }) : setNewCustomer({ ...newCustomer, address: e.target.value })} required />
+            </div>
+            {!editingCustomer && (
+              <>
                 <div className="input-group">
-                  <label className="small text-muted mb-1 block">Customer Search</label>
-                  <select className="input-field" onChange={(e) => setSelectedCustomer(e.target.value)} value={selectedCustomer || ''}>
-                    <option value="">Select Account...</option>
-                    {customers.map(c => <option key={c.account_number} value={c.account_number}>{c.first_name} {c.last_name} ({c.account_number})</option>)}
-                  </select>
+                  <label className="small text-muted mb-1 block">Portal Username</label>
+                  <input className="input-field" value={newCustomer.username} onChange={e => setNewCustomer({ ...newCustomer, username: e.target.value })} required />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="input-group">
-                    <label className="small text-muted mb-1 block">Usage (kl)</label>
-                    <input type="number" className="input-field" value={manualUsage.units} onChange={e => setManualUsage({ ...manualUsage, units: e.target.value })} placeholder="0" />
-                  </div>
-                  <div className="input-group">
-                    <label className="small text-muted mb-1 block">Date</label>
-                    <input type="date" className="input-field" value={manualUsage.date} onChange={e => setManualUsage({ ...manualUsage, date: e.target.value })} />
-                  </div>
+                <div className="input-group">
+                  <label className="small text-muted mb-1 block">Portal Password</label>
+                  <input type="password" className="input-field" value={newCustomer.password} onChange={e => setNewCustomer({ ...newCustomer, password: e.target.value })} required />
                 </div>
-                <button className="btn btn-primary" style={{ justifyContent: 'center' }}>Record Reading</button>
-                {usageMsg && <p className="text-success small fw-600 mt-2"><Check size={14} /> {usageMsg}</p>}
-              </form>
-            </div>
-          </div>
-          <div className="stats-grid mb-6">
-            <div className="glass-card" style={{ gridColumn: 'span 2', height: '400px' }}>
-              <div className="stat-header mb-4"><h3>Revenue by District</h3><BarChartIcon className="text-muted" /></div>
-              <ResponsiveContainer width="100%" height="85%">
-                <BarChart data={districtReports}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
-                  <XAxis dataKey="district" stroke="var(--text-muted)" />
-                  <YAxis stroke="var(--text-muted)" />
-                  <Tooltip contentStyle={{ borderRadius: '12px' }} />
-                  <Bar dataKey="total_revenue" fill="var(--secondary)" name="Revenue (LSL)" radius={[6, 6, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="glass-card" style={{ height: '400px' }}>
-              <div className="stat-header mb-4"><h3>Broadcast System</h3><Bell className="text-muted" /></div>
-              <form onSubmit={handleBroadcast} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <select value={broadcastType} onChange={e => setBroadcastType(e.target.value)} className="input-field">
-                  <option value="System Update">⚙️ System Update</option>
-                  <option value="Urgent Notice">🔴 Urgent Notice</option>
-                </select>
-                <textarea 
-                  className="input-field" 
-                  rows="4" 
-                  placeholder="Global message..." 
-                  value={broadcastMsg}
-                  onChange={e => setBroadcastMsg(e.target.value)}
-                ></textarea>
-                <button className="btn btn-primary" style={{ justifyContent: 'center' }} disabled={isBroadcasting}>Send Broadcast</button>
-              </form>
-            </div>
-          </div>
-          <div className="stats-grid mb-6">
-            <div className="glass-card mb-6" style={{ borderLeft: '4px solid var(--secondary)' }}>
-              <div className="stat-header mb-6">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <div style={{ background: 'rgba(59, 130, 246, 0.1)', padding: '0.5rem', borderRadius: '12px' }}>
-                    <Users className="text-secondary" size={20} />
-                  </div>
-                  <h3>Customer Directory</h3>
-                </div>
-              </div>
-              <div className="table-container" style={{ maxHeight: '400px', overflowY: 'auto', border: '1px solid var(--glass-border)', background: 'rgba(255,255,255,0.02)' }}>
-                <table className="data-table">
-                  <thead>
-                    <tr><th>Account Number</th><th>Full Name</th><th>Customer Type</th><th className="text-right">Actions</th></tr>
-                  </thead>
-                  <tbody>
-                    {customers.map(c => (
-                      <tr key={c.account_number} style={{ background: editingCustomer?.account_number === c.account_number ? 'rgba(14, 165, 233, 0.05)' : 'transparent' }}>
-                        <td><span className="badge primary" style={{ fontFamily: 'monospace' }}>{c.account_number}</span></td>
-                        <td className="fw-600">{c.first_name} {c.last_name}</td>
-                        <td>
-                          <span className={`badge ${c.customer_type === 'Industrial' ? 'error' : (c.customer_type === 'Commercial' ? 'warning' : 'success')}`} style={{ opacity: 0.8 }}>
-                            {c.customer_type}
-                          </span>
-                        </td>
-                        <td className="text-right">
-                          <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
-                            <button className="btn small" onClick={() => setEditingCustomer(c)} style={{ background: 'rgba(255,255,255,0.1)' }}><Settings size={14} /></button>
-                            <button className="btn small" onClick={() => handleDeleteCustomer(c.account_number)} style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--error)' }}><LogOut size={14} /></button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <div className={`mt-8 p-6 ${editingCustomer ? 'edit-mode-active' : ''}`} style={{
-                background: editingCustomer ? 'rgba(14, 165, 233, 0.03)' : 'rgba(255,255,255,0.02)',
-                borderRadius: '20px',
-                border: editingCustomer ? '1px solid var(--primary)' : '1px solid transparent',
-                boxShadow: editingCustomer ? '0 0 20px rgba(14, 165, 233, 0.1)' : 'none',
-                transition: 'all 0.3s ease'
-              }}>
-                <div className="flex-between mb-4">
-                  <h4 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    {editingCustomer ? <Settings size={18} className="text-primary" /> : <UserPlus size={18} className="text-primary" />}
-                    {editingCustomer ? `Editing Account: ${editingCustomer.account_number}` : 'Onboard New Customer'}
-                  </h4>
-                  {editingCustomer && <button className="badge" onClick={() => setEditingCustomer(null)} style={{ cursor: 'pointer', border: 'none' }}>Cancel Edit</button>}
-                </div>
-                <form onSubmit={editingCustomer ? handleUpdateCustomer : handleAddCustomer} className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-3">
-                  <div className="input-group">
-                    <label className="small text-muted mb-1 block">First Name</label>
-                    <input className="input-field" value={editingCustomer ? editingCustomer.first_name : newCustomer.first_name} onChange={e => editingCustomer ? setEditingCustomer({ ...editingCustomer, first_name: e.target.value }) : setNewCustomer({ ...newCustomer, first_name: e.target.value })} required />
-                  </div>
-                  <div className="input-group">
-                    <label className="small text-muted mb-1 block">Last Name</label>
-                    <input className="input-field" value={editingCustomer ? editingCustomer.last_name : newCustomer.last_name} onChange={e => editingCustomer ? setEditingCustomer({ ...editingCustomer, last_name: e.target.value }) : setNewCustomer({ ...newCustomer, last_name: e.target.value })} required />
-                  </div>
-                  <div className="input-group">
-                    <label className="small text-muted mb-1 block">Email Address</label>
-                    <input type="email" className="input-field" value={editingCustomer ? editingCustomer.email : newCustomer.email} onChange={e => editingCustomer ? setEditingCustomer({ ...editingCustomer, email: e.target.value }) : setNewCustomer({ ...newCustomer, email: e.target.value })} />
-                  </div>
-                  <div className="input-group">
-                    <label className="small text-muted mb-1 block">Category</label>
-                    <select className="input-field" value={editingCustomer ? editingCustomer.customer_type : newCustomer.customer_type} onChange={e => editingCustomer ? setEditingCustomer({ ...editingCustomer, customer_type: e.target.value }) : setNewCustomer({ ...newCustomer, customer_type: e.target.value })}>
-                      <option value="Residential">Residential</option>
-                      <option value="Commercial">Commercial</option>
-                      <option value="Industrial">Industrial</option>
-                    </select>
-                  </div>
-                  <div className="input-group" style={{ gridColumn: 'span 2' }}>
-                    <label className="small text-muted mb-1 block">Physical Address</label>
-                    <input className="input-field" value={editingCustomer ? editingCustomer.address : newCustomer.address} onChange={e => editingCustomer ? setEditingCustomer({ ...editingCustomer, address: e.target.value }) : setNewCustomer({ ...newCustomer, address: e.target.value })} required />
-                  </div>
-                  {!editingCustomer && (
-                    <>
-                      <div className="input-group">
-                        <label className="small text-muted mb-1 block">Portal Username</label>
-                        <input className="input-field" value={newCustomer.username} onChange={e => setNewCustomer({ ...newCustomer, username: e.target.value })} required />
-                      </div>
-                      <div className="input-group">
-                        <label className="small text-muted mb-1 block">Portal Password</label>
-                        <input type="password" className="input-field" value={newCustomer.password} onChange={e => setNewCustomer({ ...newCustomer, password: e.target.value })} required />
-                      </div>
-                    </>
-                  )}
-                  <button className={`btn ${editingCustomer ? 'btn-primary' : 'btn-success'}`} style={{ gridColumn: 'span 2', marginTop: '1rem', height: '50px', fontSize: '1rem' }}>
-                    {editingCustomer ? 'Confirm Updates' : 'Onboard Customer'}
-                  </button>
-                </form>
-              </div>
-            </div>
-            <div className="glass-card mb-6" style={{ borderLeft: '4px solid var(--warning)' }}>
-              <div className="stat-header mb-6">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <div style={{ background: 'rgba(245, 158, 11, 0.1)', padding: '0.5rem', borderRadius: '12px' }}>
-                    <CreditCard className="text-warning" size={20} />
-                  </div>
-                  <h3>Billing Rate Configuration</h3>
-                </div>
-              </div>
-              <div className="table-container mb-6" style={{ border: '1px solid var(--glass-border)', background: 'rgba(255,255,255,0.02)' }}>
-                <table className="data-table">
-                  <thead><tr><th>Tier Name / Customer Type</th><th>Usage Scope</th><th>Rate (LSL/Unit)</th><th className="text-right">Management</th></tr></thead>
-                  <tbody>
-                    {rates.map(r => (
-                      <tr key={r.rate_id} style={{ background: editingRate?.rate_id === r.rate_id ? 'rgba(245, 158, 11, 0.05)' : 'transparent' }}>
-                        <td><strong className="text-main">{r.tier_name}</strong></td>
-                        <td>
-                          <span className="badge" style={{ 
-                            background: r.maximum_units > 9000 ? 'rgba(14, 165, 233, 0.1)' : 'rgba(0,0,0,0.05)', 
-                            color: r.maximum_units > 9000 ? 'var(--primary)' : 'var(--text-main)',
-                            border: r.maximum_units > 9000 ? '1px solid rgba(14, 165, 233, 0.2)' : 'none'
-                          }}>
-                            {r.maximum_units > 9000 ? 'Unlimited Usage' : `${r.minimum_units} — ${r.maximum_units} Units`}
-                          </span>
-                        </td>
-                        <td style={{ color: 'var(--success)', fontWeight: 'bold' }}>{parseFloat(r.rate_per_unit).toFixed(2)}</td>
-                        <td className="text-right">
-                          <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
-                            <button className="btn small" onClick={() => startEditRate(r)} style={{ background: 'rgba(255,255,255,0.1)' }}><Settings size={14} /></button>
-                            <button className="btn small" onClick={() => handleDeleteRate(r.rate_id)} style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--error)' }}><LogOut size={14} /></button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <div className={`p-6 ${editingRate ? 'edit-mode-active' : ''}`} style={{
-                background: editingRate ? 'rgba(245, 158, 11, 0.03)' : 'rgba(255,255,255,0.02)',
-                borderRadius: '20px',
-                border: editingRate ? '1px solid var(--warning)' : '1px solid transparent',
-                boxShadow: editingRate ? '0 0 20px rgba(245, 158, 11, 0.1)' : 'none',
-                transition: 'all 0.3s ease'
-              }}>
-                <div className="flex-between mb-4">
-                  <h4 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <Settings size={18} className="text-warning" />
-                    {editingRate ? `Modifying Tier: ${editingRate.tier_name}` : 'Define New Rate Tier'}
-                  </h4>
-                  {editingRate && <button className="badge" onClick={() => { setEditingRate(null); setNewTierName(''); setNewMinUnits(''); setNewMaxUnits(''); setNewRate(''); }} style={{ cursor: 'pointer', border: 'none' }}>Discard Edit</button>}
-                </div>
-                <form onSubmit={editingRate ? handleUpdateRate : handleAddRate} className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-3">
-                  <div className="input-group">
-                    <label className="small text-muted mb-1 block">Tier Label</label>
-                    <input className="input-field" value={newTierName} onChange={e => setNewTierName(e.target.value)} placeholder="e.g. Tier 1" required />
-                  </div>
-                  <div className="input-group">
-                    <label className="small text-muted mb-1 block">Min Units</label>
-                    <input type="number" className="input-field" value={newMinUnits} onChange={e => setNewMinUnits(e.target.value)} required />
-                  </div>
-                  <div className="input-group">
-                    <label className="small text-muted mb-1 block">Max Units</label>
-                    <input type="number" className="input-field" value={newMaxUnits} onChange={e => setNewMaxUnits(e.target.value)} required />
-                  </div>
-                  <div className="input-group">
-                    <label className="small text-muted mb-1 block">Rate (LSL)</label>
-                    <input type="number" step="0.01" className="input-field" value={newRate} onChange={e => setNewRate(e.target.value)} required />
-                  </div>
-                  <div style={{ gridColumn: 'span 4', fontSize: '0.75rem', color: 'var(--text-muted)', background: 'rgba(0,0,0,0.03)', padding: '0.5rem 1rem', borderRadius: '8px', borderLeft: '3px solid var(--primary)' }}>
-                    <strong>Pro Tip:</strong> For flat customer-type rates (e.g. Residents), set <b>Min Units: 0</b> and <b>Max Units: 999999</b>.
-                  </div>
-                  <button className={`btn ${editingRate ? 'btn-warning' : 'btn-primary'}`} style={{ gridColumn: 'span 4', height: '48px' }}>
-                    {editingRate ? 'Commit Rate Changes' : 'Publish Rate Tier'}
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
+              </>
+            )}
+            <button className={'btn ' + (editingCustomer ? 'btn-primary' : 'btn-success')} style={{ gridColumn: 'span 2', marginTop: '1rem', height: '50px', fontSize: '1rem' }}>
+              {editingCustomer ? 'Confirm Updates' : 'Onboard Customer'}
+            </button>
+          </form>
+        </div>
+      </div>
+    )}
 
-          <div className="glass-card mb-6" style={{ borderTop: '4px solid var(--primary)' }}>
-            <div className="stat-header mb-6">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <div style={{ background: 'rgba(14, 165, 233, 0.1)', padding: '0.5rem', borderRadius: '12px' }}>
-                  <History className="text-primary" size={20} />
-                </div>
-                <h3>System Audit Logs</h3>
-              </div>
+    {activeTab === 'rates' && (
+      <div className="glass-card mb-6" style={{ borderLeft: '4px solid var(--warning)' }}>
+        <div className="stat-header mb-6">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{ background: 'rgba(245, 158, 11, 0.1)', padding: '0.5rem', borderRadius: '12px' }}>
+              <CreditCard className="text-warning" size={20} />
             </div>
-            <div className="table-container" style={{ maxHeight: '300px', overflowY: 'auto' }}>
-              <table className="data-table">
-                <thead>
-                  <tr><th>Timestamp</th><th>Performed By</th><th>Action</th><th>Target</th><th>Details</th></tr>
-                </thead>
-                <tbody>
-                  {auditLogs.length === 0 ? (
-                    <tr><td colSpan={5} className="text-center text-muted p-4">No audit logs found.</td></tr>
-                  ) : (
-                    auditLogs.map(log => (
-                      <tr key={log.id}>
-                        <td className="small text-muted">{new Date(log.timestamp).toLocaleString()}</td>
-                        <td><span className="badge" style={{ background: 'rgba(0,0,0,0.05)' }}>{log.performed_by}</span></td>
-                        <td className="fw-600">{log.action}</td>
-                        <td>{log.target}</td>
-                        <td className="small text-muted">{log.details}</td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+            <h3>Billing Rate Configuration</h3>
           </div>
-        </>
-      )}
+        </div>
+        <div className="table-container mb-6" style={{ border: '1px solid var(--glass-border)', background: 'var(--surface-solid)' }}>
+          <table className="data-table">
+            <thead><tr><th>Tier Name / Customer Type</th><th>Usage Scope</th><th>Rate (LSL/Unit)</th><th className="text-right">Management</th></tr></thead>
+            <tbody>
+              {rates.map(r => (
+                <tr key={r.rate_id} style={{ background: editingRate?.rate_id === r.rate_id ? 'rgba(245, 158, 11, 0.05)' : 'transparent' }}>
+                  <td><strong className="text-main">{r.tier_name}</strong></td>
+                  <td>
+                    <span className="badge" style={{ 
+                      background: r.maximum_units > 9000 ? 'rgba(14, 165, 233, 0.1)' : 'var(--surface-hover)', 
+                      color: r.maximum_units > 9000 ? 'var(--primary)' : 'var(--text-main)',
+                      border: r.maximum_units > 9000 ? '1px solid rgba(14, 165, 233, 0.2)' : 'none'
+                    }}>
+                      {r.maximum_units > 9000 ? 'Unlimited Usage' : r.minimum_units + ' — ' + r.maximum_units + ' Units'}
+                    </span>
+                  </td>
+                  <td style={{ color: 'var(--success)', fontWeight: 'bold' }}>{parseFloat(r.rate_per_unit).toFixed(2)}</td>
+                  <td className="text-right">
+                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+                      <button className="btn small" onClick={() => startEditRate(r)} style={{ background: 'rgba(14, 165, 233, 0.1)' }}><Settings size={14} /></button>
+                      <button className="btn small" onClick={() => handleDeleteRate(r.rate_id)} style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--error)' }}><LogOut size={14} /></button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className={'p-6 ' + (editingRate ? 'edit-mode-active' : '')} style={{
+          background: editingRate ? 'rgba(245, 158, 11, 0.03)' : 'var(--surface-solid)',
+          borderRadius: '20px', border: editingRate ? '1px solid var(--warning)' : '1px solid transparent',
+        }}>
+          <div className="flex-between mb-4">
+            <h4 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Settings size={18} className="text-warning" />
+              {editingRate ? 'Modifying Tier: ' + editingRate.tier_name : 'Define New Rate Tier'}
+            </h4>
+            {editingRate && <button className="badge" onClick={() => { setEditingRate(null); setNewTierName(''); setNewMinUnits(''); setNewMaxUnits(''); setNewRate(''); }} style={{ cursor: 'pointer', border: 'none' }}>Discard Edit</button>}
+          </div>
+          <form onSubmit={editingRate ? handleUpdateRate : handleAddRate} className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-3">
+            <div className="input-group">
+              <label className="small text-muted mb-1 block">Tier Label</label>
+              <input className="input-field" value={newTierName} onChange={e => setNewTierName(e.target.value)} placeholder="e.g. Tier 1" required />
+            </div>
+            <div className="input-group">
+              <label className="small text-muted mb-1 block">Min Units</label>
+              <input type="number" className="input-field" value={newMinUnits} onChange={e => setNewMinUnits(e.target.value)} required />
+            </div>
+            <div className="input-group">
+              <label className="small text-muted mb-1 block">Max Units</label>
+              <input type="number" className="input-field" value={newMaxUnits} onChange={e => setNewMaxUnits(e.target.value)} required />
+            </div>
+            <div className="input-group">
+              <label className="small text-muted mb-1 block">Rate (LSL)</label>
+              <input type="number" step="0.01" className="input-field" value={newRate} onChange={e => setNewRate(e.target.value)} required />
+            </div>
+            <div style={{ gridColumn: 'span 4', fontSize: '0.75rem', color: 'var(--text-muted)', background: 'var(--surface-hover)', padding: '0.5rem 1rem', borderRadius: '8px', borderLeft: '3px solid var(--primary)' }}>
+              <strong>Pro Tip:</strong> For flat customer-type rates (e.g. Residents), set <b>Min Units: 0</b> and <b>Max Units: 999999</b>.
+            </div>
+            <button className={'btn ' + (editingRate ? 'btn-warning' : 'btn-primary')} style={{ gridColumn: 'span 4', height: '48px' }}>
+              {editingRate ? 'Commit Rate Changes' : 'Publish Rate Tier'}
+            </button>
+          </form>
+        </div>
+      </div>
+    )}
+  </>
+)}
 
       {view === 'customer' && (
         <>
@@ -2135,6 +2037,7 @@ export default function App() {
         </div>
       )}
 
+      </main>
     </div>
   );
 }
