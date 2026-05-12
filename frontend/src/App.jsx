@@ -98,6 +98,8 @@ export default function App() {
   const [customers, setCustomers] = useState([]);
   const [payments, setPayments] = useState([]);
   const [balances, setBalances] = useState([]); // From view_customer_balances
+  const [payingBill, setPayingBill] = useState(null); // Track bill currently being paid
+  const [selectedPayMethod, setSelectedPayMethod] = useState('M-Pesa');
   const [leakageStats, setLeakageStats] = useState([]); // From view_leakage_summary
   const [usageGranularity, setUsageGranularity] = useState('Monthly'); // 'Daily', 'Monthly', 'Yearly'
   const [notifications, setNotifications] = useState([]);
@@ -353,29 +355,28 @@ export default function App() {
     }
   };
 
-  const handlePay = async (bill_id, account_number, billing_month, amount) => {
+  const handlePay = async (bill_id, account_number, billing_month, amount, method) => {
     try {
-      const res = await axios.post(`${API_BASE}/pay`, { bill_id, account_number, billing_month, amount });
-      setPaymentMsg(`Payment successful! Ref: ${res.data.reference}`);
+      const res = await axios.post(`${API_BASE}/pay`, { bill_id, account_number, billing_month, amount, payment_method: method });
+      setPaymentMsg(`Payment successful via ${method}! Ref: ${res.data.reference}`);
       setTimeout(() => setPaymentMsg(''), 5000);
+      setPayingBill(null);
       fetchData(user.role.toLowerCase(), user.account_number);
     } catch (err) {
       console.warn('Backend unavailable, using mock payment.');
       const ref = `REF-MOCK-${Math.floor(Math.random() * 10000)}`;
-      setPaymentMsg(`Payment successful! Ref: ${ref}`);
+      setPaymentMsg(`Payment successful via ${method}! Ref: ${ref}`);
       setTimeout(() => setPaymentMsg(''), 5000);
+      setPayingBill(null);
 
       setBills(bills.map(b =>
         (b.account_number === account_number && b.billing_month === billing_month)
           ? { ...b, payment_status: 'Paid' } : b
       ));
       setPayments([{
-        payment_id: Date.now(),
+        payment_date: new Date().toISOString(),
         account_number,
         bill_month: billing_month,
-        amount_paid: amount,
-        payment_date: new Date().toISOString(),
-        payment_method: 'Online',
         reference_number: ref
       }, ...payments]);
     }
@@ -1806,8 +1807,8 @@ export default function App() {
                       <td><span className={`badge ${bill.payment_status === 'Paid' ? 'paid' : 'unpaid'}`}>{bill.payment_status}</span></td>
                       <td className="no-print" style={{ display: 'flex', gap: '0.5rem' }}>
                         {bill.payment_status === 'Unpaid' && view !== 'manager' && (
-                          <button className="btn btn-primary" style={{ padding: '0.4rem 0.8rem' }} onClick={() => handlePay(bill.bill_id, bill.account_number, bill.billing_month, bill.total_amount)}>
-                            Pay
+                          <button className="btn btn-primary" style={{ padding: '0.4rem 0.8rem' }} onClick={() => setPayingBill(bill)}>
+                            Pay Now
                           </button>
                         )}
                         <button className="btn" style={{ padding: '0.4rem 0.8rem', background: 'rgba(0,0,0,0.05)' }} onClick={() => { setBillToPrint(bill); setTimeout(() => window.print(), 100); setTimeout(() => setBillToPrint(null), 1000); }}>
@@ -1822,6 +1823,62 @@ export default function App() {
           </div>
         )}
       </div>
+
+      {/* PAYMENT METHOD SELECTOR MODAL */}
+      {payingBill && (
+        <div style={{
+          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', 
+          backdropFilter: 'blur(8px)', zIndex: 3000,
+          display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem'
+        }}>
+          <div className="glass-card fadeIn" style={{ width: '100%', maxWidth: '480px', padding: '2.5rem' }}>
+            <h2 className="text-center mb-2">Secure Payment</h2>
+            <p className="text-center text-muted small mb-6">Settling bill for <strong>{payingBill.billing_month}</strong> — Amount: <strong>LSL {parseFloat(payingBill.total_amount).toFixed(2)}</strong></p>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }} className="mb-6">
+              {[
+                { id: 'M-Pesa', label: 'Vodacom M-Pesa', icon: '📱', color: '#e60000' },
+                { id: 'EcoCash', label: 'Econet EcoCash', icon: '💎', color: '#0054a6' },
+                { id: 'Bank Transfer', label: 'Standard Lesotho Bank', icon: '🏦', color: '#0033a0' }
+              ].map(method => (
+                <div 
+                  key={method.id}
+                  onClick={() => setSelectedPayMethod(method.id)}
+                  style={{
+                    padding: '1.25rem', borderRadius: '16px', cursor: 'pointer',
+                    border: `2px solid ${selectedPayMethod === method.id ? method.color : 'rgba(0,0,0,0.05)'}`,
+                    background: selectedPayMethod === method.id ? `${method.color}08` : 'white',
+                    display: 'flex', alignItems: 'center', gap: '1rem',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  <div style={{ fontSize: '1.5rem' }}>{method.icon}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 700, color: selectedPayMethod === method.id ? method.color : 'var(--text-main)' }}>{method.label}</div>
+                    <div className="small text-muted">Instant processing</div>
+                  </div>
+                  {selectedPayMethod === method.id && <Check size={20} style={{ color: method.color }} />}
+                </div>
+              ))}
+            </div>
+
+            <div className="flex-between gap-4">
+              <button className="btn" style={{ flex: 1, justifyContent: 'center', background: 'rgba(0,0,0,0.05)' }} onClick={() => setPayingBill(null)}>Cancel</button>
+              <button 
+                className="btn btn-primary" 
+                style={{ flex: 2, justifyContent: 'center', height: '50px', fontSize: '1rem' }}
+                onClick={() => handlePay(payingBill.bill_id, payingBill.account_number, payingBill.billing_month, payingBill.total_amount, selectedPayMethod)}
+              >
+                Confirm LSL {parseFloat(payingBill.total_amount).toFixed(2)}
+              </button>
+            </div>
+            <p className="text-center small text-muted mt-6" style={{ fontSize: '0.7rem' }}>
+              <AlertTriangle size={12} style={{ verticalAlign: 'middle', marginRight: '4px' }} />
+              Payments are simulated for demonstration purposes.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* ALL VIEWS: Payments History (from SQLite) */}
       <div className="glass-card mb-6">
