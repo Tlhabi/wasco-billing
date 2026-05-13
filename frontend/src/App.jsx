@@ -352,6 +352,7 @@ export default function App() {
         if (usageReports.length === 0) setUsageReports(MOCK_USAGE_REPORTS);
         if (leakages.length === 0) setLeakages(MOCK_LEAKAGES);
         if (customers.length === 0) setCustomers(MOCK_CUSTOMERS);
+        if (segmentData.length === 0) setSegmentData(MOCK_SEGMENT_DATA);
       }
       if (role === 'customer') {
         if (payments.length === 0) setPayments(MOCK_PAYMENTS.filter(p => p.account_number === account_number));
@@ -718,122 +719,166 @@ export default function App() {
 
   if (view === 'landing') {
     return (
-      <div className="landing-wrapper">
+      <div className="landing-wrapper" style={{ background: 'var(--bg-color)', overflow: 'hidden' }}>
         <div className="bg-blobs">
-          <div className="blob blob-1"></div>
-          <div className="blob blob-2"></div>
-          <div className="blob blob-3"></div>
+          <div className="blob blob-1" style={{ width: '800px', height: '800px', opacity: 0.4 }}></div>
+          <div className="blob blob-2" style={{ width: '600px', height: '600px', opacity: 0.3 }}></div>
+          <div className="blob blob-3" style={{ width: '700px', height: '700px', opacity: 0.3 }}></div>
         </div>
 
-        <div className="landing-content">
-          <header className="top-nav" style={{ margin: '0 0 4rem 0', maxWidth: '100%' }}>
-            <div className="logo"><Droplets className="logo-icon" size={26} /> WASCO Portal</div>
-            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-            </div>
-          </header>
+        <div className="landing-content" style={{ padding: '0 5vw', maxWidth: '1400px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '4rem', alignItems: 'center' }}>
+          <div className="hero-text-side animate-in">
+            <header style={{ marginBottom: '4rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div style={{ background: 'linear-gradient(135deg, var(--primary), var(--secondary))', padding: '0.6rem', borderRadius: '14px', color: 'white', display: 'flex' }}>
+                <Droplets size={28} />
+              </div>
+              <h2 style={{ fontSize: '1.5rem', margin: 0, fontWeight: 800, letterSpacing: '-0.03em' }}>WASCO <span style={{ fontWeight: 400, opacity: 0.6 }}>Portal</span></h2>
+            </header>
 
-          <div className="hero" style={{ padding: '0', textAlign: 'left', alignItems: 'flex-start', minHeight: 'auto', marginBottom: '4rem' }}>
-            <div className="hero-eyebrow">
-              <Droplets size={14} /> Lesotho's Water Utility Portal
+            <div className="hero-eyebrow" style={{ color: 'var(--primary)', fontWeight: 800, fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ width: '30px', height: '2px', background: 'var(--primary)' }}></div>
+              LE SOTHO'S PREMIER WATER UTILITY
             </div>
-            <h1 style={{ fontSize: 'clamp(3rem, 5vw, 4.5rem)' }}>Pure Water,<br />Smartly Managed.</h1>
-            <p style={{ maxWidth: '500px', fontSize: '1.1rem' }}>Experience seamless utility management across Lesotho's districts â€” real-time usage tracking, instant bill payments, and live leakage alerts all in one platform.</p>
-            <div className="hero-btns" style={{ justifyContent: 'flex-start', marginTop: '1rem' }}>
-              <button className="btn btn-primary" style={{ padding: '0.85rem 2rem', fontSize: '1rem', borderRadius: '14px' }} onClick={() => setView('login')}>
-                <Droplets size={18} /> Access My Portal
+            
+            <h1 style={{ fontSize: 'clamp(3.5rem, 6vw, 5.5rem)', lineHeight: 0.95, marginBottom: '2rem', letterSpacing: '-0.04em' }}>
+              Purity in <span style={{ color: 'var(--primary)', background: 'linear-gradient(to right, var(--primary), var(--secondary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Every Drop</span>, Smart in Every Step.
+            </h1>
+            
+            <p style={{ fontSize: '1.25rem', lineHeight: 1.6, color: 'var(--text-muted)', maxWidth: '600px', marginBottom: '3rem' }}>
+              Manage your utility accounts with Lesotho's most advanced digital platform. Real-time tracking, secure payments, and instant incident reporting at your fingertips.
+            </p>
+
+            <div className="hero-btns" style={{ display: 'flex', gap: '1.5rem' }}>
+              <button className="btn btn-primary" style={{ padding: '1.2rem 2.5rem', fontSize: '1.1rem', borderRadius: '18px', fontWeight: 700 }} onClick={() => setView('login')}>
+                Enter Portal <ChevronRight size={20} />
               </button>
-              <button className="btn" onClick={fetchPublicData} style={{ padding: '0.85rem 2rem', fontSize: '1rem', borderRadius: '14px', background: 'var(--surface)', border: '1.5px solid var(--glass-border)', backdropFilter: 'blur(12px)' }}>
+              <button className="btn" onClick={fetchPublicData} style={{ padding: '1.2rem 2.5rem', fontSize: '1.1rem', borderRadius: '18px', background: 'rgba(255,255,255,0.4)', border: '1px solid var(--glass-border)', backdropFilter: 'blur(12px)', fontWeight: 600 }}>
                 View Service Rates
               </button>
             </div>
+
+            <div className="hero-stats" style={{ display: 'flex', gap: '3rem', marginTop: '5rem', borderTop: '1px solid var(--border-color)', paddingTop: '2.5rem' }}>
+              <div><h3 style={{ fontSize: '2rem', marginBottom: '0.25rem' }}>100k+</h3><p style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Active Users</p></div>
+              <div><h3 style={{ fontSize: '2rem', marginBottom: '0.25rem' }}>10</h3><p style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Districts Covered</p></div>
+              <div><h3 style={{ fontSize: '2rem', marginBottom: '0.25rem' }}>24/7</h3><p style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Support & Monitoring</p></div>
+            </div>
           </div>
 
-          <div className="feature-grid" style={{ marginBottom: '2rem' }}>
-            <div className="glass-card feature-card" style={{ padding: '1.5rem' }}>
-              <div className="feature-icon" style={{ width: '40px', height: '40px', marginBottom: '1rem' }}><Activity size={18} /></div>
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>Real-time Usage</h3>
-              <p className="text-muted" style={{ fontSize: '0.85rem', lineHeight: '1.5' }}>Monitor consumption with edge reading technology.</p>
+          <div className="hero-visual-side animate-in" style={{ animationDelay: '0.2s', position: 'relative' }}>
+            <div className="glass-card" style={{ padding: '3rem', borderRadius: '40px', background: 'rgba(255,255,255,0.4)', border: '1px solid rgba(255,255,255,0.6)', boxShadow: '0 40px 100px rgba(14,165,233,0.15)' }}>
+              <div style={{ position: 'absolute', top: '-30px', right: '-20px', background: 'var(--accent)', color: 'white', padding: '1rem', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '0.5rem', boxShadow: '0 20px 40px rgba(16,185,129,0.3)', fontWeight: 700, fontSize: '0.9rem' }}>
+                <Activity size={18} /> LIVE MONITORING ACTIVE
+              </div>
+              
+              <div style={{ marginBottom: '2.5rem' }}>
+                <h4 style={{ fontSize: '1.2rem', marginBottom: '1.5rem' }}>Network Efficiency</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  {[
+                    { label: 'Water Pressure', value: '98.4%', color: 'var(--primary)' },
+                    { label: 'Network Stability', value: '99.9%', color: 'var(--secondary)' },
+                    { label: 'Purification Level', value: '100%', color: 'var(--accent)' }
+                  ].map(stat => (
+                    <div key={stat.label}>
+                      <div className="flex-between mb-2">
+                        <span style={{ fontWeight: 600, fontSize: '0.9rem', opacity: 0.7 }}>{stat.label}</span>
+                        <span style={{ fontWeight: 800, fontSize: '1rem', color: stat.color }}>{stat.value}</span>
+                      </div>
+                      <div style={{ height: '8px', background: 'rgba(0,0,0,0.05)', borderRadius: '10px', overflow: 'hidden' }}>
+                        <div style={{ height: '100%', width: stat.value, background: stat.color }}></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ background: 'rgba(0,0,0,0.03)', padding: '1.5rem', borderRadius: '20px', border: '1px solid rgba(0,0,0,0.02)' }}>
+                <div className="flex-between mb-4">
+                  <h4 style={{ fontSize: '0.9rem' }}>Recent Incident Alerts</h4>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--primary)' }}>View Map â†’</span>
+                </div>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                  <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--error)', padding: '0.6rem', borderRadius: '12px' }}><AlertTriangle size={18} /></div>
+                  <div>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 700 }}>Pipe Maintenance - Maseru West</div>
+                    <div style={{ fontSize: '0.75rem', opacity: 0.6 }}>Estimated resolution in 2 hours</div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="glass-card feature-card" style={{ padding: '1.5rem' }}>
-              <div className="feature-icon" style={{ width: '40px', height: '40px', marginBottom: '1rem', background: 'linear-gradient(135deg,rgba(16,185,129,0.12),rgba(14,165,233,0.12))', color: 'var(--success)' }}><Wallet size={18} /></div>
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>Instant Payments</h3>
-              <p className="text-muted" style={{ fontSize: '0.85rem', lineHeight: '1.5' }}>Secure digital gateways with instant receipts.</p>
+
+            {/* Floating Elements */}
+            <div style={{ position: 'absolute', bottom: '-40px', left: '-30px', background: 'white', padding: '1.5rem', borderRadius: '24px', boxShadow: 'var(--shadow-lg)', display: 'flex', gap: '1rem', alignItems: 'center' }}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'rgba(14,165,233,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Wallet size={24} className="text-primary" />
+              </div>
+              <div>
+                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)' }}>M-PESA ENABLED</div>
+                <div style={{ fontSize: '1rem', fontWeight: 800 }}>Instant Bill Pay</div>
+              </div>
             </div>
           </div>
-          
-          <footer style={{ marginTop: 'auto', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
-            <p>Â© 2026 Water and Sewerage Company (WASCO) Â· All rights reserved.</p>
-          </footer>
         </div>
 
-        <div className="landing-visual">
-          <div className="landing-card animate-in">
-            <h2 style={{ marginBottom: '1.5rem', color: '#fff' }}>Transforming Utility Operations</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '12px' }}>
-                <div style={{ background: 'rgba(255,255,255,0.2)', padding: '0.5rem', borderRadius: '8px' }}><Settings size={20} /></div>
-                <div>
-                  <h4 style={{ color: '#fff', fontSize: '0.9rem' }}>Smart Grids</h4>
-                  <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem' }}>AI-driven pressure management</p>
-                </div>
-              </div>
-              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '12px' }}>
-                <div style={{ background: 'rgba(255,255,255,0.2)', padding: '0.5rem', borderRadius: '8px' }}><Users size={20} /></div>
-                <div>
-                  <h4 style={{ color: '#fff', fontSize: '0.9rem' }}>Self-Service</h4>
-                  <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem' }}>Empowering 100k+ customers</p>
-                </div>
-              </div>
-              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '12px' }}>
-                <div style={{ background: 'rgba(255,255,255,0.2)', padding: '0.5rem', borderRadius: '8px' }}><BarChartIcon size={20} /></div>
-                <div>
-                  <h4 style={{ color: '#fff', fontSize: '0.9rem' }}>Predictive Analytics</h4>
-                  <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem' }}>Preventing leaks before they happen</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <footer style={{ position: 'absolute', bottom: '2rem', left: '5vw', color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 500 }}>
+          Â© 2026 Water and Sewerage Company (WASCO) Â· Lesotho Private Sector Platform
+        </footer>
       </div>
     );
   }
   if (view === 'login') {
     return (
-      <div className="app-container" style={{ maxWidth: '420px', margin: '8vh auto' }}>
+      <div className="app-container" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div className="bg-blobs">
-          <div className="blob blob-1"></div>
-          <div className="blob blob-2"></div>
-          <div className="blob blob-3"></div>
+          <div className="blob blob-1" style={{ opacity: 0.6 }}></div>
+          <div className="blob blob-2" style={{ opacity: 0.4 }}></div>
+          <div className="blob blob-3" style={{ opacity: 0.5 }}></div>
         </div>
-        <div className="glass-card">
-          <div className="text-center" style={{ marginBottom: '2rem' }}>
-            <div style={{ width: '60px', height: '60px', borderRadius: '18px', background: 'linear-gradient(135deg,var(--primary),var(--secondary))', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', boxShadow: '0 8px 24px var(--primary-glow)' }}>
-              <Droplets size={28} color="white" />
+
+        <div className="glass-card animate-in" style={{ width: '100%', maxWidth: '440px', padding: '3.5rem', borderRadius: '32px', background: 'rgba(255,255,255,0.5)', boxShadow: '0 40px 100px rgba(0,0,0,0.1)' }}>
+          <div className="text-center" style={{ marginBottom: '3rem' }}>
+            <div style={{ 
+              width: '80px', height: '80px', borderRadius: '24px', 
+              background: 'linear-gradient(135deg, var(--primary), var(--secondary))', 
+              display: 'flex', alignItems: 'center', justifyContent: 'center', 
+              margin: '0 auto 1.5rem', boxShadow: '0 15px 35px var(--primary-glow)',
+              transform: 'rotate(-5deg)'
+            }}>
+              <Droplets size={38} color="white" />
             </div>
-            <h2 style={{ fontSize: '1.6rem', marginBottom: '0.3rem' }}>Welcome back</h2>
-            <p className="text-muted" style={{ fontSize: '0.875rem' }}>Sign in to your WASCO account</p>
+            <h2 style={{ fontSize: '2rem', marginBottom: '0.5rem', letterSpacing: '-0.02em' }}>Welcome Back</h2>
+            <p className="text-muted" style={{ fontSize: '1rem' }}>Enter your credentials to access your WASCO workspace</p>
           </div>
 
-          {loginError && <div style={{ color: 'var(--error)', marginBottom: '1rem', fontWeight: 600, padding: '0.6rem 0.9rem', background: 'rgba(239,68,68,0.07)', borderRadius: '10px', fontSize: '0.875rem' }}>{loginError}</div>}
-          {loginSuccess && <div style={{ color: 'var(--success)', marginBottom: '1rem', fontWeight: 600, padding: '0.6rem 0.9rem', background: 'rgba(16,185,129,0.07)', borderRadius: '10px', fontSize: '0.875rem' }}>{loginSuccess}</div>}
+          {loginError && (
+            <div style={{ 
+              color: 'var(--error)', marginBottom: '1.5rem', fontWeight: 600, 
+              padding: '0.8rem 1.2rem', background: 'rgba(239,68,68,0.08)', 
+              borderRadius: '14px', fontSize: '0.9rem', border: '1px solid rgba(239,68,68,0.1)' 
+            }}>
+              {loginError}
+            </div>
+          )}
 
-          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div>
-              <label style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '0.35rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Username</label>
-              <input type="text" placeholder="Enter your username" value={username} onChange={e => setUsername(e.target.value)} required className="input-field" />
+          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div className="input-group">
+              <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Username</label>
+              <input type="text" placeholder="e.g. john_doe" value={username} onChange={e => setUsername(e.target.value)} required className="input-field" style={{ height: '56px', borderRadius: '16px', fontSize: '1rem' }} />
             </div>
-            <div>
-              <label style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '0.35rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Password</label>
-              <input type="password" placeholder="Enter your password" value={password} onChange={e => setPassword(e.target.value)} required className="input-field" />
+            <div className="input-group">
+              <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Password</label>
+              <input type="password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" value={password} onChange={e => setPassword(e.target.value)} required className="input-field" style={{ height: '56px', borderRadius: '16px', fontSize: '1rem' }} />
             </div>
-            <button type="submit" className="btn btn-primary" style={{ justifyContent: 'center', padding: '0.85rem', fontSize: '1rem', borderRadius: '12px', marginTop: '0.25rem' }}>
-              Sign In
+            <button type="submit" className="btn btn-primary" style={{ height: '56px', fontSize: '1.1rem', borderRadius: '16px', marginTop: '1rem', fontWeight: 700 }}>
+              Sign In <ChevronRight size={20} />
             </button>
           </form>
 
-          <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
-            <button onClick={() => setView('register')} style={{ background: 'transparent', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontWeight: 600 }}>Create Account â†’</button>
-            <button onClick={fetchPublicData} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontWeight: 500 }}>View Rates</button>
+          <div style={{ marginTop: '2.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '2rem' }}>
+            <p className="text-muted small">Don't have an account yet?</p>
+            <div style={{ display: 'flex', gap: '1.5rem' }}>
+              <button onClick={() => setView('register')} style={{ background: 'transparent', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontWeight: 700, fontSize: '0.95rem' }}>Create Account</button>
+              <button onClick={fetchPublicData} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontWeight: 600, fontSize: '0.95rem' }}>Public Rates</button>
+            </div>
           </div>
         </div>
       </div>
@@ -932,48 +977,88 @@ export default function App() {
 
   if (view === 'public') {
     return (
-      <div className="app-container">
+      <div className="app-container" style={{ padding: '3rem 5vw' }}>
         <div className="bg-blobs">
           <div className="blob blob-1"></div>
-          <div className="blob blob-2"></div>
+          <div className="blob blob-2" style={{ opacity: 0.3 }}></div>
           <div className="blob blob-3"></div>
         </div>
-        <header>
-          <div className="logo"><Droplets size={32} className="logo-icon" /><h1>WASCO <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>Public Services</span></h1></div>
-          <button className="btn btn-primary" onClick={() => setView('login')}>Back to Login</button>
+        
+        <header className="flex-between mb-12 animate-in">
+          <div className="logo">
+            <div style={{ background: 'linear-gradient(135deg, var(--primary), var(--secondary))', padding: '0.5rem', borderRadius: '12px', color: 'white', display: 'flex' }}>
+              <Droplets size={24} />
+            </div>
+            <h1>WASCO <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>Public Services</span></h1>
+          </div>
+          <button className="btn btn-primary" onClick={() => setView('login')} style={{ padding: '0.8rem 2rem', borderRadius: '14px', fontWeight: 700 }}>
+            <User size={18} /> Access Portal
+          </button>
         </header>
 
-        <div className="glass-card mb-6">
-          <h2>Available Water and Sewerage Services</h2>
-          <p className="text-muted mb-4">WASCO provides clean and safe drinking water as well as reliable sewerage services across all districts of Lesotho.</p>
-          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-            <div style={{ flex: 1, minWidth: '250px', padding: '1rem', background: 'rgba(14, 165, 233, 0.05)', borderRadius: '12px' }}>
-              <h3 className="mb-2"><Droplets size={20} style={{ display: 'inline', verticalAlign: 'middle', color: 'var(--primary)' }} /> Clean Water Supply</h3>
-              <p>Reliable piped water directly to your residential or commercial property.</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 animate-in" style={{ animationDelay: '0.1s' }}>
+          <div className="glass-card" style={{ padding: '2.5rem', borderLeft: '5px solid var(--primary)' }}>
+            <h2 style={{ fontSize: '1.75rem', marginBottom: '1.5rem' }}>Our Commitment</h2>
+            <p className="text-muted mb-8" style={{ fontSize: '1.1rem' }}>WASCO is dedicated to providing sustainable water and sewerage services to the nation of Lesotho, ensuring health, prosperity, and environmental integrity.</p>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+              <div>
+                <div style={{ background: 'rgba(14, 165, 233, 0.1)', color: 'var(--primary)', width: '50px', height: '50px', borderRadius: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem' }}>
+                  <Droplets size={24} />
+                </div>
+                <h4 style={{ marginBottom: '0.5rem' }}>Potable Water</h4>
+                <p className="small">High-quality piped water compliant with international standards.</p>
+              </div>
+              <div>
+                <div style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', width: '50px', height: '50px', borderRadius: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem' }}>
+                  <Activity size={24} />
+                </div>
+                <h4 style={{ marginBottom: '0.5rem' }}>Sanitation</h4>
+                <p className="small">Efficient wastewater management for urban and peri-urban centers.</p>
+              </div>
             </div>
-            <div style={{ flex: 1, minWidth: '250px', padding: '1rem', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '12px' }}>
-              <h3 className="mb-2"><Activity size={20} style={{ display: 'inline', verticalAlign: 'middle', color: 'var(--success)' }} /> Sewerage & Sanitation</h3>
-              <p>Safe waste disposal and sanitation infrastructure for urban centers.</p>
+          </div>
+
+          <div className="glass-card" style={{ padding: '2.5rem', borderLeft: '5px solid var(--secondary)' }}>
+            <h2 style={{ fontSize: '1.75rem', marginBottom: '1.5rem' }}>Current Billing Rates</h2>
+            <p className="text-muted mb-6">Transparent pricing based on monthly consumption tiers. Rates are subject to periodic review by the LEWA.</p>
+            
+            <div className="table-container" style={{ border: '1px solid var(--border-color)', background: 'rgba(255,255,255,0.3)', borderRadius: '20px' }}>
+              <table>
+                <thead>
+                  <tr style={{ background: 'rgba(0,0,0,0.02)' }}>
+                    <th style={{ padding: '1.25rem' }}>Service Category</th>
+                    <th>Usage (Units)</th>
+                    <th className="text-right" style={{ paddingRight: '1.5rem' }}>Rate (LSL)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rates.map(r => (
+                    <tr key={r.rate_id}>
+                      <td style={{ padding: '1.25rem' }}><strong>{r.tier_name}</strong></td>
+                      <td>
+                        <span className="badge primary" style={{ background: 'rgba(14, 165, 233, 0.05)', border: 'none' }}>
+                          {r.minimum_units} - {r.maximum_units > 900000 ? 'Unlimited' : r.maximum_units}
+                        </span>
+                      </td>
+                      <td className="text-right" style={{ paddingRight: '1.5rem' }}>
+                        <span style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--success)' }}>{parseFloat(r.rate_per_unit).toFixed(2)}</span>
+                        <span className="small text-muted" style={{ marginLeft: '4px' }}>/ unit</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
 
-        <div className="glass-card">
-          <h2>Current Billing Rates</h2>
-          <p className="text-muted mb-4">Rates are calculated progressively based on your total monthly consumption.</p>
-          <div className="table-container">
-            <table>
-              <thead><tr><th>Tier Name</th><th>Usage Range (Units)</th><th>Cost Per Unit (LSL)</th></tr></thead>
-              <tbody>
-                {rates.map(r => (
-                  <tr key={r.rate_id}>
-                    <td><strong>{r.tier_name}</strong></td>
-                    <td>{r.minimum_units} - {r.maximum_units > 9000 ? 'Unlimited' : r.maximum_units}</td>
-                    <td>{parseFloat(r.rate_per_unit).toFixed(2)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <div className="glass-card text-center p-12 animate-in" style={{ animationDelay: '0.2s', background: 'linear-gradient(135deg, rgba(14,165,233,0.05), rgba(99,102,241,0.05))' }}>
+          <h2 style={{ marginBottom: '1rem' }}>Need Assistance?</h2>
+          <p className="text-muted mb-8" style={{ maxWidth: '600px', margin: '0 auto 2rem' }}>Our dedicated support team is available to help you with any queries regarding your billing, service connections, or incident reporting.</p>
+          <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <div className="badge primary" style={{ padding: '0.75rem 1.5rem', fontSize: '1rem' }}><FileText size={18} /> Customer Care: 800 22 000</div>
+            <div className="badge secondary" style={{ padding: '0.75rem 1.5rem', fontSize: '1rem' }}><Bell size={18} /> Emergency Hotline: 5221 0000</div>
           </div>
         </div>
       </div>
@@ -1233,11 +1318,15 @@ export default function App() {
               <>
                 <div className="flex-between mb-6">
                   <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                    <button className="btn" onClick={handleCalculateBills} disabled={loading} style={{ background: 'var(--surface-solid)', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }}><Settings size={16} /> Calculate Bills</button>
-                    <form onSubmit={handleBroadcast} style={{ display: 'flex', gap: '0.5rem' }}>
-                      <input className="input-field" placeholder="Broadcast message..." value={broadcastMsg} onChange={e => setBroadcastMsg(e.target.value)} style={{ padding: '0.45rem 1rem', width: '220px' }} />
-                      <button type="submit" className="btn btn-primary" disabled={isBroadcasting} style={{ padding: '0.45rem 1rem' }}>{isBroadcasting ? 'Sending...' : 'Broadcast'}</button>
-                    </form>
+                    {user.role?.toLowerCase() === 'admin' && (
+                      <button className="btn" onClick={handleCalculateBills} disabled={loading} style={{ background: 'var(--surface-solid)', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }}><Settings size={16} /> Calculate Bills</button>
+                    )}
+                    {user.role?.toLowerCase() === 'admin' && (
+                      <form onSubmit={handleBroadcast} style={{ display: 'flex', gap: '0.5rem' }}>
+                        <input className="input-field" placeholder="Broadcast message..." value={broadcastMsg} onChange={e => setBroadcastMsg(e.target.value)} style={{ padding: '0.45rem 1rem', width: '220px' }} />
+                        <button type="submit" className="btn btn-primary" disabled={isBroadcasting} style={{ padding: '0.45rem 1rem' }}>{isBroadcasting ? 'Sending...' : 'Broadcast'}</button>
+                      </form>
+                    )}
                   </div>
                 </div>
 
@@ -1368,31 +1457,33 @@ export default function App() {
 
             {activeTab === 'users' && (
               <>
-                <div className="glass-card mb-6">
-                  <div className="flex-between mb-6">
-                    <h3>Usage Recording System</h3>
-                    <Activity className="text-muted" size={20} />
+                {user.role?.toLowerCase() === 'admin' && (
+                  <div className="glass-card mb-6">
+                    <div className="flex-between mb-6">
+                      <h3>Usage Recording System</h3>
+                      <Activity className="text-muted" size={20} />
+                    </div>
+                    {usageMsg && <div style={{ color: 'var(--success)', marginBottom: '1rem', fontWeight: 600 }}>{usageMsg}</div>}
+                    <form onSubmit={handleManualUsage} className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                      <div className="input-group">
+                        <label className="small text-muted mb-1 block">Select Account</label>
+                        <select className="input-field" value={selectedCustomer || ''} onChange={e => setSelectedCustomer(e.target.value)} required>
+                          <option value="" disabled>-- Choose --</option>
+                          {customers.map(c => <option key={c.account_number} value={c.account_number}>{c.account_number} - {c.first_name}</option>)}
+                        </select>
+                      </div>
+                      <div className="input-group">
+                        <label className="small text-muted mb-1 block">Billing Cycle</label>
+                        <input className="input-field" value={manualUsage.month} onChange={e => setManualUsage({ ...manualUsage, month: e.target.value })} placeholder="e.g. March 2026" required />
+                      </div>
+                      <div className="input-group">
+                        <label className="small text-muted mb-1 block">Usage Volume (kl)</label>
+                        <input type="number" className="input-field" value={manualUsage.units} onChange={e => setManualUsage({ ...manualUsage, units: e.target.value })} placeholder="Units" required />
+                      </div>
+                      <button type="submit" className="btn btn-primary" style={{ height: '48px', marginTop: 'auto' }}>Commit Entry</button>
+                    </form>
                   </div>
-                  {usageMsg && <div style={{ color: 'var(--success)', marginBottom: '1rem', fontWeight: 600 }}>{usageMsg}</div>}
-                  <form onSubmit={handleManualUsage} className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div className="input-group">
-                      <label className="small text-muted mb-1 block">Select Account</label>
-                      <select className="input-field" value={selectedCustomer || ''} onChange={e => setSelectedCustomer(e.target.value)} required>
-                        <option value="" disabled>-- Choose --</option>
-                        {customers.map(c => <option key={c.account_number} value={c.account_number}>{c.account_number} - {c.first_name}</option>)}
-                      </select>
-                    </div>
-                    <div className="input-group">
-                      <label className="small text-muted mb-1 block">Billing Cycle</label>
-                      <input className="input-field" value={manualUsage.month} onChange={e => setManualUsage({ ...manualUsage, month: e.target.value })} placeholder="e.g. March 2026" required />
-                    </div>
-                    <div className="input-group">
-                      <label className="small text-muted mb-1 block">Usage Volume (kl)</label>
-                      <input type="number" className="input-field" value={manualUsage.units} onChange={e => setManualUsage({ ...manualUsage, units: e.target.value })} placeholder="Units" required />
-                    </div>
-                    <button type="submit" className="btn btn-primary" style={{ height: '48px', marginTop: 'auto' }}>Commit Entry</button>
-                  </form>
-                </div>
+                )}
 
                 <div className="glass-card mb-6">
                   <div className="flex-between mb-4">
@@ -1434,9 +1525,9 @@ export default function App() {
                           <td>{l.location}</td>
                           <td><span className={"badge " + (l.status === 'Fixed' ? 'success' : 'warning')}>{l.status}</span></td>
                           <td>
-                            {l.status !== 'Fixed' ? (
+                            {l.status !== 'Fixed' && user.role?.toLowerCase() === 'admin' ? (
                               <button className="btn btn-primary small" onClick={() => handleUpdateLeakageStatus(l.report_id, 'Fixed')}>Mark as Resolved</button>
-                            ) : <span className="text-success"><Check size={16} /> Resolved</span>}
+                            ) : l.status === 'Fixed' ? <span className="text-success"><Check size={16} /> Resolved</span> : <span className="text-muted italic small">In Progress</span>}
                           </td>
                         </tr>
                       ))}
@@ -1685,6 +1776,34 @@ export default function App() {
         </div>
       </div>
     )}
+    {activeTab === 'reports' && (
+      <div className="glass-card">
+        <div className="flex-between mb-4">
+          <h3>Incident Management Hub</h3>
+          <AlertTriangle className="text-warning" size={20} />
+        </div>
+        <div className="table-container">
+          <table className="data-table">
+            <thead><tr><th>Incident ID</th><th>Date Logged</th><th>Location</th><th>Status</th><th>Resolution</th></tr></thead>
+            <tbody>
+              {leakages.map(l => (
+                <tr key={l.report_id}>
+                  <td><strong>#L-{l.report_id}</strong></td>
+                  <td className="small text-muted">{new Date(l.report_date).toLocaleDateString()}</td>
+                  <td>{l.location}</td>
+                  <td><span className={"badge " + (l.status === 'Fixed' ? 'success' : 'warning')}>{l.status}</span></td>
+                  <td>
+                    {l.status !== 'Fixed' ? (
+                      <button className="btn btn-primary small" onClick={() => handleUpdateLeakageStatus(l.report_id, 'Fixed')}>Mark as Resolved</button>
+                    ) : <span className="text-success"><Check size={16} /> Resolved</span>}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    )}
   </>
 )}
 
@@ -1744,17 +1863,40 @@ export default function App() {
           <h3>Report a Leakage or Incident</h3>
           <AlertTriangle className="text-warning" size={20} />
         </div>
+        {leakageMsg && <div style={{ color: 'var(--success)', marginBottom: '1rem', fontWeight: 600 }}>{leakageMsg}</div>}
         <form onSubmit={handleReportLeakage} className="grid grid-cols-1 gap-4">
           <div className="input-group">
             <label className="small text-muted mb-1 block">Physical Location / Landmark</label>
-            <input className="input-field" placeholder="e.g. Near Plot 45, Maseru West" value={leakageReport.location} onChange={e => setLeakageReport({ ...leakageReport, location: e.target.value })} required />
+            <input className="input-field" placeholder="e.g. Near Plot 45, Maseru West" value={leakageLocation} onChange={e => setLeakageLocation(e.target.value)} required />
           </div>
           <div className="input-group">
             <label className="small text-muted mb-1 block">Description of Incident</label>
-            <textarea className="input-field" style={{ minHeight: '120px' }} placeholder="Please describe the issue in detail..." value={leakageReport.description} onChange={e => setLeakageReport({ ...leakageReport, description: e.target.value })} required />
+            <textarea className="input-field" style={{ minHeight: '120px' }} placeholder="Please describe the issue in detail..." value={leakageDesc} onChange={e => setLeakageDesc(e.target.value)} required />
           </div>
           <button type="submit" className="btn btn-primary" style={{ height: '50px' }}>Submit Report</button>
         </form>
+
+        <div className="mt-8">
+          <h4 className="mb-4">My Recent Reports</h4>
+          <div className="table-container">
+            <table className="data-table">
+              <thead><tr><th>Date</th><th>Location</th><th>Status</th></tr></thead>
+              <tbody>
+                {myLeakages.length === 0 ? (
+                  <tr><td colSpan={3} className="text-center text-muted">No reports filed yet.</td></tr>
+                ) : (
+                  myLeakages.map(l => (
+                    <tr key={l.report_id || Math.random()}>
+                      <td className="small">{new Date(l.report_date).toLocaleDateString()}</td>
+                      <td>{l.location}</td>
+                      <td><span className={`badge ${l.status === 'Fixed' ? 'success' : 'warning'}`}>{l.status}</span></td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     )}
   </>
