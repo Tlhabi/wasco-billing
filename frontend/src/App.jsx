@@ -62,10 +62,10 @@ const MOCK_DISTRICT_REPORTS = [
 ];
 
 const MOCK_SEGMENT_DATA = [
-  { segment: 'Residential', total_units: 2500 },
-  { segment: 'Business', total_units: 1500 },
-  { segment: 'Industrial', total_units: 3000 },
-  { segment: 'Other', total_units: 500 }
+  { segment: 'Residential', total_units: 2500, total_revenue: 13750 },
+  { segment: 'Business', total_units: 1500, total_revenue: 10500 },
+  { segment: 'Industrial', total_units: 3000, total_revenue: 27000 },
+  { segment: 'Other', total_units: 500, total_revenue: 2500 }
 ];
 // ------------------------------
 
@@ -123,6 +123,7 @@ export default function App() {
   const [broadcastType, setBroadcastType] = useState('Urgent Alert');
   const [districtReports, setDistrictReports] = useState([]);
   const [segmentData, setSegmentData] = useState([]);
+  const [segmentMetric, setSegmentMetric] = useState('total_units'); // 'total_units' or 'total_revenue'
   const [isBroadcasting, setIsBroadcasting] = useState(false);
   const [auditLogs, setAuditLogs] = useState([]);
   const [toasts, setToasts] = useState([]); // {id, message, type}
@@ -1268,6 +1269,9 @@ export default function App() {
               <div className={`nav-item ${activeTab === 'rates' ? 'active' : ''}`} onClick={() => setActiveTab('rates')}>
                 <Settings size={18} /> <span>Rates & Billing</span>
               </div>
+              <div className={`nav-item ${activeTab === 'manual' ? 'active' : ''}`} onClick={() => setActiveTab('manual')}>
+                <Activity size={18} /> <span>Manual Reading</span>
+              </div>
               <div className={`nav-item ${activeTab === 'audit' ? 'active' : ''}`} onClick={() => setActiveTab('audit')}>
                 <FileText size={18} /> <span>Audit Log</span>
               </div>
@@ -1365,14 +1369,36 @@ export default function App() {
                   </div>
 
                   <div className="glass-card p-4">
-                    <h4 className="mb-4 small text-muted uppercase fw-700">Segmented Contribution</h4>
-                    <ResponsiveContainer width="100%" height="90%">
+                    <div className="flex-between mb-4">
+                      <h4 className="small text-muted uppercase fw-700">Segmented Contribution</h4>
+                      <div className="flex gap-2">
+                        <button 
+                          className={`btn small ${segmentMetric === 'total_units' ? 'btn-primary' : ''}`} 
+                          onClick={() => setSegmentMetric('total_units')}
+                          style={{ padding: '2px 8px', fontSize: '10px' }}
+                        >Usage</button>
+                        <button 
+                          className={`btn small ${segmentMetric === 'total_revenue' ? 'btn-primary' : ''}`} 
+                          onClick={() => setSegmentMetric('total_revenue')}
+                          style={{ padding: '2px 8px', fontSize: '10px' }}
+                        >Revenue</button>
+                      </div>
+                    </div>
+                    <ResponsiveContainer width="100%" height="80%">
                       <PieChart>
-                        <Pie data={segmentData.map(d => ({ name: d.segment, value: d.total_units }))} innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value" nameKey="name" label>
+                        <Pie 
+                          data={segmentData.map(d => ({ name: d.segment, value: d[segmentMetric] }))} 
+                          innerRadius={60} 
+                          outerRadius={80} 
+                          paddingAngle={5} 
+                          dataKey="value" 
+                          nameKey="name" 
+                          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        >
                           {segmentData.map((entry, index) => (<Cell key={"cell-" + index} fill={['#0ea5e9', '#10b981', '#f59e0b', '#8b5cf6'][index % 4]} />))}
                         </Pie>
-                        <Tooltip />
-                        <Legend />
+                        <Tooltip formatter={(value) => segmentMetric === 'total_revenue' ? `LSL ${parseFloat(value).toFixed(2)}` : `${value} kl`} />
+                        <Legend verticalAlign="bottom" height={36}/>
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
@@ -1457,34 +1483,6 @@ export default function App() {
 
             {activeTab === 'users' && (
               <>
-                {user.role?.toLowerCase() === 'admin' && (
-                  <div className="glass-card mb-6">
-                    <div className="flex-between mb-6">
-                      <h3>Usage Recording System</h3>
-                      <Activity className="text-muted" size={20} />
-                    </div>
-                    {usageMsg && <div style={{ color: 'var(--success)', marginBottom: '1rem', fontWeight: 600 }}>{usageMsg}</div>}
-                    <form onSubmit={handleManualUsage} className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                      <div className="input-group">
-                        <label className="small text-muted mb-1 block">Select Account</label>
-                        <select className="input-field" value={selectedCustomer || ''} onChange={e => setSelectedCustomer(e.target.value)} required>
-                          <option value="" disabled>-- Choose --</option>
-                          {customers.map(c => <option key={c.account_number} value={c.account_number}>{c.account_number} - {c.first_name}</option>)}
-                        </select>
-                      </div>
-                      <div className="input-group">
-                        <label className="small text-muted mb-1 block">Billing Cycle</label>
-                        <input className="input-field" value={manualUsage.month} onChange={e => setManualUsage({ ...manualUsage, month: e.target.value })} placeholder="e.g. March 2026" required />
-                      </div>
-                      <div className="input-group">
-                        <label className="small text-muted mb-1 block">Usage Volume (kl)</label>
-                        <input type="number" className="input-field" value={manualUsage.units} onChange={e => setManualUsage({ ...manualUsage, units: e.target.value })} placeholder="Units" required />
-                      </div>
-                      <button type="submit" className="btn btn-primary" style={{ height: '48px', marginTop: 'auto' }}>Commit Entry</button>
-                    </form>
-                  </div>
-                )}
-
                 <div className="glass-card mb-6">
                   <div className="flex-between mb-4">
                     <h3>Customer Management</h3>
@@ -1554,6 +1552,81 @@ export default function App() {
           </div>
         </div>
       </>
+    )}
+
+    {activeTab === 'manual' && (
+      <div className="glass-card mb-6 animate-in">
+        <div className="flex-between mb-6">
+          <div>
+            <h3 style={{ margin: 0 }}>Usage Recording System</h3>
+            <p className="text-muted small">Record manual meter readings and auto-generate bills.</p>
+          </div>
+          <Activity className="text-primary" size={24} />
+        </div>
+        
+        {usageMsg && (
+          <div style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', padding: '1rem', borderRadius: '12px', marginBottom: '1.5rem', fontWeight: 600, border: '1px solid var(--success)' }}>
+            <Check size={18} style={{ marginRight: '0.5rem' }} /> {usageMsg}
+          </div>
+        )}
+
+        <form onSubmit={handleManualUsage} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="input-group">
+            <label className="small text-muted mb-2 block fw-600">Select Customer Account</label>
+            <select 
+              className="input-field" 
+              value={selectedCustomer || ''} 
+              onChange={e => setSelectedCustomer(e.target.value)} 
+              required
+              style={{ height: '50px' }}
+            >
+              <option value="" disabled>-- Select Customer --</option>
+              {customers.map(c => (
+                <option key={c.account_number} value={c.account_number}>
+                  {c.account_number} - {c.first_name} {c.last_name} ({c.district})
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="input-group">
+            <label className="small text-muted mb-2 block fw-600">Billing Period / Month</label>
+            <input 
+              className="input-field" 
+              value={manualUsage.month} 
+              onChange={e => setManualUsage({ ...manualUsage, month: e.target.value })} 
+              placeholder="e.g. April 2026" 
+              required 
+              style={{ height: '50px' }}
+            />
+          </div>
+          <div className="input-group">
+            <label className="small text-muted mb-2 block fw-600">Meter Reading (kl)</label>
+            <input 
+              type="number" 
+              className="input-field" 
+              value={manualUsage.units} 
+              onChange={e => setManualUsage({ ...manualUsage, units: e.target.value })} 
+              placeholder="Enter units used" 
+              required 
+              style={{ height: '50px' }}
+            />
+          </div>
+          <div className="input-group flex items-end">
+            <button type="submit" className="btn btn-primary w-full" style={{ height: '50px' }}>
+              Commit & Bill
+            </button>
+          </div>
+        </form>
+
+        <div className="mt-8 p-4 bg-surface-solid rounded-xl border border-dashed border-color">
+          <h4 className="text-muted small uppercase mb-2">Instructions</h4>
+          <ul className="text-muted small" style={{ paddingLeft: '1.2rem' }}>
+            <li>Verify the account number before committing.</li>
+            <li>Units should be in Kiloliters (kl).</li>
+            <li>Committing will automatically generate a bill and notify the customer.</li>
+          </ul>
+        </div>
+      </div>
     )}
 
     {activeTab === 'audit' && (

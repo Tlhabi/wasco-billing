@@ -385,22 +385,45 @@ app.get('/api/reports/usage', async (req, res) => {
     }
 });
 
-// 5b. Get Segmented Usage
+// 5b. Get Segmented Usage & Revenue (Optimized)
 app.get('/api/reports/segments', async (req, res) => {
     try {
+        // Fetch all customers and their types
         const customers = await db.query('SELECT account_number, customer_type FROM customers', []);
+        const custMap = {};
+        customers.forEach(c => custMap[c.account_number] = c.customer_type || 'Residential');
+
+        // Fetch usage from SQLite
         const usageRecords = await lite.all('SELECT account_number, units_used FROM water_usage', []);
+        
+        // Fetch bills from MySQL to get revenue (more accurate for financial "contribution")
+        const billRecords = await db.query('SELECT account_number, total_amount, units_used FROM bills', []);
 
         const segments = {};
+        
+        // Process usage records for "Units" contribution
         usageRecords.forEach(record => {
-            const customer = customers.find(c => c.account_number === record.account_number);
-            const type = customer ? customer.customer_type : 'Unknown';
-            segments[type] = (segments[type] || 0) + record.units_used;
+            const type = custMap[record.account_number] || 'Other';
+            if (!segments[type]) segments[type] = { total_units: 0, total_revenue: 0 };
+            segments[type].total_units += record.units_used;
         });
 
-        const response = Object.keys(segments).map(key => ({ segment: key, total_units: segments[key] }));
+        // Process bill records for "Revenue" contribution
+        billRecords.forEach(bill => {
+            const type = custMap[bill.account_number] || 'Other';
+            if (!segments[type]) segments[type] = { total_units: 0, total_revenue: 0 };
+            segments[type].total_revenue += parseFloat(bill.total_amount || 0);
+        });
+
+        const response = Object.keys(segments).map(key => ({
+            segment: key,
+            total_units: segments[key].total_units,
+            total_revenue: segments[key].total_revenue
+        }));
+
         res.json(response);
     } catch (err) {
+        console.error('Segment report error:', err);
         res.status(500).json({ error: err.message });
     }
 });
