@@ -582,7 +582,7 @@ export default function App() {
       fetchData(user.role.toLowerCase(), user.account_number);
     } catch (err) {
       const errorMsg = err.response?.data?.error || err.message;
-      alert(`⚠️ FAILED TO SAVE TO SERVER: ${errorMsg}\n\nYour changes are only temporary and will be lost on refresh because you are currently in OFFLINE MOCK MODE.`);
+      alert(`âš ï¸ FAILED TO SAVE TO SERVER: ${errorMsg}\n\nYour changes are only temporary and will be lost on refresh because you are currently in OFFLINE MOCK MODE.`);
       setRates(rates.map(r => r.rate_id === editingRate.rate_id ? { ...r, ...rateData } : r));
       setEditingRate(null);
       setNewTierName(''); setNewMinUnits(''); setNewMaxUnits(''); setNewRate('');
@@ -737,7 +737,7 @@ export default function App() {
               <Droplets size={14} /> Lesotho's Water Utility Portal
             </div>
             <h1 style={{ fontSize: 'clamp(3rem, 5vw, 4.5rem)' }}>Pure Water,<br />Smartly Managed.</h1>
-            <p style={{ maxWidth: '500px', fontSize: '1.1rem' }}>Experience seamless utility management across Lesotho's districts — real-time usage tracking, instant bill payments, and live leakage alerts all in one platform.</p>
+            <p style={{ maxWidth: '500px', fontSize: '1.1rem' }}>Experience seamless utility management across Lesotho's districts â€” real-time usage tracking, instant bill payments, and live leakage alerts all in one platform.</p>
             <div className="hero-btns" style={{ justifyContent: 'flex-start', marginTop: '1rem' }}>
               <button className="btn btn-primary" style={{ padding: '0.85rem 2rem', fontSize: '1rem', borderRadius: '14px' }} onClick={() => setView('login')}>
                 <Droplets size={18} /> Access My Portal
@@ -762,7 +762,7 @@ export default function App() {
           </div>
           
           <footer style={{ marginTop: 'auto', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
-            <p>© 2026 Water and Sewerage Company (WASCO) · All rights reserved.</p>
+            <p>Â© 2026 Water and Sewerage Company (WASCO) Â· All rights reserved.</p>
           </footer>
         </div>
 
@@ -797,10 +797,9 @@ export default function App() {
       </div>
     );
   }
-
   if (view === 'login') {
     return (
-      <div className="app-container" style={{ maxWidth: '420px', marginTop: '8vh' }}>
+      <div className="app-container" style={{ maxWidth: '420px', margin: '8vh auto' }}>
         <div className="bg-blobs">
           <div className="blob blob-1"></div>
           <div className="blob blob-2"></div>
@@ -833,7 +832,7 @@ export default function App() {
           </form>
 
           <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
-            <button onClick={() => setView('register')} style={{ background: 'transparent', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontWeight: 600 }}>Create Account →</button>
+            <button onClick={() => setView('register')} style={{ background: 'transparent', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontWeight: 600 }}>Create Account â†’</button>
             <button onClick={fetchPublicData} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontWeight: 500 }}>View Rates</button>
           </div>
         </div>
@@ -843,7 +842,7 @@ export default function App() {
 
   if (view === 'register') {
     return (
-      <div className="app-container" style={{ maxWidth: '560px', marginTop: '4vh' }}>
+      <div className="app-container" style={{ maxWidth: '560px', margin: '4vh auto' }}>
         <div className="bg-blobs">
           <div className="blob blob-1"></div>
           <div className="blob blob-2"></div>
@@ -909,9 +908,9 @@ export default function App() {
             <div>
               <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '0.3rem' }}>Account Category</label>
               <select value={regCustomerType} onChange={e => setRegCustomerType(e.target.value)} className="input-field" style={{ cursor: 'pointer' }}>
-                <option value="Residential">🏠 Residential</option>
-                <option value="Business">🏢 Business</option>
-                <option value="Industrial">🏭 Industrial</option>
+                <option value="Residential">ðŸ  Residential</option>
+                <option value="Business">ðŸ¢ Business</option>
+                <option value="Industrial">ðŸ­ Industrial</option>
               </select>
             </div>
 
@@ -1130,7 +1129,8 @@ export default function App() {
   );
 
   return (
-    <div className="app-layout">
+    <>
+      <div className="app-layout">
       {/* TOAST SYSTEM */}
       <div className="toast-container" style={{ position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 10000, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
         {toasts.map(t => (
@@ -1299,9 +1299,9 @@ export default function App() {
                       <table>
                         <thead><tr><th>Metric Scope</th><th>Current Period</th><th>Variance</th><th>Status</th></tr></thead>
                         <tbody>
-                          <tr><td>Total Consumption</td><td>{currentMonthUnits} kl</td><td className="text-success">↓ 4.2%</td><td><span className="badge success">Normal</span></td></tr>
-                          <tr><td>Calculated Revenue</td><td>LSL {bills.reduce((acc, b) => acc + parseFloat(b.total_amount || 0), 0).toFixed(2)}</td><td className="text-success">↑ 12.1%</td><td><span className="badge primary">Growing</span></td></tr>
-                          <tr><td>Outstanding Balance</td><td>LSL {balances.reduce((acc, b) => acc + parseFloat(b.total_outstanding || 0), 0).toFixed(2)}</td><td className="text-error">↑ 5.3%</td><td><span className="badge warning">Action Required</span></td></tr>
+                          <tr><td>Total Consumption</td><td>{currentMonthUnits} kl</td><td className="text-success">â†“ 4.2%</td><td><span className="badge success">Normal</span></td></tr>
+                          <tr><td>Calculated Revenue</td><td>LSL {bills.reduce((acc, b) => acc + parseFloat(b.total_amount || 0), 0).toFixed(2)}</td><td className="text-success">â†‘ 12.1%</td><td><span className="badge primary">Growing</span></td></tr>
+                          <tr><td>Outstanding Balance</td><td>LSL {balances.reduce((acc, b) => acc + parseFloat(b.total_outstanding || 0), 0).toFixed(2)}</td><td className="text-error">â†‘ 5.3%</td><td><span className="badge warning">Action Required</span></td></tr>
                         </tbody>
                       </table>
                     </div>
@@ -1632,7 +1632,7 @@ export default function App() {
                       color: r.maximum_units > 9000 ? 'var(--primary)' : 'var(--text-main)',
                       border: r.maximum_units > 9000 ? '1px solid rgba(14, 165, 233, 0.2)' : 'none'
                     }}>
-                      {r.maximum_units > 9000 ? 'Unlimited Usage' : r.minimum_units + ' — ' + r.maximum_units + ' Units'}
+                      {r.maximum_units > 9000 ? 'Unlimited Usage' : r.minimum_units + ' â€” ' + r.maximum_units + ' Units'}
                     </span>
                   </td>
                   <td style={{ color: 'var(--success)', fontWeight: 'bold' }}>{parseFloat(r.rate_per_unit).toFixed(2)}</td>
@@ -1688,365 +1688,181 @@ export default function App() {
   </>
 )}
 
-      {view === 'customer' && (
-        <>
-          {/* WATER HERO GAMIFICATION (NEW) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div className="glass-card" style={{ gridColumn: 'span 2', background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(14, 165, 233, 0.1))', animationDelay: '0s' }}>
-              <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-                <div style={{ 
-                  width: '80px', height: '80px', borderRadius: '50%', background: 'white', 
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  boxShadow: '0 10px 25px rgba(16, 185, 129, 0.2)', position: 'relative'
-                }}>
-                  <div style={{ fontSize: '2.5rem' }}>🏆</div>
-                  <div style={{ 
-                    position: 'absolute', bottom: -5, background: 'var(--success)', 
-                    color: 'white', padding: '0.2rem 0.6rem', borderRadius: '99px',
-                    fontSize: '0.7rem', fontWeight: 800
-                  }}>LEVEL 4</div>
-                </div>
-                <div style={{ flex: 1 }}>
-                  <h2 className="mb-1" style={{ color: 'var(--success)', fontSize: '1.5rem' }}>You are a Water Hero!</h2>
-                  <p className="text-muted small">Your usage is <strong>12% lower</strong> than the average in <strong>{user.district || 'your area'}</strong>. Keep up the great conservation work!</p>
-                  <div style={{ marginTop: '0.75rem', width: '100%', height: '8px', background: 'rgba(0,0,0,0.05)', borderRadius: '99px', overflow: 'hidden' }}>
-                    <div style={{ width: '88%', height: '100%', background: 'linear-gradient(90deg, var(--success), var(--primary))' }}></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="glass-card" style={{ background: 'white', animationDelay: '0.1s' }}>
-              <h4 className="mb-4 small text-muted uppercase fw-700">Conservation Badges</h4>
-              <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
-                <div title="Paid on time" style={{ padding: '0.6rem', background: '#f0f9ff', borderRadius: '12px', fontSize: '1.2rem' }}>⚡</div>
-                <div title="Saved 100kl" style={{ padding: '0.6rem', background: '#f0fdf4', borderRadius: '12px', fontSize: '1.2rem' }}>🌱</div>
-                <div title="Leakage Reporter" style={{ padding: '0.6rem', background: '#fff7ed', borderRadius: '12px', fontSize: '1.2rem' }}>🛡️</div>
-                <div title="Legend Status" style={{ padding: '0.6rem', background: '#f8fafc', borderRadius: '12px', fontSize: '1.2rem', opacity: 0.3 }}>👑</div>
-              </div>
-              <p className="mt-4 text-center small text-muted">Earn <strong>King Status</strong> by paying before the 15th!</p>
-            </div>
+{view === 'customer' && (
+  <>
+    {activeTab === 'dashboard' && (
+      <div className="glass-card">
+        <h2 className="mb-4">Welcome, {user.first_name}</h2>
+        <div className="stats-grid mb-6">
+          <div className="glass-card flex-between">
+            <div><h3 className="stat-value">{bills.filter(b => b.account_number === user.account_number && b.payment_status === 'Unpaid').length}</h3><p className="stat-label">Pending Bills</p></div>
+            <div className="stat-icon-wrap" style={{ color: 'var(--error)' }}><Wallet size={22} /></div>
           </div>
-
-          <div className="stats-grid mb-6">
-            <div className="glass-card" style={{ gridColumn: 'span 2', height: '400px' }}>
-              <div className="stat-header mb-4"><h3>Usage Trends</h3><Activity className="text-muted" /></div>
-              <ResponsiveContainer width="100%" height="85%">
-                <BarChart data={bills.filter(b => b.account_number === user.account_number).reverse().slice(0, 6)}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
-                  <XAxis dataKey="billing_month" stroke="var(--text-muted)" />
-                  <YAxis stroke="var(--text-muted)" />
-                  <Tooltip contentStyle={{ borderRadius: '12px' }} />
-                  <Bar dataKey="units_used" fill="var(--primary)" name="Units Used" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="glass-card">
-              <div className="stat-header mb-4"><h3>Report a Leakage</h3><AlertTriangle className="text-warning" /></div>
-              <form onSubmit={handleReportLeakage} className="grid grid-cols-1 gap-4">
-                <input className="input-field" placeholder="Exact Location (e.g. Maseru West Plot 123)" value={leakageLocation} onChange={e => setLeakageLocation(e.target.value)} required />
-                <textarea className="input-field" placeholder="Description of the leakage..." rows={3} value={leakageDesc} onChange={e => setLeakageDesc(e.target.value)} />
-                <button className="btn btn-primary" style={{ justifyContent: 'center' }}>Submit Report</button>
-              </form>
-              {leakageMsg && <p className="text-success small mt-2 fw-600">{leakageMsg}</p>}
-            </div>
-            <div className="glass-card">
-              <div className="stat-header mb-4"><h3>Update My Profile</h3><Settings className="text-muted" /></div>
-              <form onSubmit={handleUpdateProfile} className="grid grid-cols-1 gap-3">
-                <input className="input-field" value={user.email} onChange={e => setUser({...user, email: e.target.value})} placeholder="Email" />
-                <input className="input-field" value={user.phone} onChange={e => setUser({...user, phone: e.target.value})} placeholder="Phone" />
-                <button className="btn btn-primary" style={{ justifyContent: 'center' }}>Save Changes</button>
-              </form>
-            </div>
+          <div className="glass-card flex-between">
+            <div><h3 className="stat-value">LSL {balances.find(b => b.account_number === user.account_number)?.total_outstanding || '0.00'}</h3><p className="stat-label">Current Balance</p></div>
+            <div className="stat-icon-wrap" style={{ color: 'var(--primary)' }}><Activity size={22} /></div>
           </div>
-          <div className="glass-card mb-6">
-            <h2 className="mb-4">My Leakage Reports Status</h2>
-            <div className="table-container">
-              <table>
-                <thead>
-                  <tr><th>Date</th><th>Location</th><th>Status</th><th>Notes</th></tr>
-                </thead>
-                <tbody>
-                  {leakages.filter(l => l.account_number === user.account_number).length === 0 ? (
-                    <tr><td colSpan={4} className="text-center text-muted">You haven't reported any leakages.</td></tr>
-                  ) : (
-                    leakages.filter(l => l.account_number === user.account_number).map(l => (
-                      <tr key={l.report_id}>
-                        <td>{new Date(l.report_date).toLocaleDateString()}</td>
-                        <td>{l.location}</td>
-                        <td>
-                          <span className={`badge ${l.status === 'Reported' ? 'unpaid' : l.status === 'Fixed' ? 'paid' : 'pending'}`}>
-                            {l.status}
-                          </span>
-                        </td>
-                        <td className="small text-muted">{l.description || '-'}</td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </>
-      )}
-
-      {/* ALL VIEWS: Bills Table */}
-      <div className="glass-card mb-6">
-        <div className="flex-between mb-6">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <h2 style={{ margin: 0 }}>{view === 'customer' ? 'My Billing History' : 'All Customers Billing Records'}</h2>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              {['All', 'Paid', 'Unpaid'].map(status => (
-                <button
-                  key={status}
-                  className={`badge ${billStatusFilter === status ? (status === 'Paid' ? 'paid' : (status === 'Unpaid' ? 'unpaid' : 'primary')) : ''}`}
-                  onClick={() => setBillStatusFilter(status)}
-                  style={{ cursor: 'pointer', border: '1px solid var(--glass-border)', padding: '0.3rem 0.8rem' }}
-                >
-                  {status}
-                </button>
-              ))}
-            </div>
-          </div>
-          <button className="btn" onClick={() => fetchData(user.role.toLowerCase(), user.account_number)} style={{ background: 'rgba(14, 165, 233, 0.1)', color: 'var(--primary)' }}>Refresh Data</button>
         </div>
-
-        {loading ? (
-          <div className="skeleton-container" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div className="skeleton" style={{ height: '40px', width: '100%' }}></div>
-            <div className="skeleton" style={{ height: '60px', width: '100%' }}></div>
-            <div className="skeleton" style={{ height: '60px', width: '100%' }}></div>
-            <div className="skeleton" style={{ height: '60px', width: '100%' }}></div>
-          </div>
-        ) : (
-          <div className="table-container">
-            <table>
-              <thead>
-                <tr>
-                  {view !== 'customer' && <th>Account</th>}
-                  <th>Month</th>
-                  <th>Units Used</th>
-                  <th>Amount (LSL)</th>
-                  <th>Due Date</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {displayedBills.length === 0 ? (
-                  <tr><td colSpan={7} className="text-center text-muted">No records found.</td></tr>
-                ) : (
-                  displayedBills.map((bill, idx) => (
-                    <tr key={`${bill.account_number}-${bill.billing_month}-${idx}`}>
-                      {view !== 'customer' && <td><strong>{bill.account_number}</strong></td>}
-                      <td>{bill.billing_month}</td>
-                      <td>{bill.units_used} units</td>
-                      <td style={{ fontWeight: 600 }}>{parseFloat(bill.total_amount).toFixed(2)}</td>
-                      <td>{new Date(bill.due_date).toLocaleDateString()}</td>
-                      <td><span className={`badge ${bill.payment_status === 'Paid' ? 'paid' : 'unpaid'}`}>{bill.payment_status}</span></td>
-                      <td className="no-print" style={{ display: 'flex', gap: '0.5rem' }}>
-                        {bill.payment_status === 'Unpaid' && view !== 'manager' && (
-                          <button className="btn btn-primary" style={{ padding: '0.4rem 0.8rem' }} onClick={() => setPayingBill(bill)}>
-                            Pay Now
-                          </button>
-                        )}
-                        <button className="btn" style={{ padding: '0.4rem 0.8rem', background: 'rgba(0,0,0,0.05)' }} onClick={() => { setBillToPrint(bill); setTimeout(() => window.print(), 100); setTimeout(() => setBillToPrint(null), 1000); }}>
-                          <FileText size={16} />
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        )}
       </div>
+    )}
 
-      {/* PAYMENT METHOD SELECTOR MODAL */}
-      {payingBill && (
-        <div style={{
-          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', 
-          backdropFilter: 'blur(8px)', zIndex: 3000,
-          display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem'
-        }}>
-          <div className="glass-card fadeIn" style={{ width: '100%', maxWidth: '480px', padding: '2.5rem' }}>
-            <h2 className="text-center mb-2">Secure Payment</h2>
-            <p className="text-center text-muted small mb-6">Settling bill for <strong>{payingBill.billing_month}</strong> — Amount: <strong>LSL {parseFloat(payingBill.total_amount).toFixed(2)}</strong></p>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }} className="mb-6">
-              {[
-                { id: 'M-Pesa', label: 'Vodacom M-Pesa', icon: '📱', color: '#e60000' },
-                { id: 'EcoCash', label: 'Econet EcoCash', icon: '💎', color: '#0054a6' },
-                { id: 'Bank Transfer', label: 'Standard Lesotho Bank', icon: '🏦', color: '#0033a0' }
-              ].map(method => (
-                <div 
-                  key={method.id}
-                  onClick={() => setSelectedPayMethod(method.id)}
-                  style={{
-                    padding: '1.25rem', borderRadius: '16px', cursor: 'pointer',
-                    border: `2px solid ${selectedPayMethod === method.id ? method.color : 'rgba(0,0,0,0.05)'}`,
-                    background: selectedPayMethod === method.id ? `${method.color}08` : 'white',
-                    display: 'flex', alignItems: 'center', gap: '1rem',
-                    transition: 'all 0.2s ease'
-                  }}
-                >
-                  <div style={{ fontSize: '1.5rem' }}>{method.icon}</div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 700, color: selectedPayMethod === method.id ? method.color : 'var(--text-main)' }}>{method.label}</div>
-                    <div className="small text-muted">Instant processing</div>
-                  </div>
-                  {selectedPayMethod === method.id && <Check size={20} style={{ color: method.color }} />}
-                </div>
-              ))}
-            </div>
-
-            <div className="flex-between gap-4">
-              <button className="btn" style={{ flex: 1, justifyContent: 'center', background: 'rgba(0,0,0,0.05)' }} onClick={() => setPayingBill(null)}>Cancel</button>
-              <button 
-                className="btn btn-primary" 
-                style={{ flex: 2, justifyContent: 'center', height: '50px', fontSize: '1rem' }}
-                onClick={() => handlePay(payingBill.bill_id, payingBill.account_number, payingBill.billing_month, payingBill.total_amount, selectedPayMethod)}
-              >
-                Confirm LSL {parseFloat(payingBill.total_amount).toFixed(2)}
-              </button>
-            </div>
-            <p className="text-center small text-muted mt-6" style={{ fontSize: '0.7rem' }}>
-              <AlertTriangle size={12} style={{ verticalAlign: 'middle', marginRight: '4px' }} />
-              Payments are simulated for demonstration purposes.
-            </p>
-          </div>
+    {activeTab === 'history' && (
+      <div className="glass-card">
+        <div className="flex-between mb-4">
+          <h3>Billing & Payment History</h3>
+          <History className="text-muted" size={20} />
         </div>
-      )}
-
-      {/* ALL VIEWS: Payments History (from SQLite) */}
-      <div className="glass-card mb-6">
-        <h2 className="mb-4"><History size={24} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '8px' }} /> Payment History</h2>
         <div className="table-container">
-          <table>
+          <table className="data-table">
             <thead>
-              <tr><th>Date</th>{view !== 'customer' && <th>Account</th>}<th>Bill Month</th><th>Method</th><th>Reference</th><th>Amount (LSL)</th></tr>
+              <tr><th>Month</th><th>Units (kl)</th><th>Amount (LSL)</th><th>Status</th><th className="text-right">Action</th></tr>
             </thead>
             <tbody>
-              {payments.length === 0 ? (
-                <tr><td colSpan={view !== 'customer' ? 6 : 5} className="text-center text-muted">No payments found.</td></tr>
-              ) : (
-                payments.map((p, i) => (
-                  <tr key={i}>
-                    <td>{new Date(p.payment_date).toLocaleDateString()}</td>
-                    {view !== 'customer' && <td><strong>{p.account_number}</strong></td>}
-                    <td>{p.bill_month}</td>
-                    <td>{p.payment_method}</td>
-                    <td><span className="text-muted">{p.reference_number}</span></td>
-                    <td style={{ fontWeight: 600, color: 'var(--success)' }}>{parseFloat(p.amount_paid).toFixed(2)}</td>
-                  </tr>
-                ))
-              )}
+              {bills.filter(b => b.account_number === user.account_number).map(b => (
+                <tr key={b.bill_id}>
+                  <td><strong>{b.billing_month}</strong></td>
+                  <td>{b.units_used}</td>
+                  <td className="fw-700">LSL {parseFloat(b.total_amount).toFixed(2)}</td>
+                  <td><span className={`badge ${b.payment_status === 'Paid' ? 'success' : 'unpaid'}`}>{b.payment_status}</span></td>
+                  <td className="text-right">
+                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+                      {b.payment_status !== 'Paid' && <button className="btn btn-primary small" onClick={() => setPayingBill(b)}>Pay Now</button>}
+                      <button className="btn small" style={{ background: 'var(--surface-hover)' }} onClick={() => handlePrint(b)}><FileText size={14} /></button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
       </div>
+    )}
 
-      {/* ADMIN/MANAGER: Leakages Table */}
-      {(view === 'admin' || view === 'manager') && (
-        <div className="glass-card" style={{ borderTop: '4px solid var(--error)' }}>
-          <div className="stat-header mb-6">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <div style={{ background: 'rgba(239, 68, 68, 0.1)', padding: '0.5rem', borderRadius: '12px' }}>
-                <AlertTriangle className="text-error" size={20} />
-              </div>
-              <h2 style={{ margin: 0 }}>Incident & Leakage Management</h2>
-            </div>
-          </div>
-          <div className="table-container" style={{ border: '1px solid var(--glass-border)', background: 'rgba(255,255,255,0.02)' }}>
-            <table>
-              <thead>
-                <tr><th>Report Date</th><th>Account No.</th><th>Physical Location</th><th>Incident Description</th><th className="text-right">Current Status</th></tr>
-              </thead>
-              <tbody>
-                {leakages.length === 0 ? (
-                  <tr><td colSpan={5} className="text-center text-muted p-8">No active incidents reported.</td></tr>
-                ) : (
-                  leakages.map((l, i) => (
-                    <tr key={i}>
-                      <td><span className="text-muted">{new Date(l.report_date).toLocaleDateString()}</span></td>
-                      <td><strong className="text-main">{l.account_number}</strong></td>
-                      <td>{l.location}</td>
-                      <td style={{ maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{l.description}</td>
-                      <td className="text-right">
-                        {view === 'manager' ? (
-                          <span className={`badge ${l.status === 'Fixed' ? 'success' : (l.status === 'Investigating' ? 'warning' : 'unpaid')}`}>
-                            {l.status}
-                          </span>
-                        ) : (
-                          <select
-                            className={`badge ${l.status === 'Fixed' ? 'success' : (l.status === 'Investigating' ? 'warning' : 'unpaid')}`}
-                            value={l.status}
-                            onChange={(e) => handleUpdateLeakage(l.report_id, e.target.value)}
-                            style={{ border: '1px solid var(--glass-border)', background: 'rgba(255,255,255,0.05)', cursor: 'pointer', fontWeight: 600, padding: '0.2rem 0.5rem' }}
-                          >
-                            <option value="Reported">Reported</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Investigating">Investigating</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="Fixed">Fixed</option>
-                          </select>
-                        )}
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+    {activeTab === 'reports' && (
+      <div className="glass-card">
+        <div className="flex-between mb-6">
+          <h3>Report a Leakage or Incident</h3>
+          <AlertTriangle className="text-warning" size={20} />
         </div>
-      )}
+        <form onSubmit={handleReportLeakage} className="grid grid-cols-1 gap-4">
+          <div className="input-group">
+            <label className="small text-muted mb-1 block">Physical Location / Landmark</label>
+            <input className="input-field" placeholder="e.g. Near Plot 45, Maseru West" value={leakageReport.location} onChange={e => setLeakageReport({ ...leakageReport, location: e.target.value })} required />
+          </div>
+          <div className="input-group">
+            <label className="small text-muted mb-1 block">Description of Incident</label>
+            <textarea className="input-field" style={{ minHeight: '120px' }} placeholder="Please describe the issue in detail..." value={leakageReport.description} onChange={e => setLeakageReport({ ...leakageReport, description: e.target.value })} required />
+          </div>
+          <button type="submit" className="btn btn-primary" style={{ height: '50px' }}>Submit Report</button>
+        </form>
+      </div>
+    )}
+  </>
+)}
 
-      {/* Printable Bill Component */}
-      {billToPrint && (
-        <div className="bill-print-header" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999, background: 'white', padding: '2rem' }}>
-          <div style={{ textAlign: 'center', borderBottom: '2px solid #000', paddingBottom: '1rem', marginBottom: '2rem' }}>
-            <Droplets size={48} style={{ color: '#0ea5e9', marginBottom: '0.5rem' }} />
-            <h1 style={{ margin: 0, fontSize: '2rem' }}>WASCO OFFICIAL BILL</h1>
-            <p className="text-muted">Water and Sewerage Company (PTY) LTD</p>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
-            <div>
-              <h3>Customer Details</h3>
-              <p><strong>Account Number:</strong> {billToPrint.account_number}</p>
-              <p><strong>Billing Month:</strong> {billToPrint.billing_month}</p>
-            </div>
-            <div style={{ textAlign: 'right' }}>
-              <h3>Bill Summary</h3>
-              <p><strong>Status:</strong> {billToPrint.payment_status}</p>
-              <p><strong>Due Date:</strong> {new Date(billToPrint.due_date).toLocaleDateString()}</p>
-            </div>
-          </div>
-          <table style={{ width: '100%', marginBottom: '2rem' }}>
-            <thead>
-              <tr style={{ borderBottom: '1px solid #ddd' }}>
-                <th style={{ textAlign: 'left', padding: '0.5rem' }}>Description</th>
-                <th style={{ textAlign: 'right', padding: '0.5rem' }}>Details</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style={{ padding: '0.5rem' }}>Water Consumption</td>
-                <td style={{ textAlign: 'right', padding: '0.5rem' }}>{billToPrint.units_used} Units</td>
-              </tr>
-              <tr style={{ fontWeight: 'bold', fontSize: '1.25rem', borderTop: '2px solid #000' }}>
-                <td style={{ padding: '1rem 0.5rem' }}>TOTAL AMOUNT DUE</td>
-                <td style={{ textAlign: 'right', padding: '1rem 0.5rem' }}>LSL {parseFloat(billToPrint.total_amount).toFixed(2)}</td>
-              </tr>
-            </tbody>
-          </table>
-          <div style={{ marginTop: '4rem', fontSize: '0.8rem', color: '#666', textAlign: 'center' }}>
-            <p>This is a computer generated bill and does not require a signature.</p>
-            <p>Please pay by the due date to avoid service interruption.</p>
-          </div>
-        </div>
-      )}
+</main>
+</div>
 
-      </main>
+{/* PAYMENT METHOD SELECTOR MODAL */}
+{payingBill && (
+  <div style={{
+    position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', 
+    backdropFilter: 'blur(8px)', zIndex: 3000,
+    display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem'
+  }}>
+    <div className="glass-card fadeIn" style={{ width: '100%', maxWidth: '480px', padding: '2.5rem' }}>
+      <h2 className="text-center mb-2">Secure Payment</h2>
+      <p className="text-center text-muted small mb-6">Settling bill for <strong>{payingBill.billing_month}</strong> â€” Amount: <strong>LSL {parseFloat(payingBill.total_amount).toFixed(2)}</strong></p>
+      
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }} className="mb-6">
+        {[
+          { id: 'M-Pesa', label: 'Vodacom M-Pesa', icon: 'ðŸ“±', color: '#e60000' },
+          { id: 'EcoCash', label: 'Econet EcoCash', icon: 'ðŸ’Ž', color: '#0054a6' },
+          { id: 'Bank Transfer', label: 'Standard Lesotho Bank', icon: 'ðŸ¦', color: '#0033a0' }
+        ].map(method => (
+          <div 
+            key={method.id}
+            onClick={() => setSelectedPayMethod(method.id)}
+            style={{
+              padding: '1.25rem', borderRadius: '16px', cursor: 'pointer',
+              border: `2px solid ${selectedPayMethod === method.id ? method.color : 'rgba(0,0,0,0.05)'}`,
+              background: selectedPayMethod === method.id ? `${method.color}08` : 'white',
+              display: 'flex', alignItems: 'center', gap: '1rem',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            <div style={{ fontSize: '1.5rem' }}>{method.icon}</div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontWeight: 700, color: selectedPayMethod === method.id ? method.color : 'var(--text-main)' }}>{method.label}</div>
+              <div className="small text-muted">Instant processing</div>
+            </div>
+            {selectedPayMethod === method.id && <Check size={20} style={{ color: method.color }} />}
+          </div>
+        ))}
+      </div>
+
+      <div className="flex-between gap-4">
+        <button className="btn" style={{ flex: 1, justifyContent: 'center', background: 'rgba(0,0,0,0.05)' }} onClick={() => setPayingBill(null)}>Cancel</button>
+        <button 
+          className="btn btn-primary" 
+          style={{ flex: 2, justifyContent: 'center', height: '50px', fontSize: '1rem' }}
+          onClick={() => handlePay(payingBill.bill_id, payingBill.account_number, payingBill.billing_month, payingBill.total_amount, selectedPayMethod)}
+        >
+          Confirm LSL {parseFloat(payingBill.total_amount).toFixed(2)}
+        </button>
+      </div>
+      <p className="text-center small text-muted mt-6" style={{ fontSize: '0.7rem' }}>
+        <AlertTriangle size={12} style={{ verticalAlign: 'middle', marginRight: '4px' }} />
+        Payments are simulated for demonstration purposes.
+      </p>
     </div>
+  </div>
+)}
+
+{/* Printable Bill Component */}
+{billToPrint && (
+  <div className="bill-print-header" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999, background: 'white', padding: '2rem' }}>
+    <div style={{ textAlign: 'center', borderBottom: '2px solid #000', paddingBottom: '1rem', marginBottom: '2rem' }}>
+      <Droplets size={48} style={{ color: '#0ea5e9', marginBottom: '0.5rem' }} />
+      <h1 style={{ margin: 0, fontSize: '2rem' }}>WASCO OFFICIAL BILL</h1>
+      <p className="text-muted">Water and Sewerage Company (PTY) LTD</p>
+    </div>
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
+      <div>
+        <h3>Customer Details</h3>
+        <p><strong>Account Number:</strong> {billToPrint.account_number}</p>
+        <p><strong>Billing Month:</strong> {billToPrint.billing_month}</p>
+      </div>
+      <div style={{ textAlign: 'right' }}>
+        <h3>Bill Summary</h3>
+        <p><strong>Status:</strong> {billToPrint.payment_status}</p>
+        <p><strong>Due Date:</strong> {new Date(billToPrint.due_date).toLocaleDateString()}</p>
+      </div>
+    </div>
+    <table style={{ width: '100%', marginBottom: '2rem' }}>
+      <thead>
+        <tr style={{ borderBottom: '1px solid #ddd' }}>
+          <th style={{ textAlign: 'left', padding: '0.5rem' }}>Description</th>
+          <th style={{ textAlign: 'right', padding: '0.5rem' }}>Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style={{ padding: '0.5rem' }}>Water Consumption</td>
+          <td style={{ textAlign: 'right', padding: '0.5rem' }}>{billToPrint.units_used} Units</td>
+        </tr>
+        <tr style={{ fontWeight: 'bold', fontSize: '1.25rem', borderTop: '2px solid #000' }}>
+          <td style={{ padding: '1rem 0.5rem' }}>TOTAL AMOUNT DUE</td>
+          <td style={{ textAlign: 'right', padding: '1rem 0.5rem' }}>LSL {parseFloat(billToPrint.total_amount).toFixed(2)}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style={{ marginTop: '4rem', fontSize: '0.8rem', color: '#666', textAlign: 'center' }}>
+      <p>This is a computer generated bill and does not require a signature.</p>
+      <p>Please pay by the due date to avoid service interruption.</p>
+    </div>
+  </div>
+)}
+    </>
   );
 }
