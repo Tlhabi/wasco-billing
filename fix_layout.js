@@ -272,9 +272,11 @@ const sidebarAndMain = `
 `;
 
 // Find where the sidebar nav items start and portals start
-content = content.replace(/\\{\\(view === 'admin' \\|\\| view === 'manager'\\) && \\(\\s*<div className=\\{\\`nav-item \\$\\{activeTab === 'users' \\? 'active' : ''\\}\\`\\} onClick=\\{\\(\\) => setActiveTab\\('users'\\)\\}>\\s*<Users size=\\{18\\} \\/> <span>Customers<\\/span>\\s*<\\/div>\\s*\\)\\}\\s*\\{view === 'admin' && \\(/, sidebarAndMain + managerView + '\\n        {view === \\'admin\\' && (');
+const sidebarRegexStr = "\\s*\\{(?:view === 'admin' \\|\\| view === 'manager') && \\(\\s*<div className=\\{\\`nav-item \\$\\{activeTab === 'users' \\? 'active' : ''\\}\\`\\} onClick=\\{\\(\\) => setActiveTab\\('users'\\)\\}>\\s*<Users size=\\{18\\} \\/> <span>Customers<\\/span>\\s*<\\/div>\\s*\\)\\}\\s*\\{view === 'admin' && \\(";
+content = content.replace(new RegExp(sidebarRegexStr), sidebarAndMain + managerView + '\n        {view === \'admin\' && (');
 
 // Close the main and app-layout tags at the end
-content = content.replace(/\\}\\)\\s*<\\/div>\\s*\\);\\s*\\}/, '})\\n      </main>\\n    </div>\\n  );\\n}');
+const endRegexStr = "\\}\\)\\s*<\\/main>\\s*<\\/div>\\s*\\);\\s*\\}";
+content = content.replace(new RegExp(endRegexStr), '})\n      </main>\n    </div>\n  );\n}');
 
 fs.writeFileSync('frontend/src/App.jsx', content);
