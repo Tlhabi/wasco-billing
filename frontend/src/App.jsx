@@ -729,9 +729,6 @@ export default function App() {
           <header className="top-nav" style={{ margin: '0 0 4rem 0', maxWidth: '100%' }}>
             <div className="logo"><Droplets className="logo-icon" size={26} /> WASCO Portal</div>
             <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-              <button className="theme-toggle" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
-                {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
-              </button>
             </div>
           </header>
 
@@ -984,6 +981,63 @@ export default function App() {
     );
   }
 
+  const filterBills = (billList) => {
+    return billList.filter(b => {
+      const matchesSearch = b.account_number.toLowerCase().includes(billSearch.toLowerCase()) ||
+        b.billing_month.toLowerCase().includes(billSearch.toLowerCase());
+      const matchesStatus = billStatusFilter === 'All' || b.payment_status === billStatusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  };
+
+  const displayedBills = view === 'customer' ? filterBills(bills.filter(b => b.account_number === user.account_number)) : filterBills(bills);
+
+  const filteredCustomers = customers.filter(c =>
+    (c.account_number || '').toLowerCase().includes(customerSearch.toLowerCase()) ||
+    (c.first_name || '').toLowerCase().includes(customerSearch.toLowerCase()) ||
+    (c.last_name || '').toLowerCase().includes(customerSearch.toLowerCase()) ||
+    (c.names || '').toLowerCase().includes(customerSearch.toLowerCase())
+  );
+
+  // Summative Aggregations for Manager
+  const currentMonthUnits = usageReports.length > 0 ? (usageReports[0].total_units || usageReports[0].units_used || 0) : 0;
+  const currentQuarterUnits = usageReports.slice(0, 3).reduce((acc, curr) => acc + (curr.total_units || curr.units_used || 0), 0);
+  const currentYearUnits = usageReports.reduce((acc, curr) => acc + (curr.total_units || curr.units_used || 0), 0);
+
+  const getUsageTrendsData = () => {
+    if (!usageReports || usageReports.length === 0) return [];
+    const grouped = {};
+    const monthOrder = { 'January': 1, 'February': 2, 'March': 3, 'April': 4, 'May': 5, 'June': 6, 'July': 7, 'August': 8, 'September': 9, 'October': 10, 'November': 11, 'December': 12 };
+    
+    usageReports.forEach(r => {
+      let key = (r.billing_month || 'Unknown').trim();
+      if (insightTimeframe === 'Daily' && r.reading_date) {
+        key = new Date(r.reading_date).toLocaleDateString();
+      } else if (insightTimeframe === 'Weekly' && r.reading_date) {
+        const d = new Date(r.reading_date);
+        const wk = new Date(d);
+        wk.setDate(wk.getDate() - wk.getDay());
+        key = `Wk ${wk.toISOString().split('T')[0]}`;
+      } else if (insightTimeframe === 'Quarterly' && r.reading_date) {
+        const d = new Date(r.reading_date);
+        key = `Q${Math.floor(d.getMonth() / 3) + 1} ${d.getFullYear()}`;
+      } else if (insightTimeframe === 'Yearly' && r.reading_date) {
+        key = new Date(r.reading_date).getFullYear().toString();
+      }
+      grouped[key] = (grouped[key] || 0) + (r.units_used || 0);
+    });
+
+    return Object.keys(grouped).sort((a, b) => {
+      const partsA = a.split(' ');
+      const partsB = b.split(' ');
+      if (partsA.length === 2 && monthOrder[partsA[0]]) {
+        if (partsA[1] !== partsB[1]) return partsA[1] - partsB[1];
+        return monthOrder[partsA[0]] - monthOrder[partsB[0]];
+      }
+      return a.localeCompare(b);
+    }).map(k => ({ period: k, total_units: grouped[k] }));
+  };
+
   const topNavJSX = (
     <header className="top-nav" style={{ margin: '0 0 2rem 0', maxWidth: '100%' }}>
       <div>
@@ -1009,10 +1063,6 @@ export default function App() {
             style={{ background: 'transparent', border: 'none', color: 'var(--text-main)', outline: 'none', width: '180px', fontWeight: 500 }}
           />
         </div>
-
-        <button className="theme-toggle" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
-          {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
-        </button>
 
         {user.role?.toLowerCase() === 'customer' && (
           <div style={{ position: 'relative' }}>
@@ -1079,67 +1129,8 @@ export default function App() {
     </header>
   );
 
-  const filterBills = (billList) => {
-    return billList.filter(b => {
-      const matchesSearch = b.account_number.toLowerCase().includes(billSearch.toLowerCase()) ||
-        b.billing_month.toLowerCase().includes(billSearch.toLowerCase());
-      const matchesStatus = billStatusFilter === 'All' || b.payment_status === billStatusFilter;
-      return matchesSearch && matchesStatus;
-    });
-  };
-
-  const displayedBills = view === 'customer' ? filterBills(bills.filter(b => b.account_number === user.account_number)) : filterBills(bills);
-
-  const filteredCustomers = customers.filter(c =>
-    (c.account_number || '').toLowerCase().includes(customerSearch.toLowerCase()) ||
-    (c.first_name || '').toLowerCase().includes(customerSearch.toLowerCase()) ||
-    (c.last_name || '').toLowerCase().includes(customerSearch.toLowerCase()) ||
-    (c.names || '').toLowerCase().includes(customerSearch.toLowerCase())
-  );
-
-  // Summative Aggregations for Manager
-  const currentMonthUnits = usageReports.length > 0 ? (usageReports[0].total_units || usageReports[0].units_used || 0) : 0;
-  const currentQuarterUnits = usageReports.slice(0, 3).reduce((acc, curr) => acc + (curr.total_units || curr.units_used || 0), 0);
-  const currentYearUnits = usageReports.reduce((acc, curr) => acc + (curr.total_units || curr.units_used || 0), 0);
-
-  const getUsageTrendsData = () => {
-    if (!usageReports || usageReports.length === 0) return [];
-    const grouped = {};
-    const monthOrder = { 'January': 1, 'February': 2, 'March': 3, 'April': 4, 'May': 5, 'June': 6, 'July': 7, 'August': 8, 'September': 9, 'October': 10, 'November': 11, 'December': 12 };
-    
-    usageReports.forEach(r => {
-      let key = (r.billing_month || 'Unknown').trim();
-      if (insightTimeframe === 'Daily' && r.reading_date) {
-        key = new Date(r.reading_date).toLocaleDateString();
-      } else if (insightTimeframe === 'Weekly' && r.reading_date) {
-        const d = new Date(r.reading_date);
-        const wk = new Date(d);
-        wk.setDate(wk.getDate() - wk.getDay());
-        key = `Wk ${wk.toISOString().split('T')[0]}`;
-      } else if (insightTimeframe === 'Quarterly' && r.reading_date) {
-        const d = new Date(r.reading_date);
-        key = `Q${Math.floor(d.getMonth() / 3) + 1} ${d.getFullYear()}`;
-      } else if (insightTimeframe === 'Yearly' && r.reading_date) {
-        key = new Date(r.reading_date).getFullYear().toString();
-      }
-      grouped[key] = (grouped[key] || 0) + (r.units_used || 0);
-    });
-
-    return Object.keys(grouped).sort((a, b) => {
-      // Monthly sort: "Month Year"
-      const partsA = a.split(' ');
-      const partsB = b.split(' ');
-      if (partsA.length === 2 && monthOrder[partsA[0]]) {
-        if (partsA[1] !== partsB[1]) return partsA[1] - partsB[1];
-        return monthOrder[partsA[0]] - monthOrder[partsB[0]];
-      }
-      // Fallback to alphabetical for other types or unknown
-      return a.localeCompare(b);
-    }).map(k => ({ period: k, total_units: grouped[k] }));
-  };
-
   return (
-    <div className="app-layout"> {/* TEST COMMENT */}
+    <div className="app-layout">
       {/* TOAST SYSTEM */}
       <div className="toast-container" style={{ position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 10000, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
         {toasts.map(t => (
@@ -1160,45 +1151,57 @@ export default function App() {
         <div className="blob blob-3"></div>
       </div>
 
-      {/* SIDEBAR NAVIGATION */}
+      {/* CLASSIC SIDEBAR NAVIGATION */}
       <aside className="sidebar">
-        <div className="logo" style={{ marginBottom: '3rem', cursor: 'pointer' }} onClick={() => setView(user.role.toLowerCase())}>
+        <div className="sidebar-header">
           <Droplets size={32} className="logo-icon" />
           <h1 style={{ fontSize: '1.5rem', margin: 0 }}>WASCO</h1>
         </div>
 
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        <div className="sidebar-content">
+          <div className="nav-group-label">Core</div>
           <div className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveTab('dashboard')}>
             <LayoutDashboard size={18} /> <span>Dashboard</span>
           </div>
 
           {(view === 'admin' || view === 'manager') && (
-            <div className={`nav-item ${activeTab === 'users' ? 'active' : ''}`} onClick={() => setActiveTab('users')}>
-              <Users size={18} /> <span>Customers</span>
-            </div>
+            <>
+              <div className="nav-group-label">Management</div>
+              <div className={`nav-item ${activeTab === 'users' ? 'active' : ''}`} onClick={() => setActiveTab('users')}>
+                <Users size={18} /> <span>Customers</span>
+              </div>
+              <div className={`nav-item ${activeTab === 'reports' ? 'active' : ''}`} onClick={() => setActiveTab('reports')}>
+                <AlertTriangle size={18} /> <span>Incidents</span>
+              </div>
+            </>
           )}
+
           {view === 'admin' && (
-            <div className={`nav-item ${activeTab === 'rates' ? 'active' : ''}`} onClick={() => setActiveTab('rates')}>
-              <Settings size={18} /> <span>Rates & Billing</span>
-            </div>
+            <>
+              <div className="nav-divider"></div>
+              <div className="nav-group-label">Administration</div>
+              <div className={`nav-item ${activeTab === 'rates' ? 'active' : ''}`} onClick={() => setActiveTab('rates')}>
+                <Settings size={18} /> <span>Rates & Billing</span>
+              </div>
+              <div className={`nav-item ${activeTab === 'audit' ? 'active' : ''}`} onClick={() => setActiveTab('audit')}>
+                <FileText size={18} /> <span>Audit Log</span>
+              </div>
+            </>
           )}
-          {(view === 'admin' || view === 'manager') && (
-            <div className={`nav-item ${activeTab === 'reports' ? 'active' : ''}`} onClick={() => setActiveTab('reports')}>
-              <AlertTriangle size={18} /> <span>Incidents</span>
-            </div>
-          )}
-          {view === 'admin' && (
-            <div className={`nav-item ${activeTab === 'audit' ? 'active' : ''}`} onClick={() => setActiveTab('audit')}>
-              <FileText size={18} /> <span>Audit Log</span>
-            </div>
-          )}
+
           {view === 'manager' && (
-            <div className={`nav-item ${activeTab === 'intelligence' ? 'active' : ''}`} onClick={() => setActiveTab('intelligence')}>
-              <Activity size={18} /> <span>Intelligence</span>
-            </div>
+            <>
+              <div className="nav-divider"></div>
+              <div className="nav-group-label">Analytics</div>
+              <div className={`nav-item ${activeTab === 'intelligence' ? 'active' : ''}`} onClick={() => setActiveTab('intelligence')}>
+                <Activity size={18} /> <span>Intelligence</span>
+              </div>
+            </>
           )}
+
           {view === 'customer' && (
             <>
+              <div className="nav-group-label">Customer Portal</div>
               <div className={`nav-item ${activeTab === 'history' ? 'active' : ''}`} onClick={() => setActiveTab('history')}>
                 <History size={18} /> <span>Billing History</span>
               </div>
@@ -1207,12 +1210,18 @@ export default function App() {
               </div>
             </>
           )}
-
         </div>
 
-        <button className="btn" onClick={handleLogout} style={{ marginTop: 'auto', background: 'rgba(239, 68, 68, 0.1)', color: 'var(--error)', border: 'none', justifyContent: 'center' }}>
-          <LogOut size={18} /> <span>Sign Out</span>
-        </button>
+        <div className="sidebar-footer">
+          <div className="theme-switch-wrapper">
+            <span className="theme-switch-label">Dark Mode</span>
+            <div className="theme-switch" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}></div>
+          </div>
+          
+          <button className="btn w-full" onClick={handleLogout} style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--error)', border: 'none', justifyContent: 'center' }}>
+            <LogOut size={18} /> <span>Sign Out</span>
+          </button>
+        </div>
       </aside>
 
       <main className="main-content">
