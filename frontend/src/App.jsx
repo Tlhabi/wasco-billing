@@ -183,6 +183,14 @@ export default function App() {
   const [leakageMsg, setLeakageMsg] = useState('');
   const [paymentMsg, setPaymentMsg] = useState('');
 
+  // Public Features State
+  const [estimatedUsage, setEstimatedUsage] = useState(15);
+  const [publicLeakageLoc, setPublicLeakageLoc] = useState('');
+  const [publicLeakageDesc, setPublicLeakageDesc] = useState('');
+  const [publicLeakageMsg, setPublicLeakageMsg] = useState('');
+  const [onboardingStep, setOnboardingStep] = useState(1);
+  const [scanProgress, setScanProgress] = useState(0);
+
   // Search & Filter State
   const [customerSearch, setCustomerSearch] = useState('');
   const [billSearch, setBillSearch] = useState('');
@@ -1050,88 +1058,103 @@ export default function App() {
 
   if (view === 'register') {
     return (
-      <div className="app-container" style={{ maxWidth: '560px', margin: '4vh auto' }}>
+      <div className="app-container" style={{ maxWidth: '600px', margin: '4vh auto' }}>
         <div className="bg-blobs">
           <div className="blob blob-1"></div>
           <div className="blob blob-2"></div>
-          <div className="blob blob-3"></div>
         </div>
-        <div className="glass-card">
-          <div className="text-center mb-6">
-            <UserPlus size={48} className="logo-icon mb-4" style={{ margin: '0 auto 1rem' }} />
-            <h2>Customer Registration</h2>
-            <p className="text-muted">Create an account to manage your water bills</p>
-          </div>
-
-          <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {/* Row 1: Username + Password */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <div>
-                <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '0.3rem' }}>Desired Username</label>
-                <input type="text" placeholder="e.g. john_doe" value={username} onChange={e => setUsername(e.target.value)} required className="input-field" />
+        <div className="glass-card" style={{ padding: '3rem', position: 'relative', overflow: 'hidden' }}>
+          <div className="cyber-grid opacity-20"></div>
+          <div className="relative z-10">
+            <div className="text-center mb-8">
+              <div style={{ display: 'inline-flex', background: 'rgba(14,165,233,0.1)', padding: '1rem', borderRadius: '20px', marginBottom: '1.5rem', boxShadow: '0 0 20px rgba(14,165,233,0.2)' }}>
+                <Fingerprint size={48} className="text-primary pulse-icon" />
               </div>
-              <div>
-                <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '0.3rem' }}>Password</label>
-                <input type="password" placeholder="Min. 6 characters" value={password} onChange={e => setPassword(e.target.value)} required className="input-field" />
-              </div>
+              <h2 className="font-mono">INITIALIZE CONNECTION</h2>
+              <p className="text-muted small">Establish your identity within the WASCO network</p>
             </div>
 
-            {/* Row 2: First Name + Last Name */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <div>
-                <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '0.3rem' }}>First Name</label>
-                <input type="text" placeholder="First Name" value={regFirstName} onChange={e => setRegFirstName(e.target.value)} required className="input-field" />
-              </div>
-              <div>
-                <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '0.3rem' }}>Last Name</label>
-                <input type="text" placeholder="Last Name" value={regLastName} onChange={e => setRegLastName(e.target.value)} required className="input-field" />
-              </div>
+            <div className="flex-between mb-8" style={{ background: 'var(--surface-hover)', borderRadius: '99px', padding: '0.25rem' }}>
+              {[1, 2, 3].map(step => (
+                <div key={step} onClick={() => setOnboardingStep(step)} style={{ flex: 1, textAlign: 'center', padding: '0.5rem', borderRadius: '99px', background: onboardingStep === step ? 'var(--primary)' : 'transparent', color: onboardingStep === step ? '#fff' : 'var(--text-muted)', fontWeight: 800, cursor: 'pointer', transition: 'all 0.3s' }}>
+                  STEP 0{step}
+                </div>
+              ))}
             </div>
 
-            {/* Row 3: Email (full width) */}
-            <div>
-              <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '0.3rem' }}>Email Address</label>
-              <input type="email" placeholder="e.g. john@example.com" value={regEmail} onChange={e => setRegEmail(e.target.value)} required className="input-field" />
+            <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              {onboardingStep === 1 && (
+                <div className="animate-in grid gap-4">
+                  <div className="input-group">
+                    <label className="font-mono small text-primary mb-2 block">NETWORK_ID (Username)</label>
+                    <input type="text" placeholder="e.g. john_doe" value={username} onChange={e => setUsername(e.target.value)} required className="input-field font-mono" style={{ height: '55px', background: 'rgba(0,0,0,0.2)' }} />
+                  </div>
+                  <div className="input-group">
+                    <label className="font-mono small text-primary mb-2 block">ACCESS_KEY (Password)</label>
+                    <input type="password" placeholder="Min. 6 characters" value={password} onChange={e => setPassword(e.target.value)} required className="input-field font-mono" style={{ height: '55px', background: 'rgba(0,0,0,0.2)' }} />
+                  </div>
+                  <button type="button" onClick={() => setOnboardingStep(2)} className="btn btn-primary mt-4" style={{ height: '55px', fontFamily: 'monospace', letterSpacing: '2px' }}>PROCEED &gt;&gt;</button>
+                </div>
+              )}
+
+              {onboardingStep === 2 && (
+                <div className="animate-in grid gap-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="input-group">
+                      <label className="font-mono small text-primary mb-2 block">FIRST_NAME</label>
+                      <input type="text" value={regFirstName} onChange={e => setRegFirstName(e.target.value)} required className="input-field" style={{ height: '55px', background: 'rgba(0,0,0,0.2)' }} />
+                    </div>
+                    <div className="input-group">
+                      <label className="font-mono small text-primary mb-2 block">LAST_NAME</label>
+                      <input type="text" value={regLastName} onChange={e => setRegLastName(e.target.value)} required className="input-field" style={{ height: '55px', background: 'rgba(0,0,0,0.2)' }} />
+                    </div>
+                  </div>
+                  <div className="input-group">
+                    <label className="font-mono small text-primary mb-2 block">COMMS_LINK (Email)</label>
+                    <input type="email" value={regEmail} onChange={e => setRegEmail(e.target.value)} required className="input-field" style={{ height: '55px', background: 'rgba(0,0,0,0.2)' }} />
+                  </div>
+                  <div className="input-group">
+                    <label className="font-mono small text-primary mb-2 block">COMMS_LINK_2 (Phone)</label>
+                    <input type="text" value={regPhone} onChange={e => setRegPhone(e.target.value)} required className="input-field" style={{ height: '55px', background: 'rgba(0,0,0,0.2)' }} />
+                  </div>
+                  <button type="button" onClick={() => setOnboardingStep(3)} className="btn btn-primary mt-4" style={{ height: '55px', fontFamily: 'monospace', letterSpacing: '2px' }}>PROCEED &gt;&gt;</button>
+                </div>
+              )}
+
+              {onboardingStep === 3 && (
+                <div className="animate-in grid gap-4">
+                  <div className="input-group">
+                    <label className="font-mono small text-primary mb-2 block">GEOLOCATION_TAG (Address)</label>
+                    <input type="text" placeholder="Plot 123..." value={regAddress} onChange={e => setRegAddress(e.target.value)} required className="input-field" style={{ height: '55px', background: 'rgba(0,0,0,0.2)' }} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="input-group">
+                      <label className="font-mono small text-primary mb-2 block">ZONE (District)</label>
+                      <input type="text" value={regDistrict} onChange={e => setRegDistrict(e.target.value)} required className="input-field" style={{ height: '55px', background: 'rgba(0,0,0,0.2)' }} />
+                    </div>
+                    <div className="input-group">
+                      <label className="font-mono small text-primary mb-2 block">CLASSIFICATION</label>
+                      <select value={regCustomerType} onChange={e => setRegCustomerType(e.target.value)} className="input-field font-mono" style={{ height: '55px', background: 'rgba(0,0,0,0.2)' }}>
+                        <option value="Residential">RESIDENTIAL</option>
+                        <option value="Business">BUSINESS</option>
+                        <option value="Industrial">INDUSTRIAL</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  {registerError && <div className="text-error font-mono text-center p-3" style={{ background: 'rgba(239,68,68,0.1)', borderRadius: '8px' }}>{registerError}</div>}
+                  {registerSuccess && <div className="text-success font-mono text-center p-3" style={{ background: 'rgba(16,185,129,0.1)', borderRadius: '8px' }}>{registerSuccess}</div>}
+
+                  <button type="submit" className="btn mt-4" style={{ height: '60px', background: 'var(--success)', color: '#000', fontFamily: 'monospace', fontSize: '1.2rem', fontWeight: 800, letterSpacing: '2px', boxShadow: '0 0 20px rgba(16,185,129,0.4)' }}>ESTABLISH LINK</button>
+                </div>
+              )}
+            </form>
+
+            <div className="text-center mt-8 pt-6" style={{ borderTop: '1px solid var(--border-color)' }}>
+              <button onClick={() => setView('login')} className="font-mono text-muted hover:text-primary transition-colors bg-transparent border-none cursor-pointer">
+                [ ABORT_AND_RETURN_TO_LOGIN ]
+              </button>
             </div>
-
-            {/* Row 4: Address (full width) */}
-            <div>
-              <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '0.3rem' }}>Physical Address</label>
-              <input type="text" placeholder="e.g. Plot 123, Maseru West" value={regAddress} onChange={e => setRegAddress(e.target.value)} required className="input-field" />
-            </div>
-
-            {/* Row 5: District + Phone */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <div>
-                <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '0.3rem' }}>District</label>
-                <input type="text" placeholder="e.g. Maseru" value={regDistrict} onChange={e => setRegDistrict(e.target.value)} required className="input-field" />
-              </div>
-              <div>
-                <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '0.3rem' }}>Phone Number</label>
-                <input type="text" placeholder="e.g. 5812 3456" value={regPhone} onChange={e => setRegPhone(e.target.value)} required className="input-field" />
-              </div>
-            </div>
-
-            {/* Row 6: Account Category (full width) */}
-            <div>
-              <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '0.3rem' }}>Account Category</label>
-              <select value={regCustomerType} onChange={e => setRegCustomerType(e.target.value)} className="input-field" style={{ cursor: 'pointer' }}>
-                <option value="Residential">ðŸ  Residential</option>
-                <option value="Business">ðŸ¢ Business</option>
-                <option value="Industrial">ðŸ­ Industrial</option>
-              </select>
-            </div>
-
-            {registerError && <div style={{ color: 'var(--error)', fontWeight: 600, fontSize: '0.875rem', padding: '0.5rem 0.75rem', background: 'rgba(239,68,68,0.07)', borderRadius: '8px' }}>{registerError}</div>}
-            {registerSuccess && <div style={{ color: 'var(--success)', fontWeight: 600, fontSize: '0.875rem', padding: '0.5rem 0.75rem', background: 'rgba(16,185,129,0.07)', borderRadius: '8px' }}>{registerSuccess}</div>}
-
-            <button type="submit" className="btn btn-primary" style={{ padding: '0.85rem', fontSize: '1rem', borderRadius: '12px', justifyContent: 'center', marginTop: '0.5rem' }}>
-              Register Account
-            </button>
-          </form>
-
-          <div className="text-center" style={{ marginTop: '1.25rem' }}>
-            <button onClick={() => setView('login')} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '0.875rem' }}>Already have an account? <span style={{ color: 'var(--primary)', fontWeight: 600 }}>Login</span></button>
           </div>
         </div>
       </div>
@@ -1139,90 +1162,126 @@ export default function App() {
   }
 
   if (view === 'public') {
+    const calculateEstimatedBill = () => {
+      let remaining = estimatedUsage;
+      let total = 0;
+      
+      const resRates = rates.filter(r => r.tier_name.toLowerCase().includes('residential') || r.tier_name.toLowerCase().includes('band') || r.tier_name.toLowerCase().includes('tier'))
+                          .sort((a,b) => a.minimum_units - b.minimum_units);
+      
+      if(resRates.length > 0) {
+        for(let r of resRates) {
+          if (remaining <= 0) break;
+          const bandSize = r.maximum_units - r.minimum_units;
+          const unitsInBand = Math.min(remaining, bandSize);
+          total += unitsInBand * parseFloat(r.rate_per_unit);
+          remaining -= unitsInBand;
+        }
+      } else {
+        total = estimatedUsage * 5.50; // fallback
+      }
+      return total.toFixed(2);
+    };
+
     return (
       <div className="app-container" style={{ padding: '3rem 5vw' }}>
-        <div className="bg-blobs">
-          <div className="blob blob-1"></div>
-          <div className="blob blob-2" style={{ opacity: 0.3 }}></div>
-          <div className="blob blob-3"></div>
-        </div>
+        <div className="bg-blobs"><div className="blob blob-1"></div><div className="blob blob-3"></div></div>
         
-        <header className="flex-between mb-12 animate-in">
-          <div className="logo">
-            <div style={{ background: 'linear-gradient(135deg, var(--primary), var(--secondary))', padding: '0.5rem', borderRadius: '12px', color: 'white', display: 'flex' }}>
-              <Droplets size={24} />
+        <header className="flex-between mb-12 animate-in glass-card" style={{ padding: '1rem 2rem', borderRadius: '100px' }}>
+          <div className="logo flex items-center gap-3">
+            <div style={{ background: 'var(--primary)', padding: '0.5rem', borderRadius: '50%', color: '#fff', boxShadow: '0 0 15px var(--primary)' }}>
+              <Activity size={24} className="pulse-icon" />
             </div>
-            <h1>WASCO <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>Public Services</span></h1>
+            <h2 className="font-mono m-0">WASCO_PUBLIC_NODE</h2>
           </div>
-          <button className="btn btn-primary" onClick={() => setView('login')} style={{ padding: '0.8rem 2rem', borderRadius: '14px', fontWeight: 700 }}>
-            <User size={18} /> Access Portal
-          </button>
+          <div className="flex gap-4">
+            <button className="btn glass-btn font-mono" onClick={() => setView('register')}>[ REGISTER ]</button>
+            <button className="btn btn-primary font-mono" onClick={() => setView('login')}>[ SECURE_LOGIN ]</button>
+          </div>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 animate-in" style={{ animationDelay: '0.1s' }}>
-          <div className="glass-card" style={{ padding: '2.5rem', borderLeft: '5px solid var(--primary)' }}>
-            <h2 style={{ fontSize: '1.75rem', marginBottom: '1.5rem' }}>Our Commitment</h2>
-            <p className="text-muted mb-8" style={{ fontSize: '1.1rem' }}>WASCO is dedicated to providing sustainable water and sewerage services to the nation of Lesotho, ensuring health, prosperity, and environmental integrity.</p>
-            
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
-              <div>
-                <div style={{ background: 'rgba(14, 165, 233, 0.1)', color: 'var(--primary)', width: '50px', height: '50px', borderRadius: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem' }}>
-                  <Droplets size={24} />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 animate-in" style={{ animationDelay: '0.1s' }}>
+          {/* Bill Estimator */}
+          <div className="glass-card hud-panel" style={{ borderTop: '4px solid var(--primary)', position: 'relative', overflow: 'hidden' }}>
+            <div className="cyber-grid opacity-20"></div>
+            <div className="relative z-10">
+              <h3 className="font-mono mb-2 flex items-center gap-2"><BarChartIcon size={20} className="text-primary"/> PREDICTIVE_BILL_ESTIMATOR</h3>
+              <p className="text-muted small mb-8">Calculate projected monthly water tariffs based on live WASCO utility rates.</p>
+              
+              <div className="mb-8">
+                <div className="flex-between mb-4">
+                  <span className="font-mono text-primary font-bold">PROJECTED_USAGE:</span>
+                  <span className="font-mono text-2xl text-white">{estimatedUsage} <span className="text-sm text-muted">kl</span></span>
                 </div>
-                <h4 style={{ marginBottom: '0.5rem' }}>Potable Water</h4>
-                <p className="small">High-quality piped water compliant with international standards.</p>
+                <input 
+                  type="range" 
+                  min="0" max="200" step="1" 
+                  value={estimatedUsage} 
+                  onChange={e => setEstimatedUsage(Number(e.target.value))} 
+                  style={{ width: '100%', accentColor: 'var(--primary)', cursor: 'pointer' }}
+                />
+                <div className="flex-between text-xs text-muted font-mono mt-2">
+                  <span>0 kl</span><span>100 kl</span><span>200 kl</span>
+                </div>
               </div>
-              <div>
-                <div style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', width: '50px', height: '50px', borderRadius: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem' }}>
-                  <Activity size={24} />
-                </div>
-                <h4 style={{ marginBottom: '0.5rem' }}>Sanitation</h4>
-                <p className="small">Efficient wastewater management for urban and peri-urban centers.</p>
+
+              <div className="p-6 rounded-2xl text-center" style={{ background: 'linear-gradient(135deg, rgba(14,165,233,0.1), transparent)', border: '1px solid rgba(14,165,233,0.3)' }}>
+                <div className="font-mono text-muted text-sm mb-2">ESTIMATED_MONTHLY_TARIFF</div>
+                <div className="font-mono text-4xl fw-800 text-primary" style={{ textShadow: '0 0 20px rgba(14,165,233,0.5)' }}>LSL {calculateEstimatedBill()}</div>
               </div>
             </div>
           </div>
 
-          <div className="glass-card" style={{ padding: '2.5rem', borderLeft: '5px solid var(--secondary)' }}>
-            <h2 style={{ fontSize: '1.75rem', marginBottom: '1.5rem' }}>Current Billing Rates</h2>
-            <p className="text-muted mb-6">Transparent pricing based on monthly consumption tiers. Rates are subject to periodic review by the LEWA.</p>
-            
-            <div className="table-container" style={{ border: '1px solid var(--border-color)', background: 'rgba(255,255,255,0.3)', borderRadius: '20px' }}>
-              <table>
-                <thead>
-                  <tr style={{ background: 'rgba(0,0,0,0.02)' }}>
-                    <th style={{ padding: '1.25rem' }}>Service Category</th>
-                    <th>Usage (Units)</th>
-                    <th className="text-right" style={{ paddingRight: '1.5rem' }}>Rate (LSL)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rates.map(r => (
-                    <tr key={r.rate_id}>
-                      <td style={{ padding: '1.25rem' }}><strong>{r.tier_name}</strong></td>
-                      <td>
-                        <span className="badge primary" style={{ background: 'rgba(14, 165, 233, 0.05)', border: 'none' }}>
-                          {r.minimum_units} - {r.maximum_units > 900000 ? 'Unlimited' : r.maximum_units}
-                        </span>
-                      </td>
-                      <td className="text-right" style={{ paddingRight: '1.5rem' }}>
-                        <span style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--success)' }}>{parseFloat(r.rate_per_unit).toFixed(2)}</span>
-                        <span className="small text-muted" style={{ marginLeft: '4px' }}>/ unit</span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          {/* Service Map */}
+          <div className="glass-card hud-panel" style={{ borderTop: '4px solid var(--success)', position: 'relative', overflow: 'hidden' }}>
+            <div className="radar-sweep" style={{ opacity: 0.1, background: 'conic-gradient(from 0deg, transparent 70%, var(--success) 100%)' }}></div>
+            <div className="relative z-10">
+              <h3 className="font-mono mb-2 flex items-center gap-2"><Activity size={20} className="text-success"/> LIVE_NETWORK_STATUS</h3>
+              <p className="text-muted small mb-8">Real-time telemetry of regional water distribution pressure grids.</p>
+              
+              <div className="grid gap-4">
+                {['Maseru West', 'Leribe Central', 'Berea South', 'Mafeteng'].map((zone, i) => (
+                  <div key={zone} className="flex-between p-4 rounded-xl" style={{ background: 'rgba(0,0,0,0.3)', borderLeft: i === 0 ? '4px solid var(--warning)' : '4px solid var(--success)' }}>
+                    <div className="font-mono font-bold text-white">{zone}</div>
+                    <div className="flex items-center gap-3">
+                      <div className="font-mono text-xs text-muted text-right">
+                        <div>PRESSURE: {i === 0 ? '72%' : '98%'}</div>
+                        <div>PURITY: 99.9%</div>
+                      </div>
+                      <span className={`badge font-mono ${i === 0 ? 'warning' : 'success'}`}>{i === 0 ? 'MAINTENANCE' : 'OPTIMAL'}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="glass-card text-center p-12 animate-in" style={{ animationDelay: '0.2s', background: 'linear-gradient(135deg, rgba(14,165,233,0.05), rgba(99,102,241,0.05))' }}>
-          <h2 style={{ marginBottom: '1rem' }}>Need Assistance?</h2>
-          <p className="text-muted mb-8" style={{ maxWidth: '600px', margin: '0 auto 2rem' }}>Our dedicated support team is available to help you with any queries regarding your billing, service connections, or incident reporting.</p>
-          <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <div className="badge primary" style={{ padding: '0.75rem 1.5rem', fontSize: '1rem' }}><FileText size={18} /> Customer Care: 800 22 000</div>
-            <div className="badge secondary" style={{ padding: '0.75rem 1.5rem', fontSize: '1rem' }}><Bell size={18} /> Emergency Hotline: 5221 0000</div>
-          </div>
+        {/* Anonymous Incident Reporter */}
+        <div className="glass-card hud-panel animate-in" style={{ animationDelay: '0.2s', borderTop: '4px solid var(--error)', position: 'relative', overflow: 'hidden' }}>
+           <div className="warning-stripe" style={{ opacity: 0.2 }}></div>
+           <div className="relative z-10 max-w-2xl mx-auto text-center">
+              <div className="inline-flex items-center justify-center p-4 rounded-full mb-4" style={{ background: 'rgba(239,68,68,0.1)', color: 'var(--error)' }}>
+                <AlertTriangle size={32} className="pulse-icon" />
+              </div>
+              <h3 className="font-mono mb-2">ANONYMOUS_FAULT_REPORTER</h3>
+              <p className="text-muted small mb-8">Report burst pipes, massive leakages, or contaminated water directly to the regional command center without an account.</p>
+              
+              <form onSubmit={(e) => { e.preventDefault(); setPublicLeakageMsg('INCIDENT LOGGED IN COMMAND CENTER. DISPATCH PENDING.'); setTimeout(() => setPublicLeakageMsg(''), 4000); }} className="text-left grid gap-4">
+                <div className="input-group">
+                  <label className="font-mono small text-error mb-2 block">GEOLOCATION_COORDINATES (Location Address)</label>
+                  <input type="text" value={publicLeakageLoc} onChange={e => setPublicLeakageLoc(e.target.value)} required placeholder="e.g. Near Pioneer Mall intersection" className="input-field font-mono" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(239,68,68,0.3)' }} />
+                </div>
+                <div className="input-group">
+                  <label className="font-mono small text-error mb-2 block">VISUAL_ANALYSIS (Description)</label>
+                  <textarea value={publicLeakageDesc} onChange={e => setPublicLeakageDesc(e.target.value)} required placeholder="Describe the severity of the fault..." className="input-field font-mono" rows="3" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(239,68,68,0.3)' }}></textarea>
+                </div>
+                
+                {publicLeakageMsg && <div className="p-3 text-center font-mono text-error font-bold" style={{ background: 'rgba(239,68,68,0.1)', borderRadius: '8px' }}>{publicLeakageMsg}</div>}
+                
+                <button type="submit" className="btn w-full mt-2 font-mono text-xl" style={{ height: '60px', background: 'var(--error)', color: '#fff', boxShadow: '0 0 20px rgba(239,68,68,0.4)' }}>[ TRANSMIT_ALERT ]</button>
+              </form>
+           </div>
         </div>
       </div>
     );
@@ -1588,55 +1647,73 @@ export default function App() {
             )}
 
             {activeTab === 'intelligence' && (
-              <div className="glass-card" style={{ borderLeft: '4px solid var(--secondary)', background: 'rgba(99, 102, 241, 0.03)' }}>
-                <div className="stat-header mb-6">
+              <div className="glass-card intelligence-hud" style={{ borderLeft: '4px solid var(--secondary)', background: 'linear-gradient(135deg, rgba(15,23,42,0.8), rgba(99,102,241,0.15))', color: '#fff', position: 'relative', overflow: 'hidden' }}>
+                <div className="radar-sweep"></div>
+                <div className="cyber-grid"></div>
+                
+                <div className="stat-header mb-6 relative z-10">
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <div style={{ background: 'var(--secondary)', color: 'white', padding: '0.5rem', borderRadius: '12px' }}>
-                      <Activity size={20} />
+                    <div className="pulse-icon" style={{ background: 'var(--secondary)', color: 'white', padding: '0.6rem', borderRadius: '12px', boxShadow: '0 0 20px var(--secondary)' }}>
+                      <Activity size={24} />
                     </div>
-                    <h3>Network Intelligence & Risk Analysis</h3>
+                    <div>
+                      <h3 style={{ color: '#fff', textShadow: '0 0 10px rgba(255,255,255,0.3)', margin: 0 }}>Projected Intelligence Grid</h3>
+                      <p className="small text-muted" style={{ color: 'var(--secondary)' }}>Model v4.0.2 - Deep Learning Analysis</p>
+                    </div>
                   </div>
-                  <div className="badge secondary">PROACTIVE_MODE</div>
+                  <div className="badge" style={{ background: 'rgba(52,211,153,0.2)', color: 'var(--success)', border: '1px solid var(--success)', boxShadow: '0 0 10px var(--success)' }}>
+                    <span className="dot-indicator bg-success mr-2"></span> PROACTIVE_MODE
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div>
-                    <h4 className="mb-4 small text-muted uppercase">District Risk Heatmap</h4>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
+                  <div className="hud-panel p-6 rounded-2xl" style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(99,102,241,0.3)', backdropFilter: 'blur(10px)' }}>
+                    <h4 className="mb-4 small uppercase" style={{ color: 'var(--secondary)', letterSpacing: '0.1em' }}>Dist. Risk Heatmap</h4>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                       {[
-                        { district: 'Maseru', risk: 'High', score: 82, color: 'var(--error)' },
-                        { district: 'Leribe', risk: 'Moderate', score: 45, color: 'var(--warning)' },
-                        { district: 'Berea', risk: 'Low', score: 18, color: 'var(--success)' },
-                        { district: 'Mafeteng', risk: 'Stable', score: 12, color: 'var(--primary)' }
+                        { district: 'Maseru', risk: 'Critical', score: 82, color: 'var(--error)' },
+                        { district: 'Leribe', risk: 'Elevated', score: 45, color: 'var(--warning)' },
+                        { district: 'Berea', risk: 'Nominal', score: 18, color: 'var(--success)' },
+                        { district: 'Mafeteng', risk: 'Nominal', score: 12, color: 'var(--primary)' }
                       ].map(d => (
-                        <div key={d.district} style={{ padding: '1rem', background: 'var(--surface-solid)', borderRadius: '14px', border: '1px solid var(--glass-border)' }}>
+                        <div key={d.district} className="group">
                           <div className="flex-between mb-2">
-                            <span style={{ fontWeight: 700 }}>{d.district}</span>
-                            <span className="badge" style={{ background: d.color + '15', color: d.color }}>{d.risk}</span>
+                            <span style={{ fontWeight: 700, fontFamily: 'monospace' }}>{d.district}</span>
+                            <span className="badge font-mono" style={{ background: d.color + '20', color: d.color, border: `1px solid ${d.color}50` }}>{d.risk}</span>
                           </div>
-                          <div style={{ width: '100%', height: '6px', background: 'rgba(0,0,0,0.05)', borderRadius: '99px', overflow: 'hidden' }}>
-                            <div style={{ width: d.score + '%', height: '100%', background: d.color }}></div>
+                          <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '99px', overflow: 'hidden', position: 'relative' }}>
+                            <div style={{ width: d.score + '%', height: '100%', background: d.color, boxShadow: `0 0 10px ${d.color}`, transition: 'width 1s cubic-bezier(0.4, 0, 0.2, 1)' }}></div>
                           </div>
                         </div>
                       ))}
                     </div>
                   </div>
-                  <div style={{ background: 'rgba(255,255,255,0.4)', padding: '1.5rem', borderRadius: '20px', border: '1px dashed var(--secondary)' }}>
-                    <h4 className="mb-3">Predictive Pipe-Health Analysis</h4>
-                    <p className="small text-muted mb-6">Algorithm detecting anomalous usage spikes vs. report frequency.</p>
+                  
+                  <div className="hud-panel p-6 rounded-2xl" style={{ background: 'rgba(0,0,0,0.4)', border: '1px dashed rgba(239,68,68,0.4)', position: 'relative', overflow: 'hidden' }}>
+                    <div className="warning-stripe"></div>
+                    <h4 className="mb-2 uppercase" style={{ color: 'var(--error)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <AlertTriangle size={18} className="animate-pulse" /> Anomalous AI Detection
+                    </h4>
+                    <p className="small mb-6" style={{ color: 'rgba(255,255,255,0.6)' }}>Neural network identified pressure variance delta of 14.2%.</p>
                     
-                    <div style={{ padding: '1rem', background: 'var(--secondary)', color: 'white', borderRadius: '16px', marginBottom: '1rem' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                        <AlertTriangle size={16} />
-                        <span style={{ fontWeight: 800, fontSize: '0.85rem' }}>BURST PREDICTION: MASERU WEST</span>
+                    <div style={{ padding: '1.5rem', background: 'linear-gradient(45deg, rgba(239,68,68,0.2), transparent)', borderLeft: '4px solid var(--error)', borderRadius: '12px', marginBottom: '1.5rem' }}>
+                      <div className="font-mono" style={{ fontSize: '1.2rem', fontWeight: 800, color: '#fff', textShadow: '0 0 10px var(--error)', marginBottom: '0.5rem' }}>
+                        BURST PREDICTION: MASERU WEST
                       </div>
-                      <p style={{ fontSize: '0.75rem', opacity: 0.9 }}>92% confidence of subterranean leak near Plot 552 based on 14% pressure variance.</p>
+                      <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.8)' }}>
+                        <strong className="text-error">92.4% CONFIDENCE</strong> of subterranean structural failure near Plot 552. Immediate dispatch recommended.
+                      </p>
                     </div>
 
-                    <div className="small" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      <div className="flex-between"><span>Infrastructure Integrity</span><span className="fw-700">76%</span></div>
-                      <div className="flex-between"><span>Sensor Confidence</span><span className="fw-700">99.8%</span></div>
-                      <div className="flex-between"><span>Maintenance ROI</span><span className="fw-700">+22.4%</span></div>
+                    <div className="grid grid-cols-2 gap-4 font-mono text-sm">
+                      <div className="p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                        <div className="text-muted text-xs mb-1">Integ. Score</div>
+                        <div className="text-white text-lg">76.0%</div>
+                      </div>
+                      <div className="p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                        <div className="text-muted text-xs mb-1">Sensor Conf.</div>
+                        <div className="text-white text-lg">99.8%</div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1644,50 +1721,108 @@ export default function App() {
             )}
 
             {activeTab === 'users' && (
-              <>
-                <div className="glass-card mb-6">
-                  <div className="flex-between mb-4">
-                    <h3>Customer Management</h3>
-                    <Users className="text-muted" size={20} />
+              <div className="glass-card mb-6" style={{ borderTop: '4px solid var(--primary)', position: 'relative' }}>
+                <div className="flex-between mb-6">
+                  <div>
+                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <Users className="text-primary pulse-icon" size={24} /> Customer Master Database
+                    </h3>
+                    <p className="text-muted small">Live synchronized record of all {customers.length} identities.</p>
                   </div>
-                  <div className="table-container">
-                    <table className="data-table">
-                      <thead><tr><th>Account Number</th><th>Full Name</th><th>Customer Type</th></tr></thead>
-                      <tbody>
-                        {customers.map(c => (
-                          <tr key={c.account_number}>
-                            <td><span className="badge primary" style={{ fontFamily: 'monospace' }}>{c.account_number}</span></td>
-                            <td className="fw-600">{c.first_name} {c.last_name}</td>
-                            <td><span className="badge" style={{ background: 'var(--surface-hover)' }}>{c.customer_type}</span></td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                  <div className="search-box" style={{ position: 'relative' }}>
+                    <input type="text" placeholder="Quantum Search..." className="input-field" value={customerSearch} onChange={e => setCustomerSearch(e.target.value)} style={{ paddingLeft: '2.5rem', background: 'var(--surface-solid)', border: '1px solid var(--primary-glow)', boxShadow: '0 0 15px rgba(14,165,233,0.1)', width: '250px' }} />
+                    <User size={16} className="text-primary" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
                   </div>
                 </div>
-              </>
+                <div className="table-container" style={{ maxHeight: '600px', overflowY: 'auto' }}>
+                  <table className="data-table">
+                    <thead><tr><th>Account ID</th><th>Identity</th><th>Status</th><th>Classification</th><th>Actions</th></tr></thead>
+                    <tbody>
+                      {filteredCustomers.map(c => (
+                        <tr key={c.account_number} className="group hover-row" style={{ transition: 'all 0.3s ease' }}>
+                          <td>
+                            <div className="badge primary font-mono" style={{ background: 'rgba(14,165,233,0.1)', border: '1px solid var(--primary-glow)' }}>
+                              <History size={12} style={{ marginRight: '4px' }} /> {c.account_number}
+                            </div>
+                          </td>
+                          <td className="fw-700">
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                              <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--primary), var(--secondary))', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 800 }}>
+                                {c.first_name?.[0]}{c.last_name?.[0]}
+                              </div>
+                              {c.first_name} {c.last_name}
+                            </div>
+                          </td>
+                          <td>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                              <span className="dot-indicator" style={{ display: 'inline-block', width: '8px', height: '8px', background: 'var(--success)', borderRadius: '50%', marginRight: '6px' }}></span>
+                              <span className="small fw-600 text-success">Active</span>
+                            </div>
+                          </td>
+                          <td><span className="badge" style={{ background: 'var(--surface-solid)' }}>{c.customer_type}</span></td>
+                          <td>
+                            <div className="flex gap-2" style={{ display: 'flex', gap: '0.5rem' }}>
+                              <button className="btn small glass-btn" style={{ padding: '0.4rem', borderRadius: '8px' }}><Settings size={14} /></button>
+                              <button className="btn small text-error" onClick={() => handleDeleteCustomer(c.account_number)} style={{ padding: '0.4rem', borderRadius: '8px', background: 'rgba(239,68,68,0.1)', border: 'none' }}><LogOut size={14} /></button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             )}
 
             {activeTab === 'reports' && (
-              <div className="glass-card">
-                <div className="flex-between mb-4">
-                  <h3>Incident Management Hub</h3>
-                  <AlertTriangle className="text-warning" size={20} />
+              <div className="glass-card mb-6" style={{ borderTop: '4px solid var(--warning)', position: 'relative', overflow: 'hidden' }}>
+                <div className="cyber-grid opacity-50"></div>
+                <div className="flex-between mb-6 relative z-10">
+                  <div>
+                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <AlertTriangle className="text-warning pulse-icon" size={24} /> Incident Command Center
+                    </h3>
+                    <p className="text-muted small">Live geographic fault tracking and dispatch.</p>
+                  </div>
+                  <div className="badge warning p-2" style={{ border: '1px solid var(--warning)' }}>
+                    <span className="dot-indicator bg-warning mr-2"></span> {leakages.filter(l => l.status !== 'Fixed').length} CRITICAL FAULTS
+                  </div>
                 </div>
-                <div className="table-container">
+                
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 relative z-10 mb-6">
+                  {leakages.filter(l => l.status !== 'Fixed').slice(0, 3).map(l => (
+                    <div key={l.report_id} className="hud-panel p-4 rounded-xl" style={{ borderLeft: '4px solid var(--warning)', background: 'rgba(245, 158, 11, 0.05)' }}>
+                      <div className="flex-between mb-2">
+                        <span className="font-mono text-warning text-sm font-bold">INCIDENT #{l.report_id}</span>
+                        <span className="text-xs text-muted">{new Date(l.report_date).toLocaleTimeString()}</span>
+                      </div>
+                      <div className="text-white fw-600 mb-1">{l.location}</div>
+                      <div className="small text-muted mb-3 line-clamp-2">Pressure drop detected in zone. Field dispatch required immediately.</div>
+                      {user.role?.toLowerCase() === 'admin' ? (
+                        <button className="btn btn-primary small w-full" onClick={() => handleUpdateLeakageStatus(l.report_id, 'Fixed')} style={{ background: 'var(--warning)', color: '#000' }}>Dispatch & Resolve</button>
+                      ) : <span className="text-muted italic small">Awaiting Dispatch</span>}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="table-container relative z-10" style={{ maxHeight: '400px', overflowY: 'auto' }}>
                   <table className="data-table">
                     <thead><tr><th>Incident ID</th><th>Date Logged</th><th>Location</th><th>Status</th><th>Resolution</th></tr></thead>
                     <tbody>
                       {leakages.map(l => (
-                        <tr key={l.report_id}>
-                          <td><strong>#L-{l.report_id}</strong></td>
-                          <td className="small text-muted">{new Date(l.report_date).toLocaleDateString()}</td>
-                          <td>{l.location}</td>
-                          <td><span className={"badge " + (l.status === 'Fixed' ? 'success' : 'warning')}>{l.status}</span></td>
+                        <tr key={l.report_id} className="hover-row group">
+                          <td><strong className="font-mono">#L-{l.report_id}</strong></td>
+                          <td className="small text-muted">{new Date(l.report_date).toLocaleString()}</td>
+                          <td className="fw-600">{l.location}</td>
+                          <td>
+                            <span className={"badge font-mono " + (l.status === 'Fixed' ? 'success' : 'warning')} style={{ border: `1px solid var(--${l.status === 'Fixed' ? 'success' : 'warning'})` }}>
+                              {l.status === 'Fixed' ? 'RESOLVED' : 'ACTIVE_FAULT'}
+                            </span>
+                          </td>
                           <td>
                             {l.status !== 'Fixed' && user.role?.toLowerCase() === 'admin' ? (
-                              <button className="btn btn-primary small" onClick={() => handleUpdateLeakageStatus(l.report_id, 'Fixed')}>Mark as Resolved</button>
-                            ) : l.status === 'Fixed' ? <span className="text-success"><Check size={16} /> Resolved</span> : <span className="text-muted italic small">In Progress</span>}
+                              <button className="btn btn-primary small opacity-0 group-hover-opacity-100 transition-opacity" onClick={() => handleUpdateLeakageStatus(l.report_id, 'Fixed')}>Resolve</button>
+                            ) : l.status === 'Fixed' ? <span className="text-success"><Check size={16} /></span> : <span className="text-muted italic small"><Activity size={14} className="animate-spin" /></span>}
                           </td>
                         </tr>
                       ))}
@@ -1936,36 +2071,52 @@ export default function App() {
     )}
 
     {activeTab === 'rates' && (
-      <div className="glass-card mb-6" style={{ borderLeft: '4px solid var(--warning)' }}>
-        <div className="stat-header mb-6">
+      <div className="glass-card mb-6" style={{ borderTop: '4px solid var(--accent)', position: 'relative', overflow: 'hidden' }}>
+        <div className="radar-sweep" style={{ opacity: 0.05, background: 'conic-gradient(from 0deg, transparent 70%, var(--accent) 100%)' }}></div>
+        <div className="stat-header mb-6 relative z-10">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <div style={{ background: 'rgba(245, 158, 11, 0.1)', padding: '0.5rem', borderRadius: '12px' }}>
-              <CreditCard className="text-warning" size={20} />
+            <div className="pulse-icon" style={{ background: 'var(--accent)', color: 'white', padding: '0.6rem', borderRadius: '12px', boxShadow: '0 0 20px var(--accent)' }}>
+              <CreditCard size={24} />
             </div>
-            <h3>Billing Rate Configuration</h3>
+            <div>
+              <h3 style={{ margin: 0 }}>Global Economic Engine</h3>
+              <p className="text-muted small">Real-time configuration of tier-based revenue extraction models.</p>
+            </div>
           </div>
         </div>
-        <div className="table-container mb-6" style={{ border: '1px solid var(--glass-border)', background: 'var(--surface-solid)' }}>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 relative z-10">
+          {rates.slice(0, 3).map(r => (
+            <div key={r.rate_id} className="hud-panel p-5 rounded-2xl" style={{ border: '1px solid rgba(52, 211, 153, 0.2)', background: 'linear-gradient(135deg, rgba(0,0,0,0.2), rgba(52, 211, 153, 0.05))' }}>
+              <div className="text-muted small uppercase mb-1 font-mono tracking-widest">{r.tier_name}</div>
+              <div className="flex items-end gap-2 mb-3">
+                <span className="text-3xl font-bold" style={{ color: 'var(--accent)', fontFamily: 'Outfit' }}>{parseFloat(r.rate_per_unit).toFixed(2)}</span>
+                <span className="text-sm text-muted mb-1 font-mono">LSL/kl</span>
+              </div>
+              <div className="w-full h-1 bg-surface-solid rounded-full overflow-hidden">
+                <div className="h-full bg-accent" style={{ width: `${(parseFloat(r.rate_per_unit) / 50) * 100}%` }}></div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="table-container mb-6 relative z-10" style={{ border: '1px solid var(--glass-border)', borderRadius: '16px' }}>
           <table className="data-table">
-            <thead><tr><th>Tier Name / Customer Type</th><th>Usage Scope</th><th>Rate (LSL/Unit)</th><th className="text-right">Management</th></tr></thead>
+            <thead><tr><th>Configuration Array</th><th>Usage Bounds</th><th>Value Extractor</th><th className="text-right">Overrides</th></tr></thead>
             <tbody>
               {rates.map(r => (
-                <tr key={r.rate_id} style={{ background: editingRate?.rate_id === r.rate_id ? 'rgba(245, 158, 11, 0.05)' : 'transparent' }}>
-                  <td><strong className="text-main">{r.tier_name}</strong></td>
+                <tr key={r.rate_id} className="hover-row group" style={{ background: editingRate?.rate_id === r.rate_id ? 'rgba(52, 211, 153, 0.1)' : 'transparent' }}>
+                  <td><strong className="text-main font-mono">{r.tier_name}</strong></td>
                   <td>
-                    <span className="badge" style={{ 
-                      background: r.maximum_units > 9000 ? 'rgba(14, 165, 233, 0.1)' : 'var(--surface-hover)', 
-                      color: r.maximum_units > 9000 ? 'var(--primary)' : 'var(--text-main)',
-                      border: r.maximum_units > 9000 ? '1px solid rgba(14, 165, 233, 0.2)' : 'none'
-                    }}>
-                      {r.maximum_units > 9000 ? 'Unlimited Usage' : r.minimum_units + ' â€” ' + r.maximum_units + ' Units'}
+                    <span className="badge font-mono" style={{ background: 'var(--surface-hover)', border: '1px solid var(--border-color)' }}>
+                      [ {r.minimum_units} , {r.maximum_units > 9000 ? 'âˆž' : r.maximum_units} ]
                     </span>
                   </td>
-                  <td style={{ color: 'var(--success)', fontWeight: 'bold' }}>{parseFloat(r.rate_per_unit).toFixed(2)}</td>
+                  <td style={{ color: 'var(--accent)', fontWeight: 'bold', fontFamily: 'monospace', fontSize: '1.1rem' }}>LSL {parseFloat(r.rate_per_unit).toFixed(2)}</td>
                   <td className="text-right">
-                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
-                      <button className="btn small" onClick={() => startEditRate(r)} style={{ background: 'rgba(14, 165, 233, 0.1)' }}><Settings size={14} /></button>
-                      <button className="btn small" onClick={() => handleDeleteRate(r.rate_id)} style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--error)' }}><LogOut size={14} /></button>
+                    <div className="flex gap-2 justify-end opacity-0 group-hover-opacity-100 transition-opacity">
+                      <button className="btn small glass-btn" onClick={() => startEditRate(r)}><Settings size={14} /></button>
+                      <button className="btn small text-error" onClick={() => handleDeleteRate(r.rate_id)} style={{ background: 'rgba(239, 68, 68, 0.1)' }}><LogOut size={14} /></button>
                     </div>
                   </td>
                 </tr>
@@ -1973,64 +2124,91 @@ export default function App() {
             </tbody>
           </table>
         </div>
-        <div className={'p-6 ' + (editingRate ? 'edit-mode-active' : '')} style={{
-          background: editingRate ? 'rgba(245, 158, 11, 0.03)' : 'var(--surface-solid)',
-          borderRadius: '20px', border: editingRate ? '1px solid var(--warning)' : '1px solid transparent',
+        
+        <div className={'p-6 relative z-10 transition-all ' + (editingRate ? 'edit-mode-active' : '')} style={{
+          background: editingRate ? 'rgba(52, 211, 153, 0.05)' : 'var(--surface-solid)',
+          borderRadius: '20px', border: editingRate ? '1px solid var(--accent)' : '1px dashed var(--border-color)',
         }}>
           <div className="flex-between mb-4">
-            <h4 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Settings size={18} className="text-warning" />
-              {editingRate ? 'Modifying Tier: ' + editingRate.tier_name : 'Define New Rate Tier'}
+            <h4 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'monospace', color: 'var(--text-main)' }}>
+              <Settings size={18} className="text-accent" />
+              {editingRate ? 'OVERRIDE_TIER: ' + editingRate.tier_name : 'INITIALIZE_NEW_TIER'}
             </h4>
-            {editingRate && <button className="badge" onClick={() => { setEditingRate(null); setNewTierName(''); setNewMinUnits(''); setNewMaxUnits(''); setNewRate(''); }} style={{ cursor: 'pointer', border: 'none' }}>Discard Edit</button>}
+            {editingRate && <button className="badge" onClick={() => { setEditingRate(null); setNewTierName(''); setNewMinUnits(''); setNewMaxUnits(''); setNewRate(''); }} style={{ cursor: 'pointer', border: 'none', background: 'rgba(239,68,68,0.1)', color: 'var(--error)' }}>ABORT_EDIT</button>}
           </div>
           <form onSubmit={editingRate ? handleUpdateRate : handleAddRate} className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-3">
             <div className="input-group">
-              <label className="small text-muted mb-1 block">Tier Label</label>
-              <input className="input-field" value={newTierName} onChange={e => setNewTierName(e.target.value)} placeholder="e.g. Tier 1" required />
+              <label className="small text-muted mb-1 block font-mono">TIER_LABEL</label>
+              <input className="input-field font-mono" value={newTierName} onChange={e => setNewTierName(e.target.value)} placeholder="T-X" required />
             </div>
             <div className="input-group">
-              <label className="small text-muted mb-1 block">Min Units</label>
-              <input type="number" className="input-field" value={newMinUnits} onChange={e => setNewMinUnits(e.target.value)} required />
+              <label className="small text-muted mb-1 block font-mono">MIN_BOUND</label>
+              <input type="number" className="input-field font-mono" value={newMinUnits} onChange={e => setNewMinUnits(e.target.value)} required />
             </div>
             <div className="input-group">
-              <label className="small text-muted mb-1 block">Max Units</label>
-              <input type="number" className="input-field" value={newMaxUnits} onChange={e => setNewMaxUnits(e.target.value)} required />
+              <label className="small text-muted mb-1 block font-mono">MAX_BOUND</label>
+              <input type="number" className="input-field font-mono" value={newMaxUnits} onChange={e => setNewMaxUnits(e.target.value)} required />
             </div>
             <div className="input-group">
-              <label className="small text-muted mb-1 block">Rate (LSL)</label>
-              <input type="number" step="0.01" className="input-field" value={newRate} onChange={e => setNewRate(e.target.value)} required />
+              <label className="small text-muted mb-1 block font-mono">RATE_MULTIPLIER</label>
+              <input type="number" step="0.01" className="input-field font-mono text-accent fw-700" value={newRate} onChange={e => setNewRate(e.target.value)} required />
             </div>
-            <div style={{ gridColumn: 'span 4', fontSize: '0.75rem', color: 'var(--text-muted)', background: 'var(--surface-hover)', padding: '0.5rem 1rem', borderRadius: '8px', borderLeft: '3px solid var(--primary)' }}>
-              <strong>Pro Tip:</strong> For flat customer-type rates (e.g. Residents), set <b>Min Units: 0</b> and <b>Max Units: 999999</b>.
-            </div>
-            <button className={'btn ' + (editingRate ? 'btn-warning' : 'btn-primary')} style={{ gridColumn: 'span 4', height: '48px' }}>
-              {editingRate ? 'Commit Rate Changes' : 'Publish Rate Tier'}
+            <button className={'btn w-full font-mono ' + (editingRate ? 'btn-primary' : '')} style={{ gridColumn: 'span 4', marginTop: '1rem', height: '50px', background: editingRate ? 'var(--accent)' : 'var(--surface-hover)', color: editingRate ? '#000' : 'var(--text-main)' }}>
+              {editingRate ? 'COMMIT_CHANGES' : 'INJECT_NEW_TIER'}
             </button>
           </form>
         </div>
       </div>
     )}
     {activeTab === 'reports' && (
-      <div className="glass-card">
-        <div className="flex-between mb-4">
-          <h3>Incident Management Hub</h3>
-          <AlertTriangle className="text-warning" size={20} />
+      <div className="glass-card mb-6" style={{ borderTop: '4px solid var(--warning)', position: 'relative', overflow: 'hidden' }}>
+        <div className="cyber-grid opacity-50"></div>
+        <div className="flex-between mb-6 relative z-10">
+          <div>
+            <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <AlertTriangle className="text-warning pulse-icon" size={24} /> Incident Command Center
+            </h3>
+            <p className="text-muted small">Live geographic fault tracking and dispatch.</p>
+          </div>
+          <div className="badge warning p-2" style={{ border: '1px solid var(--warning)' }}>
+            <span className="dot-indicator bg-warning mr-2"></span> {leakages.filter(l => l.status !== 'Fixed').length} CRITICAL FAULTS
+          </div>
         </div>
-        <div className="table-container">
+        
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 relative z-10 mb-6">
+          {leakages.filter(l => l.status !== 'Fixed').slice(0, 3).map(l => (
+            <div key={l.report_id} className="hud-panel p-4 rounded-xl" style={{ borderLeft: '4px solid var(--warning)', background: 'rgba(245, 158, 11, 0.05)' }}>
+              <div className="flex-between mb-2">
+                <span className="font-mono text-warning text-sm font-bold">INCIDENT #{l.report_id}</span>
+                <span className="text-xs text-muted">{new Date(l.report_date).toLocaleTimeString()}</span>
+              </div>
+              <div className="text-white fw-600 mb-1">{l.location}</div>
+              <div className="small text-muted mb-3 line-clamp-2">Pressure drop detected in zone. Field dispatch required immediately.</div>
+              {user.role?.toLowerCase() === 'admin' ? (
+                <button className="btn btn-primary small w-full" onClick={() => handleUpdateLeakageStatus(l.report_id, 'Fixed')} style={{ background: 'var(--warning)', color: '#000' }}>Dispatch & Resolve</button>
+              ) : <span className="text-muted italic small">Awaiting Dispatch</span>}
+            </div>
+          ))}
+        </div>
+
+        <div className="table-container relative z-10" style={{ maxHeight: '400px', overflowY: 'auto' }}>
           <table className="data-table">
             <thead><tr><th>Incident ID</th><th>Date Logged</th><th>Location</th><th>Status</th><th>Resolution</th></tr></thead>
             <tbody>
               {leakages.map(l => (
-                <tr key={l.report_id}>
-                  <td><strong>#L-{l.report_id}</strong></td>
-                  <td className="small text-muted">{new Date(l.report_date).toLocaleDateString()}</td>
-                  <td>{l.location}</td>
-                  <td><span className={"badge " + (l.status === 'Fixed' ? 'success' : 'warning')}>{l.status}</span></td>
+                <tr key={l.report_id} className="hover-row group">
+                  <td><strong className="font-mono">#L-{l.report_id}</strong></td>
+                  <td className="small text-muted">{new Date(l.report_date).toLocaleString()}</td>
+                  <td className="fw-600">{l.location}</td>
                   <td>
-                    {l.status !== 'Fixed' ? (
-                      <button className="btn btn-primary small" onClick={() => handleUpdateLeakageStatus(l.report_id, 'Fixed')}>Mark as Resolved</button>
-                    ) : <span className="text-success"><Check size={16} /> Resolved</span>}
+                    <span className={"badge font-mono " + (l.status === 'Fixed' ? 'success' : 'warning')} style={{ border: `1px solid var(--${l.status === 'Fixed' ? 'success' : 'warning'})` }}>
+                      {l.status === 'Fixed' ? 'RESOLVED' : 'ACTIVE_FAULT'}
+                    </span>
+                  </td>
+                  <td>
+                    {l.status !== 'Fixed' && user.role?.toLowerCase() === 'admin' ? (
+                      <button className="btn btn-primary small opacity-0 group-hover-opacity-100 transition-opacity" onClick={() => handleUpdateLeakageStatus(l.report_id, 'Fixed')}>Resolve</button>
+                    ) : l.status === 'Fixed' ? <span className="text-success"><Check size={16} /></span> : <span className="text-muted italic small"><Activity size={14} className="animate-spin" /></span>}
                   </td>
                 </tr>
               ))}
@@ -2045,16 +2223,57 @@ export default function App() {
 {view === 'customer' && (
   <>
     {activeTab === 'dashboard' && (
-      <div className="glass-card">
-        <h2 className="mb-4">Welcome, {user.first_name}</h2>
-        <div className="stats-grid mb-6">
-          <div className="glass-card flex-between">
-            <div><h3 className="stat-value">{bills.filter(b => b.account_number === user.account_number && b.payment_status === 'Unpaid').length}</h3><p className="stat-label">Pending Bills</p></div>
-            <div className="stat-icon-wrap" style={{ color: 'var(--error)' }}><Wallet size={22} /></div>
+      <div className="glass-card mb-6" style={{ borderTop: '4px solid var(--primary)', position: 'relative', overflow: 'hidden' }}>
+        <div className="radar-sweep" style={{ opacity: 0.05, background: 'conic-gradient(from 0deg, transparent 70%, var(--primary) 100%)' }}></div>
+        <div className="relative z-10">
+          <div className="flex-between mb-8">
+            <div>
+              <h2 className="font-mono mb-1" style={{ fontSize: '2rem' }}>WELCOME_BACK, {user.first_name}</h2>
+              <p className="text-muted small font-mono">ACCOUNT_ID: {user.account_number} | SECURE_SESSION_ACTIVE</p>
+            </div>
+            <div className="badge primary p-3" style={{ boxShadow: '0 0 20px rgba(14,165,233,0.2)' }}>
+              <span className="dot-indicator bg-success mr-2"></span> LINK_STABLE
+            </div>
           </div>
-          <div className="glass-card flex-between">
-            <div><h3 className="stat-value">LSL {balances.find(b => b.account_number === user.account_number)?.total_outstanding || '0.00'}</h3><p className="stat-label">Current Balance</p></div>
-            <div className="stat-icon-wrap" style={{ color: 'var(--primary)' }}><Activity size={22} /></div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div className="hud-panel p-6 rounded-2xl" style={{ background: 'linear-gradient(135deg, rgba(0,0,0,0.4), rgba(239,68,68,0.05))', border: '1px solid rgba(239,68,68,0.2)' }}>
+              <div className="flex items-center gap-3 mb-4">
+                <div style={{ background: 'rgba(239,68,68,0.1)', padding: '0.5rem', borderRadius: '12px' }}><Wallet size={20} className="text-error" /></div>
+                <div className="font-mono text-muted text-sm tracking-widest">OUTSTANDING_TARIFFS</div>
+              </div>
+              <div className="text-4xl font-bold text-white mb-2 font-mono">
+                {bills.filter(b => b.account_number === user.account_number && b.payment_status === 'Unpaid').length} <span className="text-xl text-error">BILLS</span>
+              </div>
+              <div className="w-full h-1 bg-surface-solid rounded-full overflow-hidden mb-2">
+                 <div className="h-full bg-error" style={{ width: '60%' }}></div>
+              </div>
+              <div className="text-xs text-muted font-mono">ACTION REQUIRED TO PREVENT SERVICE DISRUPTION.</div>
+            </div>
+
+            <div className="hud-panel p-6 rounded-2xl" style={{ background: 'linear-gradient(135deg, rgba(0,0,0,0.4), rgba(14,165,233,0.05))', border: '1px solid rgba(14,165,233,0.2)' }}>
+              <div className="flex items-center gap-3 mb-4">
+                <div style={{ background: 'rgba(14,165,233,0.1)', padding: '0.5rem', borderRadius: '12px' }}><Activity size={20} className="text-primary" /></div>
+                <div className="font-mono text-muted text-sm tracking-widest">CURRENT_BALANCE</div>
+              </div>
+              <div className="text-4xl font-bold text-white mb-2 font-mono">
+                <span className="text-xl text-primary">LSL</span> {balances.find(b => b.account_number === user.account_number)?.total_outstanding || '0.00'}
+              </div>
+              <div className="w-full h-1 bg-surface-solid rounded-full overflow-hidden mb-2">
+                 <div className="h-full bg-primary" style={{ width: '30%' }}></div>
+              </div>
+              <div className="text-xs text-muted font-mono">TOTAL ACCUMULATED DEBT.</div>
+            </div>
+          </div>
+          
+          <div className="p-4 rounded-xl" style={{ background: 'rgba(52,211,153,0.05)', border: '1px dashed var(--success)' }}>
+            <div className="flex items-center gap-3">
+              <Check size={24} className="text-success" />
+              <div>
+                <div className="font-mono fw-700 text-success text-sm">TELEMETRY_SYNCED</div>
+                <div className="text-muted text-xs font-mono">Your smart meter last reported usage 4 minutes ago.</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

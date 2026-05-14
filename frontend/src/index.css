@@ -781,3 +781,61 @@ tbody tr:hover td { background:rgba(14,165,233,0.05); }
   70% { box-shadow: 0 0 0 10px rgba(239,68,68,0); }
   100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
 }
+
+/* ── INTELLIGENCE HUD ───────────────────────────────────────────── */
+.intelligence-hud {
+  box-shadow: 0 0 50px rgba(99,102,241,0.2) inset, 0 10px 40px rgba(0,0,0,0.5);
+}
+
+.radar-sweep {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 200%; height: 200%;
+  background: conic-gradient(from 0deg, transparent 70%, rgba(52, 211, 153, 0.4) 100%);
+  transform-origin: 0 0;
+  animation: sweep 4s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.15;
+}
+@keyframes sweep {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.cyber-grid {
+  position: absolute; inset: 0;
+  background-image: 
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.warning-stripe {
+  position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+  background: repeating-linear-gradient(45deg, var(--error), var(--error) 10px, transparent 10px, transparent 20px);
+  animation: slideWarning 20s linear infinite;
+}
+@keyframes slideWarning {
+  to { background-position: 1000px 0; }
+}
+
+.hud-panel {
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hud-panel:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.6), 0 0 20px rgba(99,102,241,0.2);
+}
+
+/* ── CUSTOMER TABLE HOVER EFFECTS ───────────────────────────────── */
+.hover-row:hover {
+  background: rgba(14,165,233,0.05);
+  transform: scale(1.01);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  z-index: 10;
+  position: relative;
+}
