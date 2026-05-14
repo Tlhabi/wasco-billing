@@ -77,6 +77,40 @@ export default function App() {
   const [theme, setTheme] = useState('light');
   const [activeTab, setActiveTab] = useState('dashboard');
 
+  // Landing Page Interactive States
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [liveStats, setLiveStats] = useState({ pressure: 98.4, stability: 99.9, purity: 100.0 });
+  const [heroWordIndex, setHeroWordIndex] = useState(0);
+  const heroWords = ['Drop', 'Stream', 'Flow', 'Connection'];
+
+  useEffect(() => {
+    if (view !== 'landing') return;
+    
+    // Live mock data fluctuation
+    const interval = setInterval(() => {
+      setLiveStats({
+        pressure: 98.0 + Math.random(),
+        stability: 99.8 + (Math.random() * 0.2),
+        purity: 100.0 // never changes
+      });
+    }, 2000);
+
+    // Hero word cycler
+    const wordInterval = setInterval(() => {
+      setHeroWordIndex(prev => (prev + 1) % heroWords.length);
+    }, 3000);
+
+    return () => { clearInterval(interval); clearInterval(wordInterval); };
+  }, [view]);
+
+  const handleMouseMove = (e) => {
+    if (view === 'landing') {
+      const x = (e.clientX / window.innerWidth - 0.5) * 20; // max rotation 20deg
+      const y = (e.clientY / window.innerHeight - 0.5) * -20;
+      setMousePos({ x, y });
+    }
+  };
+
   useEffect(() => {
     document.body.classList.toggle('dark-theme', theme === 'dark');
   }, [theme]);
@@ -744,109 +778,121 @@ export default function App() {
 
   if (view === 'landing') {
     return (
-      <div className="landing-wrapper" style={{ background: 'var(--bg-color)', overflow: 'hidden' }}>
-        <div className="bg-blobs">
+      <div className="landing-wrapper" onMouseMove={handleMouseMove} style={{ background: 'var(--bg-color)', overflow: 'hidden', position: 'relative' }}>
+        
+        {/* Dynamic Nav on Landing */}
+        <nav style={{ position: 'absolute', top: 0, width: '100%', padding: '1.5rem 5vw', display: 'flex', justifyContent: 'space-between', zIndex: 50 }}>
+           <div className="logo-icon" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 800 }}>
+             <Droplets size={24} color="var(--primary)" /> WASCO
+           </div>
+           <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+             <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-main)', padding: '0.5rem' }}>
+               {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+             </button>
+           </div>
+        </nav>
+
+        <div className="bg-blobs interactive-blobs" style={{ transform: `translate(${mousePos.x * -2}px, ${mousePos.y * -2}px)` }}>
           <div className="blob blob-1" style={{ width: '800px', height: '800px', opacity: 0.4 }}></div>
           <div className="blob blob-2" style={{ width: '600px', height: '600px', opacity: 0.3 }}></div>
           <div className="blob blob-3" style={{ width: '700px', height: '700px', opacity: 0.3 }}></div>
+          {/* Extra particles */}
+          <div className="particles-layer"></div>
         </div>
 
-        <div className="landing-content" style={{ padding: '0 5vw', maxWidth: '1400px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '4rem', alignItems: 'center' }}>
-          <div className="hero-text-side animate-in">
-            <header style={{ marginBottom: '4rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <div style={{ background: 'linear-gradient(135deg, var(--primary), var(--secondary))', padding: '0.6rem', borderRadius: '14px', color: 'white', display: 'flex' }}>
-                <Droplets size={28} />
-              </div>
-              <h2 style={{ fontSize: '1.5rem', margin: 0, fontWeight: 800, letterSpacing: '-0.03em' }}>WASCO <span style={{ fontWeight: 400, opacity: 0.6 }}>Portal</span></h2>
-            </header>
-
-            <div className="hero-eyebrow" style={{ color: 'var(--primary)', fontWeight: 800, fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <div style={{ width: '30px', height: '2px', background: 'var(--primary)' }}></div>
-              LE SOTHO'S PREMIER WATER UTILITY
+        <div className="landing-content" style={{ padding: '0 5vw', maxWidth: '1400px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '4rem', alignItems: 'center', minHeight: '100vh' }}>
+          
+          {/* Left Text Column */}
+          <div className="hero-text-side animate-in" style={{ position: 'relative', zIndex: 10 }}>
+            
+            <div className="hero-eyebrow glowing-eyebrow" style={{ color: 'var(--primary)', fontWeight: 800, fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: '1.5rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(14,165,233,0.1)', padding: '0.5rem 1rem', borderRadius: '99px', border: '1px solid rgba(14,165,233,0.2)' }}>
+              <Activity size={14} className="pulse-icon" /> LESOTHO'S PREMIER UTILITY
             </div>
             
-            <h1 style={{ fontSize: 'clamp(3.5rem, 6vw, 5.5rem)', lineHeight: 0.95, marginBottom: '2rem', letterSpacing: '-0.04em' }}>
-              Purity in <span style={{ color: 'var(--primary)', background: 'linear-gradient(to right, var(--primary), var(--secondary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Every Drop</span>, Smart in Every Step.
+            <h1 style={{ fontSize: 'clamp(3.5rem, 6vw, 6rem)', lineHeight: 1.05, marginBottom: '2rem', letterSpacing: '-0.04em', position: 'relative' }}>
+              Purity in Every <br/>
+              <span className="word-cycler" style={{ color: 'var(--primary)', background: 'linear-gradient(to right, var(--primary), var(--secondary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', display: 'inline-block', position: 'relative' }}>
+                <span className="cycle-text" key={heroWordIndex}>{heroWords[heroWordIndex]}</span>
+              </span>, <br/> Smart in Every Step.
             </h1>
             
-            <p style={{ fontSize: '1.25rem', lineHeight: 1.6, color: 'var(--text-muted)', maxWidth: '600px', marginBottom: '3rem' }}>
-              Manage your utility accounts with Lesotho's most advanced digital platform. Real-time tracking, secure payments, and instant incident reporting at your fingertips.
+            <p style={{ fontSize: '1.25rem', lineHeight: 1.6, color: 'var(--text-muted)', maxWidth: '550px', marginBottom: '3rem' }}>
+              Experience the next generation of utility management. Live telemetry, predictive insights, and seamless control—all beautifully designed for you.
             </p>
 
-            <div className="hero-btns" style={{ display: 'flex', gap: '1.5rem' }}>
-              <button className="btn btn-primary" style={{ padding: '1.2rem 2.5rem', fontSize: '1.1rem', borderRadius: '18px', fontWeight: 700 }} onClick={() => setView('login')}>
-                Enter Portal <ChevronRight size={20} />
+            <div className="hero-btns" style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
+              <button className="btn btn-primary super-btn" style={{ padding: '1.2rem 2.5rem', fontSize: '1.1rem', borderRadius: '99px', fontWeight: 700 }} onClick={() => setView('login')}>
+                <span>Initialize Portal</span> <ChevronRight size={20} className="icon-slide" />
               </button>
-              <button className="btn" onClick={fetchPublicData} style={{ padding: '1.2rem 2.5rem', fontSize: '1.1rem', borderRadius: '18px', background: 'rgba(255,255,255,0.4)', border: '1px solid var(--glass-border)', backdropFilter: 'blur(12px)', fontWeight: 600 }}>
-                View Service Rates
+              <button className="btn glass-btn" onClick={fetchPublicData} style={{ padding: '1.2rem 2.5rem', fontSize: '1.1rem', borderRadius: '99px', fontWeight: 600 }}>
+                Explore Public Rates
               </button>
             </div>
 
-            <div className="hero-stats" style={{ display: 'flex', gap: '3rem', marginTop: '5rem', borderTop: '1px solid var(--border-color)', paddingTop: '2.5rem' }}>
-              <div><h3 style={{ fontSize: '2rem', marginBottom: '0.25rem' }}>100k+</h3><p style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Active Users</p></div>
-              <div><h3 style={{ fontSize: '2rem', marginBottom: '0.25rem' }}>10</h3><p style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Districts Covered</p></div>
-              <div><h3 style={{ fontSize: '2rem', marginBottom: '0.25rem' }}>24/7</h3><p style={{ fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Support & Monitoring</p></div>
+            <div className="hero-stats" style={{ display: 'flex', gap: '3rem', marginTop: '4rem', paddingTop: '2.5rem', position: 'relative' }}>
+              <div className="glow-divider" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '1px', background: 'linear-gradient(90deg, var(--primary-glow), transparent)' }}></div>
+              <div className="stat-item"><h3 className="counter">100k+</h3><p>Active Users</p></div>
+              <div className="stat-item"><h3 className="counter">10</h3><p>Districts Covered</p></div>
+              <div className="stat-item"><h3>24/7</h3><p>Live Monitoring</p></div>
             </div>
           </div>
 
-          <div className="hero-visual-side animate-in" style={{ animationDelay: '0.2s', position: 'relative' }}>
-            <div className="glass-card" style={{ padding: '3rem', borderRadius: '40px', background: 'rgba(255,255,255,0.4)', border: '1px solid rgba(255,255,255,0.6)', boxShadow: '0 40px 100px rgba(14,165,233,0.15)' }}>
-              <div style={{ position: 'absolute', top: '-30px', right: '-20px', background: 'var(--accent)', color: 'white', padding: '1rem', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '0.5rem', boxShadow: '0 20px 40px rgba(16,185,129,0.3)', fontWeight: 700, fontSize: '0.9rem' }}>
-                <Activity size={18} /> LIVE MONITORING ACTIVE
-              </div>
+          {/* Right Visual Column (3D Tilt Card) */}
+          <div className="hero-visual-side animate-in" style={{ animationDelay: '0.2s', perspective: '1000px' }}>
+            <div className="tilt-card-wrapper" style={{ transform: `rotateY(${mousePos.x}deg) rotateX(${mousePos.y}deg)`, transformStyle: 'preserve-3d', transition: 'transform 0.1s ease-out' }}>
               
-              <div style={{ marginBottom: '2.5rem' }}>
-                <h4 style={{ fontSize: '1.2rem', marginBottom: '1.5rem' }}>Network Efficiency</h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                  {[
-                    { label: 'Water Pressure', value: '98.4%', color: 'var(--primary)' },
-                    { label: 'Network Stability', value: '99.9%', color: 'var(--secondary)' },
-                    { label: 'Purification Level', value: '100%', color: 'var(--accent)' }
-                  ].map(stat => (
-                    <div key={stat.label}>
-                      <div className="flex-between mb-2">
-                        <span style={{ fontWeight: 600, fontSize: '0.9rem', opacity: 0.7 }}>{stat.label}</span>
-                        <span style={{ fontWeight: 800, fontSize: '1rem', color: stat.color }}>{stat.value}</span>
-                      </div>
-                      <div style={{ height: '8px', background: 'rgba(0,0,0,0.05)', borderRadius: '10px', overflow: 'hidden' }}>
-                        <div style={{ height: '100%', width: stat.value, background: stat.color }}></div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              {/* Backglow for 3D effect */}
+              <div className="card-backglow" style={{ position: 'absolute', inset: -20, background: 'var(--primary-glow)', filter: 'blur(40px)', transform: 'translateZ(-50px)', opacity: 0.6 }}></div>
 
-              <div style={{ background: 'rgba(0,0,0,0.03)', padding: '1.5rem', borderRadius: '20px', border: '1px solid rgba(0,0,0,0.02)' }}>
-                <div className="flex-between mb-4">
-                  <h4 style={{ fontSize: '0.9rem' }}>Recent Incident Alerts</h4>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--primary)' }}>View Map â†’</span>
+              <div className="glass-card premium-hero-card" style={{ padding: '3rem', borderRadius: '40px', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.4)', backdropFilter: 'blur(30px) saturate(200%)', transform: 'translateZ(20px)', position: 'relative', overflow: 'hidden' }}>
+                
+                {/* Diagonal glass reflection */}
+                <div className="glass-reflection"></div>
+
+                <div className="live-badge pulse-badge" style={{ position: 'absolute', top: '-25px', right: '-15px', background: 'var(--accent)', color: 'white', padding: '0.8rem 1.5rem', borderRadius: '99px', display: 'flex', alignItems: 'center', gap: '0.5rem', boxShadow: '0 20px 40px rgba(16,185,129,0.3)', fontWeight: 800, fontSize: '0.85rem', transform: 'translateZ(40px)' }}>
+                  <div className="dot-indicator"></div> TELEMETRY SYNCED
                 </div>
-                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                  <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--error)', padding: '0.6rem', borderRadius: '12px' }}><AlertTriangle size={18} /></div>
-                  <div>
-                    <div style={{ fontSize: '0.85rem', fontWeight: 700 }}>Pipe Maintenance - Maseru West</div>
-                    <div style={{ fontSize: '0.75rem', opacity: 0.6 }}>Estimated resolution in 2 hours</div>
+                
+                <div style={{ marginBottom: '3rem', transform: 'translateZ(30px)' }}>
+                  <h4 style={{ fontSize: '1.2rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Activity size={18} className="text-primary"/> Network Efficiency</h4>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                    {[
+                      { label: 'Core Water Pressure', value: liveStats.pressure.toFixed(1) + '%', num: liveStats.pressure, color: 'var(--primary)' },
+                      { label: 'Distribution Stability', value: liveStats.stability.toFixed(1) + '%', num: liveStats.stability, color: 'var(--secondary)' },
+                      { label: 'Purification Standard', value: liveStats.purity.toFixed(1) + '%', num: liveStats.purity, color: 'var(--accent)' }
+                    ].map(stat => (
+                      <div key={stat.label} className="live-stat-row">
+                        <div className="flex-between mb-2">
+                          <span style={{ fontWeight: 600, fontSize: '0.9rem', opacity: 0.8 }}>{stat.label}</span>
+                          <span style={{ fontWeight: 800, fontSize: '1rem', color: stat.color, fontFamily: 'monospace' }}>{stat.value}</span>
+                        </div>
+                        <div className="progress-track" style={{ height: '8px', background: 'rgba(0,0,0,0.1)', borderRadius: '10px', overflow: 'hidden' }}>
+                          <div className="progress-fill" style={{ height: '100%', width: stat.num + '%', background: stat.color, transition: 'width 0.5s ease-out, background 0.3s' }}></div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Floating Elements */}
-            <div style={{ position: 'absolute', bottom: '-40px', left: '-30px', background: 'white', padding: '1.5rem', borderRadius: '24px', boxShadow: 'var(--shadow-lg)', display: 'flex', gap: '1rem', alignItems: 'center' }}>
-              <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'rgba(14,165,233,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Wallet size={24} className="text-primary" />
-              </div>
-              <div>
-                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)' }}>M-PESA ENABLED</div>
-                <div style={{ fontSize: '1rem', fontWeight: 800 }}>Instant Bill Pay</div>
+                <div className="incident-box" style={{ background: 'rgba(0,0,0,0.2)', padding: '1.5rem', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)', transform: 'translateZ(40px)' }}>
+                  <div className="flex-between mb-4">
+                    <h4 style={{ fontSize: '0.9rem', color: 'white' }}>Automated AI Alerts</h4>
+                    <span className="pulsing-dot text-error"></span>
+                  </div>
+                  <div className="alert-item" style={{ display: 'flex', gap: '1rem', alignItems: 'center', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '1rem', borderRadius: '16px', color: 'white' }}>
+                    <div style={{ background: 'var(--error)', padding: '0.6rem', borderRadius: '12px', color: 'white', display: 'flex' }}><AlertTriangle size={18} /></div>
+                    <div>
+                      <div style={{ fontSize: '0.85rem', fontWeight: 800 }}>Micro-fracture detected</div>
+                      <div style={{ fontSize: '0.75rem', opacity: 0.8 }}>Maseru West Sector 4 • Auto-routed to team</div>
+                    </div>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
         </div>
 
-        <footer style={{ position: 'absolute', bottom: '2rem', left: '5vw', color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 500 }}>
-          Â© 2026 Water and Sewerage Company (WASCO) Â· Lesotho Private Sector Platform
-        </footer>
       </div>
     );
   }
