@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Droplets, Activity, Wallet, CreditCard, ChevronRight, User, LogOut, AlertTriangle, BarChart as BarChartIcon, FileText, Settings, Users, History, UserPlus, Bell, Check, Sun, Moon, LayoutDashboard } from 'lucide-react';
+import { Droplets, Activity, Wallet, CreditCard, ChevronRight, User, LogOut, AlertTriangle, BarChart as BarChartIcon, FileText, Settings, Users, History, UserPlus, Bell, Check, Sun, Moon, LayoutDashboard, Eye, EyeOff, Fingerprint, Loader2 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import './index.css';
 
@@ -86,6 +86,10 @@ export default function App() {
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   const [loginSuccess, setLoginSuccess] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [isBiometricScan, setIsBiometricScan] = useState(false);
+  const [biometricSuccess, setBiometricSuccess] = useState(false);
   const [registerError, setRegisterError] = useState('');
   const [registerSuccess, setRegisterSuccess] = useState('');
 
@@ -190,10 +194,12 @@ export default function App() {
   };
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     setLoginError('');
     setLoginSuccess('');
-    addAuditLog('AUTH', `Login attempt initiated for: ${username}`);
+    setIsAuthenticating(true);
+    addAuditLog('AUTH', `Login attempt initiated for: ${username || 'biometric'}`);
+    
     try {
       const res = await axios.post(`${API_BASE}/login`, { username, password });
       if (res.data.success) {
@@ -209,16 +215,34 @@ export default function App() {
       } else {
         addAuditLog('SYSTEM', 'Backend offline. Activating Sandbox mode.');
         setIsOffline(true);
-        const mockUser = MOCK_USERS[username.toLowerCase()];
+        const mockUser = MOCK_USERS[(username || '').toLowerCase()];
         if (mockUser) {
           setUser(mockUser);
-          addAuditLog('AUTH', `Sandbox Session started for: ${username}`);
+          addAuditLog('AUTH', `Sandbox Session started for: ${username || 'mock'}`);
           navigateUser(mockUser);
         } else {
           setLoginError('Server unreachable. Try mock credentials (admin, manager).');
         }
       }
+    } finally {
+      setIsAuthenticating(false);
+      setIsBiometricScan(false);
+      setBiometricSuccess(false);
     }
+  };
+
+  const handleBiometricAuth = async () => {
+    setIsBiometricScan(true);
+    // Fake biometric scan delay
+    setTimeout(() => {
+      setBiometricSuccess(true);
+      setTimeout(() => {
+        // Automatically login as customer "wasco001" for demo purposes
+        setUsername('wasco001');
+        setPassword('password');
+        handleLogin();
+      }, 800);
+    }, 2000);
   };
 
   const handleRegister = async (e) => {
@@ -828,56 +852,148 @@ export default function App() {
   }
   if (view === 'login') {
     return (
-      <div className="app-container" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div className="bg-blobs">
-          <div className="blob blob-1" style={{ opacity: 0.6 }}></div>
-          <div className="blob blob-2" style={{ opacity: 0.4 }}></div>
-          <div className="blob blob-3" style={{ opacity: 0.5 }}></div>
+      <div className="app-container login-page" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+        {/* Dynamic Water Background */}
+        <div className="bg-blobs water-bg-effect">
+          <div className="blob blob-1" style={{ opacity: 0.6, width: '120vw', height: '120vh', top: '-10vh', left: '-10vw' }}></div>
+          <div className="blob blob-2" style={{ opacity: 0.5, width: '100vw', height: '100vh', bottom: '-20vh', right: '-20vw' }}></div>
+          <div className="blob blob-3" style={{ opacity: 0.7, width: '80vw', height: '80vh', top: '20vh', left: '20vw' }}></div>
         </div>
+        
+        {/* Decorative Grid Overlay */}
+        <div className="grid-overlay"></div>
 
-        <div className="glass-card animate-in" style={{ width: '100%', maxWidth: '440px', padding: '3.5rem', borderRadius: '32px', background: 'rgba(255,255,255,0.5)', boxShadow: '0 40px 100px rgba(0,0,0,0.1)' }}>
-          <div className="text-center" style={{ marginBottom: '3rem' }}>
-            <div style={{ 
+        <div className="glass-card login-card animate-in" style={{ width: '100%', maxWidth: '440px', padding: '3.5rem', borderRadius: '32px', background: 'rgba(255,255,255,0.5)', boxShadow: '0 40px 100px rgba(0,0,0,0.1)' }}>
+          {/* Subtle top glow line */}
+          <div className="card-glow-line"></div>
+          
+          <div className="text-center" style={{ marginBottom: '2.5rem', position: 'relative', zIndex: 10 }}>
+            <div className="login-logo-wrap" style={{ 
               width: '80px', height: '80px', borderRadius: '24px', 
               background: 'linear-gradient(135deg, var(--primary), var(--secondary))', 
               display: 'flex', alignItems: 'center', justifyContent: 'center', 
               margin: '0 auto 1.5rem', boxShadow: '0 15px 35px var(--primary-glow)',
-              transform: 'rotate(-5deg)'
+              transform: 'rotate(-5deg)',
+              position: 'relative'
             }}>
-              <Droplets size={38} color="white" />
+              <Droplets size={38} color="white" className="floating-icon" />
+              <div className="ripple-ring"></div>
+              <div className="ripple-ring delay"></div>
             </div>
-            <h2 style={{ fontSize: '2rem', marginBottom: '0.5rem', letterSpacing: '-0.02em' }}>Welcome Back</h2>
-            <p className="text-muted" style={{ fontSize: '1rem' }}>Enter your credentials to access your WASCO workspace</p>
+            <h2 className="login-title" style={{ fontSize: '2rem', marginBottom: '0.5rem', letterSpacing: '-0.02em' }}>WASCO <span className="text-light" style={{ fontWeight: 400, opacity: 0.6 }}>Portal</span></h2>
+            <p className="text-muted login-subtitle" style={{ fontSize: '1rem' }}>Secure Access Authentication</p>
           </div>
 
           {loginError && (
-            <div style={{ 
+            <div className="error-alert animate-in" style={{ 
               color: 'var(--error)', marginBottom: '1.5rem', fontWeight: 600, 
               padding: '0.8rem 1.2rem', background: 'rgba(239,68,68,0.08)', 
-              borderRadius: '14px', fontSize: '0.9rem', border: '1px solid rgba(239,68,68,0.1)' 
+              borderRadius: '14px', fontSize: '0.9rem', border: '1px solid rgba(239,68,68,0.1)',
+              display: 'flex', alignItems: 'center', gap: '0.5rem'
             }}>
-              {loginError}
+              <AlertTriangle size={18} />
+              <span>{loginError}</span>
             </div>
           )}
 
-          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            <div className="input-group">
-              <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Username</label>
-              <input type="text" placeholder="e.g. john_doe" value={username} onChange={e => setUsername(e.target.value)} required className="input-field" style={{ height: '56px', borderRadius: '16px', fontSize: '1rem' }} />
+          <div className="login-tabs" style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem', background: 'rgba(0,0,0,0.04)', padding: '0.4rem', borderRadius: '12px' }}>
+            <button 
+              className={`login-tab ${!isBiometricScan ? 'active' : ''}`} 
+              onClick={() => setIsBiometricScan(false)}
+              style={{ flex: 1, padding: '0.6rem', border: 'none', borderRadius: '8px', fontWeight: 600, background: !isBiometricScan ? 'white' : 'transparent', color: !isBiometricScan ? 'var(--text-main)' : 'var(--text-muted)', boxShadow: !isBiometricScan ? '0 4px 10px rgba(0,0,0,0.05)' : 'none', cursor: 'pointer', transition: 'all 0.2s' }}
+            >Password</button>
+            <button 
+              className={`login-tab ${isBiometricScan ? 'active' : ''}`} 
+              onClick={handleBiometricAuth}
+              style={{ flex: 1, padding: '0.6rem', border: 'none', borderRadius: '8px', fontWeight: 600, background: isBiometricScan ? 'white' : 'transparent', color: isBiometricScan ? 'var(--text-main)' : 'var(--text-muted)', boxShadow: isBiometricScan ? '0 4px 10px rgba(0,0,0,0.05)' : 'none', cursor: 'pointer', transition: 'all 0.2s' }}
+            >WASCO Passkey</button>
+          </div>
+
+          {!isBiometricScan ? (
+            <form onSubmit={handleLogin} className="login-form" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div className="input-group modern-input-group" style={{ position: 'relative' }}>
+                <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Account ID / Username</label>
+                <div style={{ position: 'relative' }}>
+                  <input 
+                    type="text" 
+                    placeholder="e.g. john_doe" 
+                    value={username} 
+                    onChange={e => setUsername(e.target.value)} 
+                    required 
+                    className="input-field modern-input" 
+                    style={{ height: '56px', borderRadius: '16px', fontSize: '1rem', paddingRight: '40px' }} 
+                  />
+                  <User size={18} style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                </div>
+              </div>
+              
+              <div className="input-group modern-input-group" style={{ position: 'relative' }}>
+                <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Secure Password</label>
+                <div style={{ position: 'relative' }}>
+                  <input 
+                    type={showPassword ? "text" : "password"} 
+                    placeholder="••••••••" 
+                    value={password} 
+                    onChange={e => setPassword(e.target.value)} 
+                    required 
+                    className="input-field modern-input" 
+                    style={{ height: '56px', borderRadius: '16px', fontSize: '1rem', paddingRight: '40px' }} 
+                  />
+                  <div 
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', cursor: 'pointer' }}
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex-between" style={{ marginTop: '-0.5rem', marginBottom: '0.5rem' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                  <input type="checkbox" style={{ accentColor: 'var(--primary)', width: '16px', height: '16px' }} />
+                  <span className="small text-muted fw-600">Remember device</span>
+                </label>
+                <a href="#" style={{ color: 'var(--primary)', fontWeight: 600, fontSize: '0.85rem', textDecoration: 'none' }}>Recover access?</a>
+              </div>
+
+              <button type="submit" className="btn btn-primary login-btn" disabled={isAuthenticating} style={{ height: '56px', fontSize: '1.1rem', borderRadius: '16px', marginTop: '0.5rem', fontWeight: 700 }}>
+                {isAuthenticating ? (
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center' }}><Loader2 className="spinner" size={20} style={{ animation: 'spin 1s linear infinite' }} /> Authenticating...</span>
+                ) : (
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center' }}>Sign In <ChevronRight size={20} /></span>
+                )}
+              </button>
+            </form>
+          ) : (
+            <div className="biometric-container animate-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '2rem 0' }}>
+              <div className={`biometric-scanner ${biometricSuccess ? 'success' : ''}`} style={{ 
+                width: '120px', height: '120px', borderRadius: '50%', background: biometricSuccess ? 'rgba(16,185,129,0.1)' : 'rgba(14,165,233,0.1)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', border: `2px solid ${biometricSuccess ? 'var(--success)' : 'var(--primary)'}`
+              }}>
+                <Fingerprint size={64} style={{ color: biometricSuccess ? 'var(--success)' : 'var(--primary)', transition: 'all 0.3s' }} />
+                {!biometricSuccess && (
+                  <div className="scan-line" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '4px', background: 'var(--primary)', boxShadow: '0 0 10px var(--primary-glow)', animation: 'scan 2s ease-in-out infinite alternate' }}></div>
+                )}
+              </div>
+              <p className="biometric-text" style={{ marginTop: '1.5rem', fontWeight: 600, color: biometricSuccess ? 'var(--success)' : 'var(--primary)', letterSpacing: '0.05em' }}>
+                {biometricSuccess ? 'Identity Verified. Logging in...' : 'Scanning biometrics...'}
+              </p>
+              <button 
+                type="button"
+                className="btn" 
+                onClick={() => { setIsBiometricScan(false); setBiometricSuccess(false); }}
+                style={{ marginTop: '2rem', background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-muted)' }}
+              >
+                Cancel
+              </button>
             </div>
-            <div className="input-group">
-              <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Password</label>
-              <input type="password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" value={password} onChange={e => setPassword(e.target.value)} required className="input-field" style={{ height: '56px', borderRadius: '16px', fontSize: '1rem' }} />
-            </div>
-            <button type="submit" className="btn btn-primary" style={{ height: '56px', fontSize: '1.1rem', borderRadius: '16px', marginTop: '1rem', fontWeight: 700 }}>
-              Sign In <ChevronRight size={20} />
-            </button>
-          </form>
+          )}
 
           <div style={{ marginTop: '2.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '2rem' }}>
-            <p className="text-muted small">Don't have an account yet?</p>
-            <div style={{ display: 'flex', gap: '1.5rem' }}>
-              <button onClick={() => setView('register')} style={{ background: 'transparent', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontWeight: 700, fontSize: '0.95rem' }}>Create Account</button>
+            <p className="text-muted small">New to WASCO Services?</p>
+            <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+              <button onClick={() => setView('register')} style={{ background: 'transparent', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontWeight: 700, fontSize: '0.95rem' }}>Request Connection</button>
+              <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'var(--border-color)' }}></div>
               <button onClick={fetchPublicData} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontWeight: 600, fontSize: '0.95rem' }}>Public Rates</button>
             </div>
           </div>
