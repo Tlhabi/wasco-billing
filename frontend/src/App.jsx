@@ -816,203 +816,174 @@ export default function App() {
 
   if (view === 'landing') {
     return (
-      <div className="landing-wrapper landing-pro-bg" style={{ minHeight: '100vh', width: '100vw', overflowX: 'hidden' }}>
-        {/* Professional Ticker */}
-        <div className="telemetry-ticker professional-ticker" style={{ height: '40px' }}>
-          <div className="ticker-content" style={{ animationDuration: '80s' }}>
-            {[...Array(3)].map((_, i) => (
-              <div key={i} style={{ display: 'flex' }}>
-                {[
-                  { label: 'System Health', value: '100% Operational' },
-                  { label: 'Supply Continuity', value: '99.98%' },
-                  { label: 'Water Quality Index', value: 'WHO Standard Compliant' },
-                  { label: 'Live Network Pressure', value: '82.4 PSI' },
-                  { label: 'Conservation Impact', value: '42.5M Liters Saved' }
-                ].map((item, j) => (
-                  <div key={j} className="ticker-item" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                    <span>{item.label}:</span> <span style={{ color: 'var(--primary)', fontWeight: 700 }}>{item.value}</span>
-                  </div>
-                ))}
+      <div className="landing-enterprise-bg" style={{ minHeight: '100vh', background: '#fff', color: '#0f172a' }}>
+        {/* Institutional Global Ticker */}
+        <div className="telemetry-ticker" style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0', height: '40px', overflow: 'hidden', display: 'flex', alignItems: 'center' }}>
+          <div className="ticker-content" style={{ display: 'flex', whiteSpace: 'nowrap', animation: 'ticker-scroll 40s linear infinite' }}>
+            {[...Array(4)].map((_, i) => (
+              <div key={i} style={{ display: 'flex', gap: '3rem', paddingRight: '3rem' }}>
+                <span className="small fw-700 text-muted uppercase">Network_Stability: <span className="text-primary">99.98%</span></span>
+                <span className="small fw-700 text-muted uppercase">Purity_Index: <span className="text-primary">100.0</span></span>
+                <span className="small fw-700 text-muted uppercase">Regional_Load: <span className="text-primary">Optimal</span></span>
+                <span className="small fw-700 text-muted uppercase">Last_Audit: <span className="text-primary">Passed</span></span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Pro Nav */}
-        <nav className="pro-nav" style={{ position: 'sticky', top: '40px', padding: '1rem 8vw', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 1000 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <div style={{ background: 'var(--primary)', padding: '8px', borderRadius: '12px', color: '#fff' }}>
+        {/* Global Navigation */}
+        <nav style={{ padding: '1.5rem 8vw', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #f1f5f9' }}>
+          <div className="flex items-center gap-4">
+            <div style={{ background: 'var(--primary)', padding: '10px', borderRadius: '10px', color: '#fff' }}>
               <Droplets size={24} />
             </div>
-            <span style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1e293b' }}>WASCO</span>
+            <h1 style={{ fontSize: '1.5rem', fontWeight: 900, letterSpacing: '-0.5px' }}>WASCO <span style={{ color: 'var(--primary)' }}>ENTERPRISE</span></h1>
           </div>
-          <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-            <span className="text-muted small fw-600 cursor-pointer">SERVICES</span>
-            <span className="text-muted small fw-600 cursor-pointer">IMPACT</span>
-            <span className="text-muted small fw-600 cursor-pointer">SUPPORT</span>
-            <button className="btn-enterprise" onClick={() => setView('login')}>LOG IN</button>
+          <div className="flex gap-10 items-center">
+            <span className="nav-link-pro">Network Infrastructure</span>
+            <span className="nav-link-pro">Sustainability</span>
+            <span className="nav-link-pro">Corporate Governance</span>
+            <button className="btn-enterprise" onClick={() => setView('login')} style={{ padding: '0.8rem 1.8rem' }}>ACCESS_PORTAL</button>
           </div>
         </nav>
 
-        <div style={{ padding: '4rem 8vw', display: 'grid', gridTemplateColumns: '1.1fr 0.9fr', gap: '6rem', alignItems: 'center' }}>
-          <div className="animate-in">
-            <div className="stat-pill mb-6 inline-block">
-              <span className="text-primary">●</span> TRUSTED BY 2M+ CITIZENS
-            </div>
-            <h1 className="hero-title-pro" style={{ fontSize: '4.5rem', lineHeight: '1.1', marginBottom: '2rem' }}>
-              Sustainable Water <br />
-              <span style={{ color: 'var(--primary)' }}>Management</span> for a <br />
-              Digital Future.
-            </h1>
-            <p className="text-muted mb-10" style={{ fontSize: '1.2rem', lineHeight: '1.7', maxWidth: '600px' }}>
-              Advanced utility infrastructure powered by real-time intelligence. 
-              Join Lesotho's transition to smart, transparent, and eco-friendly water resource management.
-            </p>
-
-            <div className="flex gap-4">
-              <button className="btn-enterprise" onClick={() => setView('login')} style={{ fontSize: '1.1rem', padding: '1rem 2.5rem' }}>
-                Access Portal
-              </button>
-              <button className="btn" onClick={fetchPublicData} style={{ borderRadius: '8px', padding: '1rem 2.5rem', fontWeight: 600 }}>
-                Public Transparency
-              </button>
-            </div>
-
-            <div className="mt-16 flex gap-12">
-              <div>
-                <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#1e293b' }}>99.9%</div>
-                <div className="text-muted small fw-600 uppercase">Availability</div>
+        {/* Elite Hero Section */}
+        <main style={{ padding: '8rem 8vw' }}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+            <div className="animate-in">
+              <div style={{ display: 'inline-flex', background: '#eff6ff', color: '#2563eb', padding: '6px 14px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.1em', marginBottom: '2rem', border: '1px solid #dbeafe' }}>
+                INFRASTRUCTURE MANAGEMENT V3.0
               </div>
-              <div style={{ width: '1px', background: '#e2e8f0' }}></div>
-              <div>
-                <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#1e293b' }}>24/7</div>
-                <div className="text-muted small fw-600 uppercase">Monitoring</div>
-              </div>
-              <div style={{ width: '1px', background: '#e2e8f0' }}></div>
-              <div>
-                <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#1e293b' }}>WHO</div>
-                <div className="text-muted small fw-600 uppercase">Certified</div>
+              <h1 style={{ fontSize: '4.5rem', fontWeight: 900, lineHeight: 1, letterSpacing: '-2px', marginBottom: '2rem' }}>
+                Securing the <br />
+                National <span style={{ color: 'var(--primary)' }}>Flow.</span>
+              </h1>
+              <p style={{ fontSize: '1.35rem', color: '#475569', lineHeight: 1.6, marginBottom: '3.5rem', maxWidth: '600px' }}>
+                WASCO Enterprise provides the critical digital infrastructure for Lesotho's water distribution, ensuring precision billing, real-time telemetry, and institutional-grade oversight.
+              </p>
+              <div className="flex gap-4">
+                <button className="btn-enterprise" style={{ padding: '1.2rem 2.8rem', fontSize: '1.1rem' }} onClick={() => setView('login')}>INITIALIZE SESSION</button>
+                <button className="btn" style={{ background: '#f1f5f9', color: '#0f172a', padding: '1.2rem 2.8rem', fontWeight: 700 }} onClick={fetchPublicData}>PUBLIC TELEMETRY</button>
               </div>
             </div>
-          </div>
 
-          <div className="animate-in" style={{ animationDelay: '0.2s' }}>
-            <div className="enterprise-card" style={{ position: 'relative', overflow: 'hidden', borderRadius: '32px' }}>
-              <img 
-                src={`file:///C:/Users/Lenovo/.gemini/antigravity/brain/6ba6f6ba-1169-4d9a-83aa-6905ebcce28c/modern_water_management_hero_1778964392394.png`}
-                style={{ width: '100%', height: '550px', objectFit: 'cover' }}
-                alt="Corporate Water Management"
-              />
-              <div style={{ position: 'absolute', bottom: '2rem', left: '2rem', right: '2rem', padding: '2rem', background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(10px)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.2)' }}>
-                <div className="flex-between mb-4">
-                  <div style={{ fontWeight: 800, fontSize: '1.2rem', color: '#1e293b' }}>National Grid Status</div>
-                  <span className="badge success">OPTIMAL</span>
+            <div className="relative animate-in" style={{ animationDelay: '0.2s' }}>
+              <div style={{ background: 'linear-gradient(135deg, #f8fafc 0%, #ffffff 100%)', borderRadius: '32px', padding: '2.5rem', border: '1px solid #e2e8f0', boxShadow: '0 40px 80px -20px rgba(0,0,0,0.05)' }}>
+                <div className="grid grid-cols-2 gap-6">
+                  {[
+                    { label: 'Network Uptime', val: '99.98%' },
+                    { label: 'Data Integrity', val: 'Verified' },
+                    { label: 'Active Nodes', val: '1,284' },
+                    { label: 'Grid Pressure', val: 'Stable' }
+                  ].map((s, i) => (
+                    <div key={i} className="p-6 rounded-2xl bg-white border border-slate-100 shadow-sm">
+                      <div className="small fw-800 text-muted uppercase tracking-wider mb-2">{s.label}</div>
+                      <div style={{ fontSize: '2rem', fontWeight: 900, color: '#0f172a' }}>{s.val}</div>
+                    </div>
+                  ))}
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="metric-card">
-                    <div className="small text-muted mb-1">Current Pressure</div>
-                    <div style={{ fontWeight: 800, fontSize: '1.4rem', color: 'var(--primary)' }}>84.2 PSI</div>
+                <div className="mt-6 p-6 rounded-2xl bg-slate-900 text-white">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="dot-indicator" style={{ background: 'var(--success)' }}></div>
+                    <span className="small fw-800 uppercase">Neural Stream Active</span>
                   </div>
-                  <div className="metric-card">
-                    <div className="small text-muted mb-1">Active Leakages</div>
-                    <div style={{ fontWeight: 800, fontSize: '1.4rem', color: 'var(--warning)' }}>03 Fixed</div>
+                  <div className="font-mono text-xs opacity-60">
+                    &gt; [CMD] ANALYZING_SECTOR_DELTA... <br/>
+                    &gt; [SYS] OPTIMIZING_PRESSURE_VECTORS... <br/>
+                    &gt; [RES] 100%_STABILITY_REACHED.
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div style={{ padding: '6rem 8vw', background: '#f8fafc', borderTop: '1px solid #e2e8f0' }}>
-          <div className="text-center mb-16">
-            <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>Enterprise Features</h2>
-            <p className="text-muted">Designed for scale, security, and sustainability.</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="mt-40 grid grid-cols-3 gap-12 animate-in" style={{ animationDelay: '0.4s' }}>
             {[
-              { title: 'Real-time Telemetry', desc: 'Monitor your consumption with precision down to the liter.', icon: <Activity size={32} /> },
-              { title: 'Smart Conservation', desc: 'Receive insights and rewards for reducing your water footprint.', icon: <Droplets size={32} /> },
-              { title: 'Predictive Billing', desc: 'No surprises. Our AI models predict your bill based on usage patterns.', icon: <LayoutDashboard size={32} /> }
-            ].map((feature, i) => (
-              <div key={i} className="enterprise-card p-8">
-                <div style={{ color: 'var(--primary)', marginBottom: '1.5rem' }}>{feature.icon}</div>
-                <h3 style={{ fontSize: '1.3rem', marginBottom: '1rem' }}>{feature.title}</h3>
-                <p className="text-muted">{feature.desc}</p>
+              { title: 'Institutional Governance', desc: 'Secure, multi-layered access control with full auditability for regulatory compliance.' },
+              { title: 'Predictive Maintenance', desc: 'AI-driven diagnostics to mitigate infrastructure risks before they impact distribution.' },
+              { title: 'Resource Stewardship', desc: 'Integrated sustainability tracking to optimize the national water reserve cycle.' }
+            ].map((p, i) => (
+              <div key={i}>
+                <div style={{ width: '40px', height: '3px', background: 'var(--primary)', marginBottom: '1.5rem' }}></div>
+                <h3 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: '1rem' }}>{p.title}</h3>
+                <p style={{ color: '#64748b', lineHeight: 1.7 }}>{p.desc}</p>
               </div>
             ))}
           </div>
-        </div>
+        </main>
       </div>
     );
   }
   if (view === 'login') {
     return (
-      <div className="landing-pro-bg" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
-        <div className="enterprise-card animate-in" style={{ width: '100%', maxWidth: '480px', padding: '4rem', borderRadius: '40px', background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(20px)' }}>
-          <div className="text-center mb-12">
-            <div style={{ display: 'inline-flex', background: 'var(--primary)', padding: '16px', borderRadius: '20px', color: '#fff', marginBottom: '2rem', boxShadow: '0 20px 40px rgba(37, 99, 235, 0.2)' }}>
-              <Droplets size={40} />
+      <div className="login-wrapper" style={{ 
+        minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
+        background: '#f8fafc', padding: '2rem'
+      }}>
+        <div style={{ width: '100%', maxWidth: '440px' }} className="animate-in">
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <div style={{ 
+              display: 'inline-flex', background: 'var(--primary)', color: '#fff', 
+              padding: '16px', borderRadius: '16px', marginBottom: '1.5rem',
+              boxShadow: '0 10px 25px -5px rgba(37, 99, 235, 0.4)'
+            }}>
+              <ShieldCheck size={40} />
             </div>
-            <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#1e293b', marginBottom: '0.5rem' }}>Portal Access</h1>
-            <p className="text-muted">Enter your enterprise credentials to manage your utility infrastructure.</p>
+            <h2 style={{ fontSize: '2rem', fontWeight: 900, color: '#0f172a', letterSpacing: '-0.5px' }}>Institutional Access</h2>
+            <p style={{ color: '#64748b', fontWeight: 500 }}>Secure entry to WASCO Enterprise Management</p>
           </div>
 
-          {loginError && (
-            <div className="p-4 rounded-xl mb-6" style={{ background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.1)', color: 'var(--error)', display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: 600 }}>
-              <AlertTriangle size={18} /> {loginError}
-            </div>
-          )}
-
-          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2.5rem', background: '#f1f5f9', padding: '0.5rem', borderRadius: '16px' }}>
-            <button 
-              className={`flex-1 py-3 rounded-xl fw-700 transition-all ${!isBiometricScan ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500'}`}
-              onClick={() => setIsBiometricScan(false)}
-            >Secure Password</button>
-            <button 
-              className={`flex-1 py-3 rounded-xl fw-700 transition-all ${isBiometricScan ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500'}`}
-              onClick={handleBiometricAuth}
-            >Passkey Scan</button>
-          </div>
-
-          {!isBiometricScan ? (
+          <div className="enterprise-card p-10" style={{ background: '#fff', border: '1px solid #e2e8f0', boxShadow: '0 20px 50px -12px rgba(0,0,0,0.05)' }}>
+            {loginError && (
+              <div className="p-4 rounded-xl mb-6 bg-red-50 text-red-600 small fw-700 border border-red-100 flex items-center gap-2">
+                <AlertTriangle size={16} /> {loginError}
+              </div>
+            )}
+            
             <form onSubmit={handleLogin} className="space-y-6">
-              <div className="input-group">
-                <label className="small fw-700 text-muted mb-2 block uppercase tracking-wider">Account Identity</label>
-                <div className="relative">
-                  <input className="input-field" style={{ height: '60px', paddingLeft: '3.5rem' }} placeholder="Username or Account ID" value={username} onChange={e => setUsername(e.target.value)} required />
-                  <User size={20} className="text-muted" style={{ position: 'absolute', left: '1.25rem', top: '50%', transform: 'translateY(-50%)' }} />
-                </div>
+              <div>
+                <label className="small fw-800 text-muted uppercase tracking-wider mb-2 block">Identity Credentials</label>
+                <input 
+                  className="input-field" 
+                  placeholder="Username / Reference" 
+                  value={username}
+                  onChange={e => setUsername(e.target.value)}
+                  required
+                  style={{ height: '55px', fontSize: '1rem' }}
+                />
               </div>
-              <div className="input-group">
-                <label className="small fw-700 text-muted mb-2 block uppercase tracking-wider">Secure Password</label>
-                <div className="relative">
-                  <input className="input-field" type={showPassword ? "text" : "password"} style={{ height: '60px', paddingLeft: '3.5rem' }} placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} required />
-                  <ShieldCheck size={20} className="text-muted" style={{ position: 'absolute', left: '1.25rem', top: '50%', transform: 'translateY(-50%)' }} />
-                  <div onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '1.25rem', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', color: 'var(--text-muted)' }}>
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                  </div>
-                </div>
+              <div>
+                <label className="small fw-800 text-muted uppercase tracking-wider mb-2 block">Security Token</label>
+                <input 
+                  type="password" 
+                  className="input-field" 
+                  placeholder="Access Password" 
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
+                  style={{ height: '55px', fontSize: '1rem' }}
+                />
               </div>
-              <button type="submit" className="btn-enterprise w-full" style={{ height: '60px', fontSize: '1.1rem' }} disabled={isAuthenticating}>
-                {isAuthenticating ? 'VERIFYING...' : 'SIGN IN TO PORTAL'}
+              <button 
+                type="submit" 
+                className="btn-enterprise w-full" 
+                style={{ height: '55px', fontSize: '1.1rem', borderRadius: '8px' }}
+                disabled={isAuthenticating}
+              >
+                {isAuthenticating ? 'VALIDATING...' : 'AUTHORIZE SESSION'}
               </button>
             </form>
-          ) : (
-            <div className="text-center py-8">
-              <div style={{ width: '120px', height: '120px', borderRadius: '50%', background: biometricSuccess ? 'rgba(5, 150, 105, 0.1)' : 'rgba(37, 99, 235, 0.1)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', border: `2px solid ${biometricSuccess ? 'var(--success)' : 'var(--primary)'}`, marginBottom: '2rem' }}>
-                <Fingerprint size={64} className={biometricSuccess ? 'text-success' : 'text-primary'} />
-              </div>
-              <p className="fw-700 text-slate-700 mb-8">{biometricSuccess ? 'Access Granted' : 'Awaiting Biometric Authentication...'}</p>
-              <button className="btn" onClick={() => setIsBiometricScan(false)} style={{ background: '#f1f5f9' }}>Back to Password</button>
-            </div>
-          )}
 
-          <div className="mt-12 pt-8 border-t border-slate-100 text-center">
-            <p className="text-muted small mb-4">Request assistance or public data</p>
-            <div className="flex justify-center gap-6">
-              <button className="text-primary fw-700 small" onClick={() => setView('register')}>Apply for Service</button>
-              <button className="text-slate-500 fw-700 small" onClick={fetchPublicData}>Global Rates</button>
+            <div className="mt-8 pt-8 border-t border-slate-100 text-center">
+              <span className="small text-muted fw-500">Infrastructure Support? </span>
+              <a href="#" className="small fw-700 text-primary hover:underline">Request Access</a>
             </div>
+          </div>
+
+          <div className="mt-8 text-center">
+            <button className="btn small" style={{ background: 'transparent', color: '#64748b' }} onClick={() => setView('landing')}>
+               â†  Back to Corporate Site
+            </button>
           </div>
         </div>
       </div>
@@ -1295,7 +1266,7 @@ export default function App() {
       <div>
         <h2 style={{ fontSize: '1.2rem', margin: 0, color: 'var(--text-main)', fontFamily: 'Outfit' }}>
           {activeTab === 'dashboard' ? 'Dashboard Overview' : 
-           activeTab === 'users' ? 'Customer Management' : 
+           activeTab === 'users' ? 'Account Management' : 
            activeTab === 'audit' ? 'System Audit Log' : 
            activeTab === 'intelligence' ? 'Network Intelligence' :
            activeTab === 'green' ? 'Green Impact Module' :
@@ -1413,25 +1384,25 @@ export default function App() {
         </div>
 
         <div className="sidebar-content">
-          <div className="nav-group-label">Core</div>
-                <div className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveTab('dashboard')}>
-                  <ShieldCheck size={18} /> <span>Control Center</span>
-                </div>
-                <div className={`nav-item ${activeTab === 'assets' ? 'active' : ''}`} onClick={() => setActiveTab('assets')}>
-                  <Cpu size={18} /> <span>Asset Health</span>
-                </div>
-                <div className={`nav-item ${activeTab === 'customers' ? 'active' : ''}`} onClick={() => setActiveTab('customers')}>
-                  <Users size={18} /> <span>Account Management</span>
-                </div>
+          <div className="nav-group-label">Core Operations</div>
+          <div className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveTab('dashboard')}>
+            <ShieldCheck size={18} /> <span>Control Center</span>
+          </div>
+          <div className={`nav-item ${activeTab === 'assets' ? 'active' : ''}`} onClick={() => setActiveTab('assets')}>
+            <Cpu size={18} /> <span>Asset Health</span>
+          </div>
+          <div className={`nav-item ${activeTab === 'users' ? 'active' : ''}`} onClick={() => setActiveTab('users')}>
+            <Users size={18} /> <span>Account Management</span>
+          </div>
+          <div className={`nav-item ${activeTab === 'intelligence' ? 'active' : ''}`} onClick={() => setActiveTab('intelligence')}>
+            <Activity size={18} /> <span>Intelligence Lab</span>
+          </div>
 
           {(view === 'admin' || view === 'manager') && (
             <>
-              <div className="nav-group-label">Management</div>
-              <div className={`nav-item ${activeTab === 'users' ? 'active' : ''}`} onClick={() => setActiveTab('users')}>
-                <Users size={18} /> <span>Customers</span>
-              </div>
+              <div className="nav-group-label">Operational Control</div>
               <div className={`nav-item ${activeTab === 'reports' ? 'active' : ''}`} onClick={() => setActiveTab('reports')}>
-                <AlertTriangle size={18} /> <span>Incidents</span>
+                <AlertTriangle size={18} /> <span>Incident Command</span>
               </div>
             </>
           )}
@@ -1683,74 +1654,89 @@ export default function App() {
             )}
 
             {activeTab === 'intelligence' && (
-              <div className="glass-card intelligence-hud" style={{ borderLeft: '4px solid var(--secondary)', background: 'linear-gradient(135deg, rgba(15,23,42,0.8), rgba(99,102,241,0.15))', color: '#fff', position: 'relative', overflow: 'hidden' }}>
-                <div className="radar-sweep"></div>
-                <div className="cyber-grid"></div>
-                
-                <div className="stat-header mb-6 relative z-10">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <div className="pulse-icon" style={{ background: 'var(--secondary)', color: 'white', padding: '0.6rem', borderRadius: '12px', boxShadow: '0 0 20px var(--secondary)' }}>
-                      <Activity size={24} />
-                    </div>
-                    <div>
-                      <h3 style={{ color: '#fff', textShadow: '0 0 10px rgba(255,255,255,0.3)', margin: 0 }}>Projected Intelligence Grid</h3>
-                      <p className="small text-muted" style={{ color: 'var(--secondary)' }}>Model v4.0.2 - Deep Learning Analysis</p>
-                    </div>
+              <div className="animate-in">
+                <div className="flex-between mb-8">
+                  <div>
+                    <h2 className="hero-title-pro" style={{ fontSize: '2.2rem' }}>Intelligence Lab</h2>
+                    <p className="text-muted">Predictive neural modeling for national grid optimization.</p>
                   </div>
-                  <div className="badge" style={{ background: 'rgba(52,211,153,0.2)', color: 'var(--success)', border: '1px solid var(--success)', boxShadow: '0 0 10px var(--success)' }}>
-                    <span className="dot-indicator bg-success mr-2"></span> PROACTIVE_MODE
+                  <div className="flex gap-4">
+                    <span className="badge" style={{ background: '#f0fdf4', color: '#166534', border: '1px solid #bbf7d0' }}>AI_ACTIVE_NODE_04</span>
                   </div>
                 </div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <div className="enterprise-card p-8">
+                    <div className="flex-between mb-6">
+                      <h3 style={{ margin: 0 }}>Neural Flow Diagnostics</h3>
+                      <div className="flex gap-2">
+                        <span className="dot-indicator" style={{ background: 'var(--success)' }}></span>
+                        <span className="small fw-800 uppercase text-muted">Real-time Stream</span>
+                      </div>
+                    </div>
+                    <div style={{ height: '350px', background: '#0f172a', borderRadius: '20px', position: 'relative', overflow: 'hidden', padding: '2rem' }}>
+                      <div className="cyber-grid" style={{ opacity: 0.1 }}></div>
+                      <div className="radar-sweep" style={{ opacity: 0.05 }}></div>
+                      <div style={{ position: 'relative', zIndex: 10 }}>
+                        <div className="font-mono text-emerald-400 mb-4" style={{ fontSize: '0.8rem' }}>
+                          [SYSTEM_INFO] Analyzing pressure variance in Sector 7...<br/>
+                          [STABILITY] 99.98% Confidence Level reached.<br/>
+                          [ANOMALY] Minor cavitation detected in Booster Pump B2.<br/>
+                          [ACTION] Optimizing flow vectors to mitigate structural fatigue.
+                        </div>
+                        <div className="grid grid-cols-4 gap-4 mt-8">
+                          {[
+                            { label: 'Flow Vel.', val: '4.2 m/s', color: '#38bdf8' },
+                            { label: 'Load Bal.', val: 'Balanced', color: '#10b981' },
+                            { label: 'Loss Ratio', val: '0.04%', color: '#f59e0b' },
+                            { label: 'Node Sync', val: 'Active', color: '#8b5cf6' }
+                          ].map((m, i) => (
+                            <div key={i} style={{ borderLeft: `2px solid ${m.color}`, paddingLeft: '1rem' }}>
+                              <div className="text-muted small uppercase fw-700">{m.label}</div>
+                              <div className="text-white fw-900" style={{ fontSize: '1.2rem' }}>{m.val}</div>
+                            </div>
+                          ))}
+                        </div>
+                        {/* Animated Waveform Mockup */}
+                        <div className="mt-12 flex items-end gap-1 h-20">
+                          {[...Array(40)].map((_, i) => (
+                            <div key={i} style={{ 
+                              width: '100%', 
+                              background: 'linear-gradient(to top, #0ea5e9, transparent)',
+                              height: `${20 + Math.random() * 80}%`,
+                              opacity: 0.3 + Math.random() * 0.7,
+                              borderRadius: '2px'
+                            }}></div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
-                  <div className="hud-panel p-6 rounded-2xl" style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(99,102,241,0.3)', backdropFilter: 'blur(10px)' }}>
-                    <h4 className="mb-4 small uppercase" style={{ color: 'var(--secondary)', letterSpacing: '0.1em' }}>Dist. Risk Heatmap</h4>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div className="enterprise-card p-8">
+                    <h3 style={{ marginBottom: '1.5rem' }}>Regional Supply Matrix</h3>
+                    <div className="space-y-6">
                       {[
-                        { district: 'Maseru', risk: 'Critical', score: 82, color: 'var(--error)' },
-                        { district: 'Leribe', risk: 'Elevated', score: 45, color: 'var(--warning)' },
-                        { district: 'Berea', risk: 'Nominal', score: 18, color: 'var(--success)' },
-                        { district: 'Mafeteng', risk: 'Nominal', score: 12, color: 'var(--primary)' }
+                        { district: 'Maseru Central', cap: 84, trend: '+2.1%', status: 'Stable' },
+                        { district: 'Leribe North', cap: 62, trend: '-0.4%', status: 'Watch' },
+                        { district: 'Berea South', cap: 91, trend: '+0.8%', status: 'Stable' },
+                        { district: 'Mafeteng West', cap: 45, trend: '-4.2%', status: 'Critical' }
                       ].map(d => (
-                        <div key={d.district} className="group">
-                          <div className="flex-between mb-2">
-                            <span style={{ fontWeight: 700, fontFamily: 'monospace' }}>{d.district}</span>
-                            <span className="badge font-mono" style={{ background: d.color + '20', color: d.color, border: `1px solid ${d.color}50` }}>{d.risk}</span>
+                        <div key={d.district} className="p-4 rounded-xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
+                          <div className="flex-between mb-3">
+                            <span className="fw-700">{d.district}</span>
+                            <span className={`small fw-800 ${d.status === 'Critical' ? 'text-error' : d.status === 'Watch' ? 'text-warning' : 'text-success'}`}>{d.status.toUpperCase()}</span>
                           </div>
-                          <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '99px', overflow: 'hidden', position: 'relative' }}>
-                            <div style={{ width: d.score + '%', height: '100%', background: d.color, boxShadow: `0 0 10px ${d.color}`, transition: 'width 1s cubic-bezier(0.4, 0, 0.2, 1)' }}></div>
+                          <div className="flex items-center gap-4">
+                            <div style={{ flex: 1, height: '8px', background: '#f1f5f9', borderRadius: '4px', overflow: 'hidden' }}>
+                              <div style={{ width: `${d.cap}%`, height: '100%', background: d.status === 'Critical' ? 'var(--error)' : d.status === 'Watch' ? 'var(--warning)' : 'var(--primary)' }}></div>
+                            </div>
+                            <span className="font-mono small fw-700">{d.cap}%</span>
+                            <span className={`small fw-700 ${d.trend.startsWith('+') ? 'text-success' : 'text-error'}`}>{d.trend}</span>
                           </div>
                         </div>
                       ))}
                     </div>
-                  </div>
-                  
-                  <div className="hud-panel p-6 rounded-2xl" style={{ background: 'rgba(0,0,0,0.4)', border: '1px dashed rgba(239,68,68,0.4)', position: 'relative', overflow: 'hidden' }}>
-                    <div className="warning-stripe"></div>
-                    <h4 className="mb-2 uppercase" style={{ color: 'var(--error)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <AlertTriangle size={18} className="animate-pulse" /> Anomalous AI Detection
-                    </h4>
-                    <p className="small mb-6" style={{ color: 'rgba(255,255,255,0.6)' }}>Neural network identified pressure variance delta of 14.2%.</p>
-                    
-                    <div style={{ padding: '1.5rem', background: 'linear-gradient(45deg, rgba(239,68,68,0.2), transparent)', borderLeft: '4px solid var(--error)', borderRadius: '12px', marginBottom: '1.5rem' }}>
-                      <div className="font-mono" style={{ fontSize: '1.2rem', fontWeight: 800, color: '#fff', textShadow: '0 0 10px var(--error)', marginBottom: '0.5rem' }}>
-                        BURST PREDICTION: MASERU WEST
-                      </div>
-                      <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.8)' }}>
-                        <strong className="text-error">92.4% CONFIDENCE</strong> of subterranean structural failure near Plot 552. Immediate dispatch recommended.
-                      </p>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 font-mono text-sm">
-                      <div className="p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)' }}>
-                        <div className="text-muted text-xs mb-1">Integ. Score</div>
-                        <div className="text-white text-lg">76.0%</div>
-                      </div>
-                      <div className="p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)' }}>
-                        <div className="text-muted text-xs mb-1">Sensor Conf.</div>
-                        <div className="text-white text-lg">99.8%</div>
-                      </div>
-                    </div>
+                    <button className="btn-enterprise w-full mt-8" style={{ height: '50px' }}>GENERATE PREDICTIVE REPORT</button>
                   </div>
                 </div>
               </div>
@@ -2059,78 +2045,92 @@ export default function App() {
               <div className="animate-in">
                 <div className="flex-between mb-8">
                   <div>
-                    <h2 className="hero-title-pro" style={{ fontSize: '2.2rem' }}>Sustainability Portal</h2>
-                    <p className="text-muted">Tracking your contribution to Lesotho's water conservation goals.</p>
+                    <h2 className="hero-title-pro" style={{ fontSize: '2.2rem' }}>Sustainability Hub</h2>
+                    <p className="text-muted">Tracking ESG compliance and resource stewardship at scale.</p>
                   </div>
-                  <div className="impact-badge">LVL 4 CONSERVATOR</div>
+                  <div className="flex gap-4">
+                    <button className="btn-enterprise"><Leaf size={18} /> GENERATE ESG REPORT</button>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                  <div className="metric-card">
-                    <div className="text-primary mb-2"><Droplets size={24} /></div>
-                    <div className="text-muted small fw-600">Liters Saved</div>
-                    <div style={{ fontSize: '1.8rem', fontWeight: 800 }}>12,402 L</div>
+                  <div className="enterprise-card p-6">
+                    <div className="text-muted small fw-800 uppercase mb-2">Total Carbon Offset</div>
+                    <div style={{ fontSize: '2rem', fontWeight: 900, color: 'var(--success)' }}>42.5 Tons</div>
+                    <p className="small text-muted mt-1">LIFETIME_IMPACT</p>
                   </div>
-                  <div className="metric-card">
-                    <div className="text-success mb-2"><Leaf size={24} /></div>
-                    <div className="text-muted small fw-600">Green Points</div>
-                    <div style={{ fontSize: '1.8rem', fontWeight: 800 }}>2,450</div>
+                  <div className="enterprise-card p-6">
+                    <div className="text-muted small fw-800 uppercase mb-2">Conservation Score</div>
+                    <div style={{ fontSize: '2rem', fontWeight: 900, color: 'var(--primary)' }}>A+</div>
+                    <p className="small text-muted mt-1">NATIONAL_PERCENTILE: 98%</p>
                   </div>
-                  <div className="metric-card">
-                    <div className="text-secondary mb-2"><Users size={24} /></div>
-                    <div className="text-muted small fw-600">Community Rank</div>
-                    <div style={{ fontSize: '1.8rem', fontWeight: 800 }}>Top 5%</div>
+                  <div className="enterprise-card p-6">
+                    <div className="text-muted small fw-800 uppercase mb-2">Eco-Credits Earned</div>
+                    <div style={{ fontSize: '2rem', fontWeight: 900, color: 'var(--secondary)' }}>2,450</div>
+                    <p className="small text-muted mt-1">REDEEMABLE_VALUE: LSL 245</p>
                   </div>
-                  <div className="metric-card">
-                    <div className="text-warning mb-2"><Activity size={24} /></div>
-                    <div className="text-muted small fw-600">Conservation Credit</div>
-                    <div style={{ fontSize: '1.8rem', fontWeight: 800 }}>LSL 45.00</div>
+                  <div className="enterprise-card p-6">
+                    <div className="text-muted small fw-800 uppercase mb-2">Water Recycled</div>
+                    <div style={{ fontSize: '2rem', fontWeight: 900, color: '#0ea5e9' }}>1.2M L</div>
+                    <p className="small text-muted mt-1">INDUSTRIAL_REUSE</p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                   <div className="enterprise-card p-8">
-                    <h3 style={{ marginBottom: '1.5rem' }}>Consumption Benchmarking</h3>
-                    <div className="space-y-6">
-                      <div>
-                        <div className="flex-between mb-2">
-                          <span className="small fw-600">Your Average Usage</span>
-                          <span className="small text-muted">145 kl / month</span>
-                        </div>
-                        <div style={{ height: '8px', background: '#f1f5f9', borderRadius: '4px', overflow: 'hidden' }}>
-                          <div style={{ width: '40%', height: '100%', background: 'var(--primary)' }}></div>
-                        </div>
-                      </div>
-                      <div>
-                        <div className="flex-between mb-2">
-                          <span className="small fw-600">Maseru District Average</span>
-                          <span className="small text-muted">182 kl / month</span>
-                        </div>
-                        <div style={{ height: '8px', background: '#f1f5f9', borderRadius: '4px', overflow: 'hidden' }}>
-                          <div style={{ width: '60%', height: '100%', background: '#cbd5e1' }}></div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mt-8 p-6 rounded-2xl" style={{ background: 'rgba(5, 150, 105, 0.05)', border: '1px solid rgba(5, 150, 105, 0.1)' }}>
-                      <p className="small text-success fw-600" style={{ margin: 0 }}>
-                        Awesome! You are consuming 20% less water than your neighborhood average. This qualifies you for the 'Eco-Saver' tariff next month!
-                      </p>
+                    <h3>District Sustainability Leaderboard</h3>
+                    <div className="table-container mt-6">
+                      <table className="data-table">
+                        <thead><tr><th>Rank</th><th>District</th><th>Conservation Index</th><th>Growth</th></tr></thead>
+                        <tbody>
+                          {[
+                            { rank: 1, district: 'Berea South', index: 98.2, growth: '+2.4%' },
+                            { rank: 2, district: 'Leribe Central', index: 94.5, growth: '+1.8%' },
+                            { rank: 3, district: 'Maseru West', index: 91.0, growth: '+0.5%' },
+                            { rank: 4, district: 'Mafeteng', index: 88.4, growth: '-0.2%' }
+                          ].map(r => (
+                            <tr key={r.rank}>
+                              <td><span className="fw-900" style={{ color: r.rank === 1 ? 'var(--warning)' : 'inherit' }}>#{r.rank}</span></td>
+                              <td className="fw-700">{r.district}</td>
+                              <td><span className="badge" style={{ background: '#f0fdf4', color: '#166534' }}>{r.index} PTS</span></td>
+                              <td className={r.growth.startsWith('+') ? 'text-success' : 'text-error'}>{r.growth}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
 
                   <div className="enterprise-card p-8">
-                    <h3 style={{ marginBottom: '1.5rem' }}>Personalized Tips</h3>
-                    <div className="space-y-4">
-                      {[
-                        { tip: 'Fix dripping faucets promptly to save up to 20 liters a day.', icon: <Settings /> },
-                        { tip: 'Install low-flow showerheads for a 30% reduction in water use.', icon: <Droplets /> },
-                        { tip: 'Water your garden during early morning or late evening hours.', icon: <ShieldCheck /> }
-                      ].map((item, i) => (
-                        <div key={i} className="flex gap-4 items-start p-4 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-all">
-                          <div style={{ color: 'var(--accent)' }}>{React.cloneElement(item.icon, { size: 20 })}</div>
-                          <p className="small text-muted" style={{ margin: 0 }}>{item.tip}</p>
+                    <h3>Carbon Offset Simulator</h3>
+                    <p className="text-muted small mb-8">Simulate the impact of infrastructure upgrades on the national carbon footprint.</p>
+                    <div className="space-y-6">
+                      <div>
+                        <div className="flex-between mb-2">
+                          <span className="fw-700">Pump Efficiency Upgrade</span>
+                          <span className="text-primary fw-800">-12% Energy</span>
                         </div>
-                      ))}
+                        <div style={{ height: '8px', background: '#f1f5f9', borderRadius: '4px', overflow: 'hidden' }}>
+                           <div style={{ width: '70%', height: '100%', background: 'var(--primary)' }}></div>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex-between mb-2">
+                          <span className="fw-700">Sectoral Leakage Repair</span>
+                          <span className="text-success fw-800">-45k Liters/Day</span>
+                        </div>
+                        <div style={{ height: '8px', background: '#f1f5f9', borderRadius: '4px', overflow: 'hidden' }}>
+                           <div style={{ width: '85%', height: '100%', background: 'var(--success)' }}></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-8 p-6 rounded-2xl bg-slate-900 text-white relative overflow-hidden">
+                       <div className="cyber-grid" style={{ opacity: 0.1 }}></div>
+                       <div className="relative z-10">
+                          <div className="small fw-700 text-slate-400 mb-2 uppercase">Simulated ESG Impact</div>
+                          <div style={{ fontSize: '2rem', fontWeight: 900 }}>PLATINUM_TIER</div>
+                          <p className="small text-slate-400 mt-2">Predicted Annual Reduction: 1,240 MT CO2e</p>
+                       </div>
                     </div>
                   </div>
                 </div>
