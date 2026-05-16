@@ -450,6 +450,7 @@ tbody tr:hover td { background:rgba(14,165,233,0.05); }
 /* ── SPLIT LANDING PAGE ─────────────────────────────────────────── */
 .landing-wrapper {
   display: flex;
+  flex-direction: column;
   min-height: 100vh;
   width: 100vw;
 }
@@ -916,6 +917,34 @@ tbody tr:hover td { background:rgba(14,165,233,0.05); }
 /* Overriding cyberpunk elements for landing if needed */
 .landing-pro-bg {
   background: radial-gradient(circle at top right, #eff6ff, #ffffff 50%);
+}
+
+.telemetry-ticker {
+  overflow: hidden;
+  background: #fff;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.ticker-content {
+  display: flex;
+  white-space: nowrap;
+  animation: ticker-scroll linear infinite;
+}
+
+.ticker-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 3rem;
+  white-space: nowrap;
+}
+
+@keyframes ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-33.33%); }
 }
 
 .stat-pill {
