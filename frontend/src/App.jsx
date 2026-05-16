@@ -816,25 +816,21 @@ export default function App() {
 
   if (view === 'landing') {
     return (
-      <div className="landing-wrapper parallax-hero" onMouseMove={handleMouseMove} style={{ background: '#050b14', overflow: 'hidden', position: 'relative', width: '100vw', minHeight: '100vh' }}>
-        <div className="scanlines"></div>
-        
-        {/* Telemetry Ticker */}
-        <div className="telemetry-ticker">
-          <div className="ticker-content">
-            {[...Array(5)].map((_, i) => (
+      <div className="landing-wrapper landing-pro-bg" style={{ minHeight: '100vh', width: '100vw', overflowX: 'hidden' }}>
+        {/* Professional Ticker */}
+        <div className="telemetry-ticker professional-ticker" style={{ height: '40px' }}>
+          <div className="ticker-content" style={{ animationDuration: '80s' }}>
+            {[...Array(3)].map((_, i) => (
               <div key={i} style={{ display: 'flex' }}>
                 {[
-                  { label: 'GRID_STABILITY', value: '99.98%', status: 'OPTIMAL' },
-                  { label: 'NETWORK_PRESSURE', value: '84.2 PSI', status: 'STABLE' },
-                  { label: 'PURITY_INDEX', value: '100%', status: 'CERTIFIED' },
-                  { label: 'ACTIVE_NODES', value: '1,442', status: 'SYNCED' },
-                  { label: 'LAST_PULSE', value: new Date().toLocaleTimeString(), status: 'LIVE' }
+                  { label: 'System Health', value: '100% Operational' },
+                  { label: 'Supply Continuity', value: '99.98%' },
+                  { label: 'Water Quality Index', value: 'WHO Standard Compliant' },
+                  { label: 'Live Network Pressure', value: '82.4 PSI' },
+                  { label: 'Conservation Impact', value: '42.5M Liters Saved' }
                 ].map((item, j) => (
-                  <div key={j} className="ticker-item">
-                    <span style={{ color: 'rgba(255,255,255,0.4)' }}>[{item.label}]</span>
-                    <span style={{ color: 'var(--primary)' }}>{item.value}</span>
-                    <span className="badge success" style={{ fontSize: '8px', padding: '1px 5px', height: '14px' }}>{item.status}</span>
+                  <div key={j} className="ticker-item" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                    <span>{item.label}:</span> <span style={{ color: 'var(--primary)', fontWeight: 700 }}>{item.value}</span>
                   </div>
                 ))}
               </div>
@@ -842,115 +838,108 @@ export default function App() {
           </div>
         </div>
 
-        <div className="bg-blobs">
-          <div className="blob blob-1" style={{ background: 'radial-gradient(circle, #0ea5e9, #6366f1)', opacity: 0.25, width: '1200px', height: '1200px' }}></div>
-          <div className="blob blob-2" style={{ background: 'radial-gradient(circle, #10b981, #0ea5e9)', opacity: 0.15, width: '1000px', height: '1000px' }}></div>
-          <div className="particles-layer"></div>
-        </div>
-
-        <div className="landing-content" style={{ padding: '0 8vw', maxWidth: '1600px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '4rem', alignItems: 'center', minHeight: '100vh', position: 'relative', zIndex: 20 }}>
-          <div className="animate-in">
-            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full mb-8 cyber-border-box" style={{ background: 'rgba(14,165,233,0.1)' }}>
-              <span className="dot-indicator"></span>
-              <span className="font-mono text-xs text-primary fw-800" style={{ letterSpacing: '2px' }}>v5.0.1 SYSTEM_ONLINE</span>
+        {/* Pro Nav */}
+        <nav className="pro-nav" style={{ position: 'sticky', top: '40px', padding: '1rem 8vw', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 1000 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{ background: 'var(--primary)', padding: '8px', borderRadius: '12px', color: '#fff' }}>
+              <Droplets size={24} />
             </div>
+            <span style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1e293b' }}>WASCO</span>
+          </div>
+          <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+            <span className="text-muted small fw-600 cursor-pointer">SERVICES</span>
+            <span className="text-muted small fw-600 cursor-pointer">IMPACT</span>
+            <span className="text-muted small fw-600 cursor-pointer">SUPPORT</span>
+            <button className="btn-enterprise" onClick={() => setView('login')}>LOG IN</button>
+          </div>
+        </nav>
 
-            <h1 className="hero-gradient-text" style={{ fontSize: 'clamp(3.5rem, 6vw, 6rem)', lineHeight: '1.05', marginBottom: '1.5rem', fontWeight: 900 }}>
-              REDEFINING <br />
-              <span className="word-cycler" style={{ color: '#fff' }}>
-                THE <span className="cycle-text text-primary">{heroWords[heroWordIndex].toUpperCase()}</span>
-              </span>
+        <div style={{ padding: '4rem 8vw', display: 'grid', gridTemplateColumns: '1.1fr 0.9fr', gap: '6rem', alignItems: 'center' }}>
+          <div className="animate-in">
+            <div className="stat-pill mb-6 inline-block">
+              <span className="text-primary">●</span> TRUSTED BY 2M+ CITIZENS
+            </div>
+            <h1 className="hero-title-pro" style={{ fontSize: '4.5rem', lineHeight: '1.1', marginBottom: '2rem' }}>
+              Sustainable Water <br />
+              <span style={{ color: 'var(--primary)' }}>Management</span> for a <br />
+              Digital Future.
             </h1>
-            
-            <p className="text-muted mb-12 max-w-lg" style={{ fontSize: '1.25rem', color: 'rgba(255,255,255,0.6)', lineHeight: '1.6' }}>
-              Experience the next generation of water resource management. 
-              Real-time telemetry, automated billing, and AI-driven grid optimization for the modern era.
+            <p className="text-muted mb-10" style={{ fontSize: '1.2rem', lineHeight: '1.7', maxWidth: '600px' }}>
+              Advanced utility infrastructure powered by real-time intelligence. 
+              Join Lesotho's transition to smart, transparent, and eco-friendly water resource management.
             </p>
 
-            <div className="flex gap-6">
-              <button className="btn super-btn font-mono text-lg" onClick={() => setView('login')} style={{ background: 'var(--primary)', color: '#fff', padding: '1.2rem 2.8rem', borderRadius: '16px', border: 'none', boxShadow: '0 0 30px var(--primary-glow)' }}>
-                <span className="flex items-center gap-3">
-                  INITIALIZE_PORTAL <ChevronRight className="icon-slide" size={24} />
-                </span>
+            <div className="flex gap-4">
+              <button className="btn-enterprise" onClick={() => setView('login')} style={{ fontSize: '1.1rem', padding: '1rem 2.5rem' }}>
+                Access Portal
               </button>
-              <button className="btn glass-btn font-mono text-lg" onClick={fetchPublicData} style={{ padding: '1.2rem 2.8rem', borderRadius: '16px', color: '#fff' }}>
-                NETWORK_STATS
+              <button className="btn" onClick={fetchPublicData} style={{ borderRadius: '8px', padding: '1rem 2.5rem', fontWeight: 600 }}>
+                Public Transparency
               </button>
             </div>
 
-            <div className="mt-16 grid grid-cols-3 gap-12">
-              {[
-                { label: 'Global Pressure', val: liveStats.pressure.toFixed(1) + '%', icon: <Activity size={20} /> },
-                { label: 'System Uptime', val: '99.9%', icon: <LayoutDashboard size={20} /> },
-                { label: 'Active Nodes', val: '1.4k', icon: <Users size={20} /> }
-              ].map((s, i) => (
-                <div key={i} className="stat-item">
-                  <div className="flex items-center gap-2 text-primary mb-3">
-                    {s.icon} <span className="font-mono text-xs opacity-60 uppercase tracking-widest">{s.label}</span>
-                  </div>
-                  <h3 className="m-0 font-mono" style={{ fontSize: '2.2rem', color: '#fff', textShadow: '0 0 15px rgba(255,255,255,0.2)' }}>{s.val}</h3>
-                </div>
-              ))}
+            <div className="mt-16 flex gap-12">
+              <div>
+                <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#1e293b' }}>99.9%</div>
+                <div className="text-muted small fw-600 uppercase">Availability</div>
+              </div>
+              <div style={{ width: '1px', background: '#e2e8f0' }}></div>
+              <div>
+                <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#1e293b' }}>24/7</div>
+                <div className="text-muted small fw-600 uppercase">Monitoring</div>
+              </div>
+              <div style={{ width: '1px', background: '#e2e8f0' }}></div>
+              <div>
+                <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#1e293b' }}>WHO</div>
+                <div className="text-muted small fw-600 uppercase">Certified</div>
+              </div>
             </div>
           </div>
 
-          {/* Right Visual Column (Massive Focal Hologram) */}
-          <div className="hero-visual-side animate-in" style={{ animationDelay: '0.2s', perspective: '1500px' }}>
-            <div className="parallax-layer floating-hologram hologram-glow" style={{ transform: `rotateY(${mousePos.x}deg) rotateX(${mousePos.y}deg)`, transformStyle: 'preserve-3d' }}>
-              <div className="glass-hud-panel" style={{ width: '480px', height: '620px', position: 'relative', overflow: 'hidden', padding: '2.5rem' }}>
-                <div className="cyber-grid opacity-30"></div>
-                
-                <div style={{ position: 'relative', zIndex: 10, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-                  <div className="flex-between">
-                    <div className="font-mono text-xs text-primary">SCANNING_REGION_01</div>
-                    <div className="font-mono text-xs text-muted">COORD_42.8N_18.2E</div>
+          <div className="animate-in" style={{ animationDelay: '0.2s' }}>
+            <div className="enterprise-card" style={{ position: 'relative', overflow: 'hidden', borderRadius: '32px' }}>
+              <img 
+                src={`file:///C:/Users/Lenovo/.gemini/antigravity/brain/6ba6f6ba-1169-4d9a-83aa-6905ebcce28c/modern_water_management_hero_1778964392394.png`}
+                style={{ width: '100%', height: '550px', objectFit: 'cover' }}
+                alt="Corporate Water Management"
+              />
+              <div style={{ position: 'absolute', bottom: '2rem', left: '2rem', right: '2rem', padding: '2rem', background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(10px)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.2)' }}>
+                <div className="flex-between mb-4">
+                  <div style={{ fontWeight: 800, fontSize: '1.2rem', color: '#1e293b' }}>National Grid Status</div>
+                  <span className="badge success">OPTIMAL</span>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="metric-card">
+                    <div className="small text-muted mb-1">Current Pressure</div>
+                    <div style={{ fontWeight: 800, fontSize: '1.4rem', color: 'var(--primary)' }}>84.2 PSI</div>
                   </div>
-
-                  <div className="flex flex-col items-center justify-center flex-1">
-                    <div className="relative">
-                      <div className="pulse-icon" style={{ width: '220px', height: '220px', borderRadius: '50%', background: 'rgba(14,165,233,0.05)', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}></div>
-                      <Droplets size={140} className="text-primary" style={{ filter: 'drop-shadow(0 0 40px var(--primary))' }} />
-                    </div>
-                    <h2 className="font-mono mt-10 text-primary" style={{ letterSpacing: '12px', fontSize: '2rem' }}>WASCO_OS</h2>
-                    <div className="badge primary mt-3 font-mono" style={{ padding: '6px 16px', background: 'rgba(14,165,233,0.1)' }}>LINK_STABILIZED</div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-6">
-                    <div className="p-4 rounded-xl cyber-border-box" style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(14,165,233,0.2)' }}>
-                      <div className="font-mono text-[10px] text-muted mb-2 uppercase tracking-tighter">DATA_INTEGRITY</div>
-                      <div className="font-mono text-success fw-800">OPTIMAL</div>
-                    </div>
-                    <div className="p-4 rounded-xl cyber-border-box" style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(14,165,233,0.2)' }}>
-                      <div className="font-mono text-[10px] text-muted mb-2 uppercase tracking-tighter">NETWORK_LATENCY</div>
-                      <div className="font-mono text-primary fw-800">0.02ms</div>
-                    </div>
+                  <div className="metric-card">
+                    <div className="small text-muted mb-1">Active Leakages</div>
+                    <div style={{ fontWeight: 800, fontSize: '1.4rem', color: 'var(--warning)' }}>03 Fixed</div>
                   </div>
                 </div>
-
-                <div className="scan-line" style={{ background: 'linear-gradient(to bottom, transparent, var(--primary), transparent)', opacity: 0.2 }}></div>
               </div>
-              
-              {/* Background Focal Image */}
-              <img 
-                src={`file:///C:/Users/Lenovo/.gemini/antigravity/brain/6ba6f6ba-1169-4d9a-83aa-6905ebcce28c/cyber_water_infrastructure_1778963293774.png`}
-                style={{ 
-                  position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%) translateZ(-80px)', 
-                  width: '130%', height: '130%', objectFit: 'cover', opacity: 0.1, filter: 'grayscale(1) contrast(1.5)',
-                  pointerEvents: 'none'
-                }}
-                alt=""
-              />
             </div>
           </div>
         </div>
 
-        {/* Global UI Decorations */}
-        <div style={{ position: 'absolute', bottom: '2rem', left: '2rem', zIndex: 100 }} className="animate-in">
-          <div className="font-mono text-[10px] text-muted mb-2">SYSTEM_LOGS</div>
-          <div style={{ fontSize: '9px', color: 'var(--primary)', opacity: 0.6 }} className="font-mono">
-            {'>'} DB_SYNC: SUCCESS<br/>
-            {'>'} AUTH_PROTOCOL: ACTIVE<br/>
-            {'>'} GRID_ENCRYPTION: 256-BIT
+        <div style={{ padding: '6rem 8vw', background: '#f8fafc', borderTop: '1px solid #e2e8f0' }}>
+          <div className="text-center mb-16">
+            <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>Enterprise Features</h2>
+            <p className="text-muted">Designed for scale, security, and sustainability.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { title: 'Real-time Telemetry', desc: 'Monitor your consumption with precision down to the liter.', icon: <Activity size={32} /> },
+              { title: 'Smart Conservation', desc: 'Receive insights and rewards for reducing your water footprint.', icon: <Droplets size={32} /> },
+              { title: 'Predictive Billing', desc: 'No surprises. Our AI models predict your bill based on usage patterns.', icon: <LayoutDashboard size={32} /> }
+            ].map((feature, i) => (
+              <div key={i} className="enterprise-card p-8">
+                <div style={{ color: 'var(--primary)', marginBottom: '1.5rem' }}>{feature.icon}</div>
+                <h3 style={{ fontSize: '1.3rem', marginBottom: '1rem' }}>{feature.title}</h3>
+                <p className="text-muted">{feature.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -958,149 +947,71 @@ export default function App() {
   }
   if (view === 'login') {
     return (
-      <div className="app-container login-page" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
-        {/* Dynamic Water Background */}
-        <div className="bg-blobs water-bg-effect">
-          <div className="blob blob-1" style={{ opacity: 0.6, width: '120vw', height: '120vh', top: '-10vh', left: '-10vw' }}></div>
-          <div className="blob blob-2" style={{ opacity: 0.5, width: '100vw', height: '100vh', bottom: '-20vh', right: '-20vw' }}></div>
-          <div className="blob blob-3" style={{ opacity: 0.7, width: '80vw', height: '80vh', top: '20vh', left: '20vw' }}></div>
-        </div>
-        
-        {/* Decorative Grid Overlay */}
-        <div className="grid-overlay"></div>
-
-        <div className="glass-card login-card animate-in" style={{ width: '100%', maxWidth: '440px', padding: '3.5rem', borderRadius: '32px', background: 'rgba(255,255,255,0.5)', boxShadow: '0 40px 100px rgba(0,0,0,0.1)' }}>
-          {/* Subtle top glow line */}
-          <div className="card-glow-line"></div>
-          
-          <div className="text-center" style={{ marginBottom: '2.5rem', position: 'relative', zIndex: 10 }}>
-            <div className="login-logo-wrap" style={{ 
-              width: '80px', height: '80px', borderRadius: '24px', 
-              background: 'linear-gradient(135deg, var(--primary), var(--secondary))', 
-              display: 'flex', alignItems: 'center', justifyContent: 'center', 
-              margin: '0 auto 1.5rem', boxShadow: '0 15px 35px var(--primary-glow)',
-              transform: 'rotate(-5deg)',
-              position: 'relative'
-            }}>
-              <Droplets size={38} color="white" className="floating-icon" />
-              <div className="ripple-ring"></div>
-              <div className="ripple-ring delay"></div>
+      <div className="landing-pro-bg" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+        <div className="enterprise-card animate-in" style={{ width: '100%', maxWidth: '480px', padding: '4rem', borderRadius: '40px', background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(20px)' }}>
+          <div className="text-center mb-12">
+            <div style={{ display: 'inline-flex', background: 'var(--primary)', padding: '16px', borderRadius: '20px', color: '#fff', marginBottom: '2rem', boxShadow: '0 20px 40px rgba(37, 99, 235, 0.2)' }}>
+              <Droplets size={40} />
             </div>
-            <h2 className="login-title" style={{ fontSize: '2rem', marginBottom: '0.5rem', letterSpacing: '-0.02em' }}>WASCO <span className="text-light" style={{ fontWeight: 400, opacity: 0.6 }}>Portal</span></h2>
-            <p className="text-muted login-subtitle" style={{ fontSize: '1rem' }}>Secure Access Authentication</p>
+            <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#1e293b', marginBottom: '0.5rem' }}>Portal Access</h1>
+            <p className="text-muted">Enter your enterprise credentials to manage your utility infrastructure.</p>
           </div>
 
           {loginError && (
-            <div className="error-alert animate-in" style={{ 
-              color: 'var(--error)', marginBottom: '1.5rem', fontWeight: 600, 
-              padding: '0.8rem 1.2rem', background: 'rgba(239,68,68,0.08)', 
-              borderRadius: '14px', fontSize: '0.9rem', border: '1px solid rgba(239,68,68,0.1)',
-              display: 'flex', alignItems: 'center', gap: '0.5rem'
-            }}>
-              <AlertTriangle size={18} />
-              <span>{loginError}</span>
+            <div className="p-4 rounded-xl mb-6" style={{ background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.1)', color: 'var(--error)', display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: 600 }}>
+              <AlertTriangle size={18} /> {loginError}
             </div>
           )}
 
-          <div className="login-tabs" style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem', background: 'rgba(0,0,0,0.04)', padding: '0.4rem', borderRadius: '12px' }}>
+          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2.5rem', background: '#f1f5f9', padding: '0.5rem', borderRadius: '16px' }}>
             <button 
-              className={`login-tab ${!isBiometricScan ? 'active' : ''}`} 
+              className={`flex-1 py-3 rounded-xl fw-700 transition-all ${!isBiometricScan ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500'}`}
               onClick={() => setIsBiometricScan(false)}
-              style={{ flex: 1, padding: '0.6rem', border: 'none', borderRadius: '8px', fontWeight: 600, background: !isBiometricScan ? 'white' : 'transparent', color: !isBiometricScan ? 'var(--text-main)' : 'var(--text-muted)', boxShadow: !isBiometricScan ? '0 4px 10px rgba(0,0,0,0.05)' : 'none', cursor: 'pointer', transition: 'all 0.2s' }}
-            >Password</button>
+            >Secure Password</button>
             <button 
-              className={`login-tab ${isBiometricScan ? 'active' : ''}`} 
+              className={`flex-1 py-3 rounded-xl fw-700 transition-all ${isBiometricScan ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500'}`}
               onClick={handleBiometricAuth}
-              style={{ flex: 1, padding: '0.6rem', border: 'none', borderRadius: '8px', fontWeight: 600, background: isBiometricScan ? 'white' : 'transparent', color: isBiometricScan ? 'var(--text-main)' : 'var(--text-muted)', boxShadow: isBiometricScan ? '0 4px 10px rgba(0,0,0,0.05)' : 'none', cursor: 'pointer', transition: 'all 0.2s' }}
-            >WASCO Passkey</button>
+            >Passkey Scan</button>
           </div>
 
           {!isBiometricScan ? (
-            <form onSubmit={handleLogin} className="login-form" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              <div className="input-group modern-input-group" style={{ position: 'relative' }}>
-                <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Account ID / Username</label>
-                <div style={{ position: 'relative' }}>
-                  <input 
-                    type="text" 
-                    placeholder="e.g. john_doe" 
-                    value={username} 
-                    onChange={e => setUsername(e.target.value)} 
-                    required 
-                    className="input-field modern-input" 
-                    style={{ height: '56px', borderRadius: '16px', fontSize: '1rem', paddingRight: '40px' }} 
-                  />
-                  <User size={18} style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div className="input-group">
+                <label className="small fw-700 text-muted mb-2 block uppercase tracking-wider">Account Identity</label>
+                <div className="relative">
+                  <input className="input-field" style={{ height: '60px', paddingLeft: '3.5rem' }} placeholder="Username or Account ID" value={username} onChange={e => setUsername(e.target.value)} required />
+                  <User size={20} className="text-muted" style={{ position: 'absolute', left: '1.25rem', top: '50%', transform: 'translateY(-50%)' }} />
                 </div>
               </div>
-              
-              <div className="input-group modern-input-group" style={{ position: 'relative' }}>
-                <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Secure Password</label>
-                <div style={{ position: 'relative' }}>
-                  <input 
-                    type={showPassword ? "text" : "password"} 
-                    placeholder="••••••••" 
-                    value={password} 
-                    onChange={e => setPassword(e.target.value)} 
-                    required 
-                    className="input-field modern-input" 
-                    style={{ height: '56px', borderRadius: '16px', fontSize: '1rem', paddingRight: '40px' }} 
-                  />
-                  <div 
-                    onClick={() => setShowPassword(!showPassword)}
-                    style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', cursor: 'pointer' }}
-                  >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              <div className="input-group">
+                <label className="small fw-700 text-muted mb-2 block uppercase tracking-wider">Secure Password</label>
+                <div className="relative">
+                  <input className="input-field" type={showPassword ? "text" : "password"} style={{ height: '60px', paddingLeft: '3.5rem' }} placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} required />
+                  <ShieldCheck size={20} className="text-muted" style={{ position: 'absolute', left: '1.25rem', top: '50%', transform: 'translateY(-50%)' }} />
+                  <div onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '1.25rem', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', color: 'var(--text-muted)' }}>
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </div>
                 </div>
               </div>
-              
-              <div className="flex-between" style={{ marginTop: '-0.5rem', marginBottom: '0.5rem' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
-                  <input type="checkbox" style={{ accentColor: 'var(--primary)', width: '16px', height: '16px' }} />
-                  <span className="small text-muted fw-600">Remember device</span>
-                </label>
-                <a href="#" style={{ color: 'var(--primary)', fontWeight: 600, fontSize: '0.85rem', textDecoration: 'none' }}>Recover access?</a>
-              </div>
-
-              <button type="submit" className="btn btn-primary login-btn" disabled={isAuthenticating} style={{ height: '56px', fontSize: '1.1rem', borderRadius: '16px', marginTop: '0.5rem', fontWeight: 700 }}>
-                {isAuthenticating ? (
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center' }}><Loader2 className="spinner" size={20} style={{ animation: 'spin 1s linear infinite' }} /> Authenticating...</span>
-                ) : (
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center' }}>Sign In <ChevronRight size={20} /></span>
-                )}
+              <button type="submit" className="btn-enterprise w-full" style={{ height: '60px', fontSize: '1.1rem' }} disabled={isAuthenticating}>
+                {isAuthenticating ? 'VERIFYING...' : 'SIGN IN TO PORTAL'}
               </button>
             </form>
           ) : (
-            <div className="biometric-container animate-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '2rem 0' }}>
-              <div className={`biometric-scanner ${biometricSuccess ? 'success' : ''}`} style={{ 
-                width: '120px', height: '120px', borderRadius: '50%', background: biometricSuccess ? 'rgba(16,185,129,0.1)' : 'rgba(14,165,233,0.1)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', border: `2px solid ${biometricSuccess ? 'var(--success)' : 'var(--primary)'}`
-              }}>
-                <Fingerprint size={64} style={{ color: biometricSuccess ? 'var(--success)' : 'var(--primary)', transition: 'all 0.3s' }} />
-                {!biometricSuccess && (
-                  <div className="scan-line" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '4px', background: 'var(--primary)', boxShadow: '0 0 10px var(--primary-glow)', animation: 'scan 2s ease-in-out infinite alternate' }}></div>
-                )}
+            <div className="text-center py-8">
+              <div style={{ width: '120px', height: '120px', borderRadius: '50%', background: biometricSuccess ? 'rgba(5, 150, 105, 0.1)' : 'rgba(37, 99, 235, 0.1)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', border: `2px solid ${biometricSuccess ? 'var(--success)' : 'var(--primary)'}`, marginBottom: '2rem' }}>
+                <Fingerprint size={64} className={biometricSuccess ? 'text-success' : 'text-primary'} />
               </div>
-              <p className="biometric-text" style={{ marginTop: '1.5rem', fontWeight: 600, color: biometricSuccess ? 'var(--success)' : 'var(--primary)', letterSpacing: '0.05em' }}>
-                {biometricSuccess ? 'Identity Verified. Logging in...' : 'Scanning biometrics...'}
-              </p>
-              <button 
-                type="button"
-                className="btn" 
-                onClick={() => { setIsBiometricScan(false); setBiometricSuccess(false); }}
-                style={{ marginTop: '2rem', background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-muted)' }}
-              >
-                Cancel
-              </button>
+              <p className="fw-700 text-slate-700 mb-8">{biometricSuccess ? 'Access Granted' : 'Awaiting Biometric Authentication...'}</p>
+              <button className="btn" onClick={() => setIsBiometricScan(false)} style={{ background: '#f1f5f9' }}>Back to Password</button>
             </div>
           )}
 
-          <div style={{ marginTop: '2.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '2rem' }}>
-            <p className="text-muted small">New to WASCO Services?</p>
-            <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-              <button onClick={() => setView('register')} style={{ background: 'transparent', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontWeight: 700, fontSize: '0.95rem' }}>Request Connection</button>
-              <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'var(--border-color)' }}></div>
-              <button onClick={fetchPublicData} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontWeight: 600, fontSize: '0.95rem' }}>Public Rates</button>
+          <div className="mt-12 pt-8 border-t border-slate-100 text-center">
+            <p className="text-muted small mb-4">Request assistance or public data</p>
+            <div className="flex justify-center gap-6">
+              <button className="text-primary fw-700 small" onClick={() => setView('register')}>Apply for Service</button>
+              <button className="text-slate-500 fw-700 small" onClick={fetchPublicData}>Global Rates</button>
             </div>
           </div>
         </div>
@@ -1387,6 +1298,7 @@ export default function App() {
            activeTab === 'users' ? 'Customer Management' : 
            activeTab === 'audit' ? 'System Audit Log' : 
            activeTab === 'intelligence' ? 'Network Intelligence' :
+           activeTab === 'green' ? 'Green Impact Module' :
            activeTab === 'history' ? 'Billing History' : 
            activeTab === 'reports' ? 'Incident Reports' : 
            activeTab === 'rates' ? 'Rates & Billing' : 'Portal'}
@@ -1502,9 +1414,15 @@ export default function App() {
 
         <div className="sidebar-content">
           <div className="nav-group-label">Core</div>
-          <div className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveTab('dashboard')}>
-            <LayoutDashboard size={18} /> <span>Dashboard</span>
-          </div>
+                <div className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveTab('dashboard')}>
+                  <ShieldCheck size={18} /> <span>Control Center</span>
+                </div>
+                <div className={`nav-item ${activeTab === 'assets' ? 'active' : ''}`} onClick={() => setActiveTab('assets')}>
+                  <Cpu size={18} /> <span>Asset Health</span>
+                </div>
+                <div className={`nav-item ${activeTab === 'customers' ? 'active' : ''}`} onClick={() => setActiveTab('customers')}>
+                  <Users size={18} /> <span>Account Management</span>
+                </div>
 
           {(view === 'admin' || view === 'manager') && (
             <>
@@ -1547,6 +1465,12 @@ export default function App() {
           {view === 'customer' && (
             <>
               <div className="nav-group-label">Customer Portal</div>
+              <div className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveTab('dashboard')}>
+                <LayoutDashboard size={18} /> <span>Executive Overview</span>
+              </div>
+              <div className={`nav-item ${activeTab === 'green' ? 'active' : ''}`} onClick={() => setActiveTab('green')}>
+                <Leaf size={18} /> <span>Green Impact</span>
+              </div>
               <div className={`nav-item ${activeTab === 'history' ? 'active' : ''}`} onClick={() => setActiveTab('history')}>
                 <History size={18} /> <span>Billing History</span>
               </div>
@@ -1572,152 +1496,190 @@ export default function App() {
       <main className="main-content">
         {topNavJSX}
 
-        {view === 'manager' && (
-          <>
+        {(view === 'admin' || view === 'manager') && (
+          <div className="animate-in">
             {activeTab === 'dashboard' && (
-              <>
-                <div className="flex-between mb-6">
-                  <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                    {user.role?.toLowerCase() === 'admin' && (
-                      <button className="btn" onClick={handleCalculateBills} disabled={loading} style={{ background: 'var(--surface-solid)', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }}><Settings size={16} /> Calculate Bills</button>
-                    )}
-                    {user.role?.toLowerCase() === 'admin' && (
-                      <form onSubmit={handleBroadcast} style={{ display: 'flex', gap: '0.5rem' }}>
-                        <input className="input-field" placeholder="Broadcast message..." value={broadcastMsg} onChange={e => setBroadcastMsg(e.target.value)} style={{ padding: '0.45rem 1rem', width: '220px' }} />
-                        <button type="submit" className="btn btn-primary" disabled={isBroadcasting} style={{ padding: '0.45rem 1rem' }}>{isBroadcasting ? 'Sending...' : 'Broadcast'}</button>
-                      </form>
-                    )}
+              <div className="animate-in">
+                <div className="flex-between mb-8">
+                  <div>
+                    <h2 className="hero-title-pro" style={{ fontSize: '2.2rem', marginBottom: '0.5rem' }}>Executive Control Center</h2>
+                    <p className="text-muted">High-level operational overview of the national water distribution network.</p>
+                  </div>
+                  <div className="flex gap-4">
+                    <button className="btn" style={{ border: '1px solid #e2e8f0', background: '#fff' }}><FileText size={18} /> EXPORT_REPORTS</button>
+                    <button className="btn-enterprise"><Activity size={18} /> LIVE_SYNC</button>
                   </div>
                 </div>
 
-                <div className="stats-grid mb-6">
-                  <div className="glass-card flex-between">
-                    <div><h3 className="stat-value">{customers.length}</h3><p className="stat-label">Total Customers</p></div>
-                    <div className="stat-icon-wrap"><Users size={22} /></div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                  <div className="enterprise-card p-6">
+                    <div className="text-muted small fw-600 mb-2 uppercase">System Revenue (MTD)</div>
+                    <div style={{ fontSize: '1.8rem', fontWeight: 800 }}>LSL 1.2M</div>
+                    <div className="text-success small fw-700 mt-1">↑ 8.4% vs last period</div>
                   </div>
-                  <div className="glass-card flex-between">
-                    <div><h3 className="stat-value">{leakages.filter(l => l.status === 'Pending').length}</h3><p className="stat-label">Pending Incidents</p></div>
-                    <div className="stat-icon-wrap" style={{ color: 'var(--warning)' }}><AlertTriangle size={22} /></div>
+                  <div className="enterprise-card p-6">
+                    <div className="text-muted small fw-600 mb-2 uppercase">Operational Efficiency</div>
+                    <div style={{ fontSize: '1.8rem', fontWeight: 800 }}>94.2%</div>
+                    <div className="text-success small fw-700 mt-1">OPTIMAL RANGE</div>
                   </div>
-                  <div className="glass-card flex-between">
-                    <div><h3 className="stat-value">LSL {(payments.reduce((acc, p) => acc + parseFloat(p.amount_paid), 0) / 1000).toFixed(1)}k</h3><p className="stat-label">Revenue Collected</p></div>
-                    <div className="stat-icon-wrap" style={{ color: 'var(--success)' }}><Wallet size={22} /></div>
+                  <div className="enterprise-card p-6">
+                    <div className="text-muted small fw-600 mb-2 uppercase">Active Incidents</div>
+                    <div style={{ fontSize: '1.8rem', fontWeight: 800 }}>{leakages.filter(l => l.status !== 'Fixed').length}</div>
+                    <div className="text-warning small fw-700 mt-1">3 DISPATCHED</div>
+                  </div>
+                  <div className="enterprise-card p-6">
+                    <div className="text-muted small fw-600 mb-2 uppercase">Grid Stability</div>
+                    <div style={{ fontSize: '1.8rem', fontWeight: 800 }}>99.98%</div>
+                    <div className="text-success small fw-700 mt-1">HIGH_STABILITY</div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                  <div className="glass-card">
-                    <div className="flex-between mb-4">
-                      <h4 className="small text-muted uppercase fw-700">Usage Analytics Dashboard</h4>
-                      <select className="input-field" value={insightTimeframe} onChange={(e) => setInsightTimeframe(e.target.value)} style={{ width: '120px', padding: '0.2rem', fontSize: '0.75rem' }}>
-                        <option value="Daily">Daily</option><option value="Weekly">Weekly</option><option value="Monthly">Monthly</option><option value="Quarterly">Quarterly</option><option value="Yearly">Yearly</option>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                  <div className="enterprise-card p-8">
+                    <h3 style={{ marginBottom: '1.5rem' }}>Regional Performance Matrix</h3>
+                    <div className="space-y-6">
+                      {['Maseru East', 'Leribe North', 'Berea Central', 'Mafeteng South'].map((region, i) => (
+                        <div key={region}>
+                          <div className="flex-between mb-2">
+                            <span className="small fw-700">{region}</span>
+                            <span className="small text-muted">{[85, 92, 78, 64][i]}% Load</span>
+                          </div>
+                          <div style={{ height: '6px', background: '#f1f5f9', borderRadius: '3px', overflow: 'hidden' }}>
+                            <div style={{ width: [85, 92, 78, 64][i] + '%', height: '100%', background: 'var(--primary)' }}></div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="enterprise-card p-8">
+                    <h3 style={{ marginBottom: '1.5rem' }}>System Health Log</h3>
+                    <div className="space-y-4">
+                      {[
+                        { msg: 'Pressure Delta detected in Zone 4 (Maseru West)', type: 'warning' },
+                        { msg: 'Monthly billing cycle batch #42 completed successfully', type: 'success' },
+                        { msg: 'Maintenance required: Alpha Pump Station B2', type: 'error' }
+                      ].map((log, i) => (
+                        <div key={i} className={`p-4 rounded-xl border ${log.type === 'error' ? 'bg-red-50 border-red-100' : log.type === 'warning' ? 'bg-amber-50 border-amber-100' : 'bg-emerald-50 border-emerald-100'}`}>
+                          <div className="flex gap-3 items-center">
+                            <div style={{ color: `var(--${log.type})` }}>
+                              {log.type === 'error' ? <AlertTriangle size={18} /> : log.type === 'warning' ? <Activity size={18} /> : <ShieldCheck size={18} />}
+                            </div>
+                            <span className={`small fw-600 ${log.type === 'error' ? 'text-red-700' : log.type === 'warning' ? 'text-amber-700' : 'text-emerald-700'}`}>{log.msg}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <div className="enterprise-card p-8">
+                    <div className="flex-between mb-6">
+                      <h3 style={{ margin: 0 }}>Usage Trends</h3>
+                      <select className="input-field" value={insightTimeframe} onChange={(e) => setInsightTimeframe(e.target.value)} style={{ width: '120px', padding: '0.2rem' }}>
+                        <option value="Daily">Daily</option><option value="Weekly">Weekly</option><option value="Monthly">Monthly</option>
                       </select>
                     </div>
-                    <ResponsiveContainer width="100%" height={260}>
+                    <ResponsiveContainer width="100%" height={300}>
                       <BarChart data={getUsageTrendsData()}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
-                        <XAxis dataKey="period" stroke="var(--text-muted)" fontSize={11} />
-                        <YAxis stroke="var(--text-muted)" fontSize={11} />
-                        <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: 'var(--shadow-md)' }} />
-                        <Bar dataKey="total_units" fill="var(--primary)" name="Units (kl)" radius={[4, 4, 0, 0]} />
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                        <XAxis dataKey="period" stroke="#94a3b8" fontSize={12} axisLine={false} tickLine={false} />
+                        <YAxis stroke="#94a3b8" fontSize={12} axisLine={false} tickLine={false} />
+                        <Tooltip cursor={{fill: '#f8fafc'}} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} />
+                        <Bar dataKey="total_units" fill="var(--primary)" name="Units (kl)" radius={[6, 6, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
 
-                  <div className="glass-card hud-panel" style={{ borderTop: '4px solid var(--secondary)', position: 'relative' }}>
-                    <div className="cyber-grid opacity-10"></div>
-                    <div className="flex-between mb-4 relative z-10">
-                      <h4 className="font-mono small uppercase text-secondary">[ SEGMENTED_CONTRIBUTION ]</h4>
+                  <div className="enterprise-card p-8">
+                    <div className="flex-between mb-6">
+                      <h3 style={{ margin: 0 }}>Segmented Contribution</h3>
                       <div className="flex gap-2">
-                        <button 
-                          className={`btn small font-mono ${segmentMetric === 'total_units' ? 'btn-primary' : ''}`} 
-                          onClick={() => setSegmentMetric('total_units')}
-                          style={{ padding: '2px 8px', fontSize: '10px', borderRadius: '4px' }}
-                        >USAGE</button>
-                        <button 
-                          className={`btn small font-mono ${segmentMetric === 'total_revenue' ? 'btn-primary' : ''}`} 
-                          onClick={() => setSegmentMetric('total_revenue')}
-                          style={{ padding: '2px 8px', fontSize: '10px', borderRadius: '4px' }}
-                        >REVENUE</button>
+                        <button className={`btn small ${segmentMetric === 'total_units' ? 'btn-enterprise' : ''}`} onClick={() => setSegmentMetric('total_units')} style={{ fontSize: '10px' }}>USAGE</button>
+                        <button className={`btn small ${segmentMetric === 'total_revenue' ? 'btn-enterprise' : ''}`} onClick={() => setSegmentMetric('total_revenue')} style={{ fontSize: '10px' }}>REVENUE</button>
                       </div>
                     </div>
+                    <div style={{ height: '300px', position: 'relative' }}>
+                      <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }}>
+                        <div className="text-muted small fw-700 uppercase">Total</div>
+                        <div className="fw-800" style={{ fontSize: '1.2rem', color: 'var(--primary)' }}>
+                          {segmentMetric === 'total_revenue' ? `LSL ${Math.round(segmentData.reduce((acc, curr) => acc + (curr.total_revenue || 0), 0) / 1000)}k` : `${Math.round(segmentData.reduce((acc, curr) => acc + (curr.total_units || 0), 0) / 1000)}k kl`}
+                        </div>
+                      </div>
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie data={segmentData.map(d => ({ name: d.segment, value: d[segmentMetric] }))} innerRadius={75} outerRadius={95} paddingAngle={8} dataKey="value" nameKey="name">
+                            {segmentData.map((entry, index) => (<Cell key={"cell-" + index} fill={['#0ea5e9', '#10b981', '#f59e0b', '#8b5cf6'][index % 4]} stroke="#fff" strokeWidth={2} />))}
+                          </Pie>
+                          <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center relative z-10">
-                      <div style={{ height: '220px', position: 'relative' }}>
-                        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }}>
-                          <div className="font-mono text-muted" style={{ fontSize: '10px' }}>TOTAL</div>
-                          <div className="font-mono fw-800" style={{ fontSize: '14px', color: 'var(--secondary)' }}>
-                            {segmentMetric === 'total_revenue' ? `LSL ${Math.round(segmentData.reduce((acc, curr) => acc + (curr.total_revenue || 0), 0) / 1000)}k` : `${Math.round(segmentData.reduce((acc, curr) => acc + (curr.total_units || 0), 0) / 1000)}k kl`}
+            {activeTab === 'assets' && (
+              <div className="animate-in">
+                <div className="flex-between mb-8">
+                  <div>
+                    <h2 className="hero-title-pro" style={{ fontSize: '2.2rem', marginBottom: '0.5rem' }}>Infrastructure Asset Health</h2>
+                    <p className="text-muted">AI-driven predictive maintenance and asset lifecycle monitoring.</p>
+                  </div>
+                  <button className="btn-enterprise"><Settings size={18} /> SCHEDULE_AUDIT</button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                  {[
+                    { name: 'Pump Station Alpha', health: 98.4, status: 'Optimal', type: 'low' },
+                    { name: 'Main Line Sector 4', health: 72.1, status: 'Monitor', type: 'med' },
+                    { name: 'Booster Pump B2', health: 42.8, status: 'Critical', type: 'high' }
+                  ].map((asset, i) => (
+                    <div key={i} className={`enterprise-card p-8 maintenance-${asset.type}`}>
+                      <div className="flex-between mb-6">
+                        <div className="text-muted small fw-800 uppercase tracking-widest">{asset.name}</div>
+                        <span className="impact-badge" style={{ background: `var(--${asset.type === 'low' ? 'success' : asset.type === 'med' ? 'warning' : 'error'})` }}>{asset.status}</span>
+                      </div>
+                      <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#1e293b', marginBottom: '0.5rem' }}>{asset.health}%</div>
+                      <p className="text-muted small" style={{ margin: 0 }}>Predicted failure: {asset.type === 'high' ? 'Within 48h' : '6+ Months'}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  <div className="lg:col-span-2 enterprise-card p-8">
+                    <h3 style={{ marginBottom: '1.5rem' }}>Predictive Risk Map</h3>
+                    <div style={{ height: '400px', background: '#f8fafc', borderRadius: '24px', border: '1px dashed #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <div className="text-center">
+                        <div className="text-primary opacity-20 mb-4"><Cpu size={64} /></div>
+                        <p className="text-muted fw-600">Visualizing Infrastructure Grid Data...</p>
+                        <span className="badge" style={{ background: '#e2e8f0' }}>MODELS_LOADING_92%</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="enterprise-card p-8">
+                    <h3 style={{ marginBottom: '1.5rem' }}>Maintenance Schedule</h3>
+                    <div className="space-y-4">
+                      {[
+                        { item: 'Filter Flush', date: 'Tomorrow 09:00', loc: 'Maseru' },
+                        { item: 'Valve Lubrication', date: 'Oct 22, 2026', loc: 'Leribe' },
+                        { item: 'Sensor Calibration', date: 'Oct 25, 2026', loc: 'Berea' }
+                      ].map((s, i) => (
+                        <div key={i} className="p-4 rounded-xl bg-slate-50 border border-slate-100">
+                          <div className="fw-700 text-primary mb-1">{s.item}</div>
+                          <div className="flex-between">
+                            <span className="small text-muted">{s.date}</span>
+                            <span className="small fw-600">{s.loc}</span>
                           </div>
                         </div>
-                        <ResponsiveContainer width="100%" height="100%">
-                          <PieChart>
-                            <Pie 
-                              data={segmentData.map(d => ({ name: d.segment, value: d[segmentMetric] }))} 
-                              innerRadius={65} 
-                              outerRadius={85} 
-                              paddingAngle={8} 
-                              dataKey="value" 
-                              nameKey="name"
-                            >
-                              {segmentData.map((entry, index) => (
-                                <Cell 
-                                  key={"cell-" + index} 
-                                  fill={['#0ea5e9', '#10b981', '#f59e0b', '#8b5cf6'][index % 4]} 
-                                  stroke="rgba(255,255,255,0.1)"
-                                />
-                              ))}
-                            </Pie>
-                            <Tooltip 
-                              contentStyle={{ background: 'rgba(15, 23, 42, 0.9)', border: '1px solid var(--secondary)', borderRadius: '12px' }}
-                              itemStyle={{ color: '#fff', fontSize: '12px' }}
-                              formatter={(value) => segmentMetric === 'total_revenue' ? `LSL ${parseFloat(value).toLocaleString()}` : `${value} kl`}
-                            />
-                          </PieChart>
-                        </ResponsiveContainer>
-                      </div>
-
-                      <div className="flex flex-col gap-3">
-                        {segmentData.map((d, i) => (
-                          <div key={d.segment} className="p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
-                            <div className="flex-between mb-1">
-                              <span className="font-mono text-xs flex items-center gap-2">
-                                <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: ['#0ea5e9', '#10b981', '#f59e0b', '#8b5cf6'][i % 4] }}></span>
-                                {d.segment.toUpperCase()}
-                              </span>
-                              <span className="font-mono text-xs fw-800" style={{ color: ['#0ea5e9', '#10b981', '#f59e0b', '#8b5cf6'][i % 4] }}>
-                                {((d[segmentMetric] / segmentData.reduce((acc, curr) => acc + (curr[segmentMetric] || 0), 1)) * 100).toFixed(1)}%
-                              </span>
-                            </div>
-                            <div className="font-mono text-sm fw-700">
-                              {segmentMetric === 'total_revenue' ? `LSL ${parseFloat(d[segmentMetric]).toLocaleString()}` : `${d[segmentMetric]} kl`}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+                      ))}
                     </div>
+                    <button className="btn w-full mt-6" style={{ background: '#f1f5f9', border: '1px solid #e2e8f0', height: '50px' }}>VIEW FULL CALENDAR</button>
                   </div>
                 </div>
-
-                <div className="stats-grid mb-6">
-                  <div className="glass-card" style={{ gridColumn: 'span 2' }}>
-                    <div className="stat-header mb-4">
-                      <h3>Branch Operational Summary</h3>
-                      <Activity className="text-muted" />
-                    </div>
-                    <div className="table-container">
-                      <table>
-                        <thead><tr><th>Metric Scope</th><th>Current Period</th><th>Variance</th><th>Status</th></tr></thead>
-                        <tbody>
-                          <tr><td>Total Consumption</td><td>{currentMonthUnits} kl</td><td className="text-success">â†“ 4.2%</td><td><span className="badge success">Normal</span></td></tr>
-                          <tr><td>Calculated Revenue</td><td>LSL {bills.reduce((acc, b) => acc + parseFloat(b.total_amount || 0), 0).toFixed(2)}</td><td className="text-success">â†‘ 12.1%</td><td><span className="badge primary">Growing</span></td></tr>
-                          <tr><td>Outstanding Balance</td><td>LSL {balances.reduce((acc, b) => acc + parseFloat(b.total_outstanding || 0), 0).toFixed(2)}</td><td className="text-error">â†‘ 5.3%</td><td><span className="badge warning">Action Required</span></td></tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </>
+              </div>
             )}
 
             {activeTab === 'intelligence' && (
@@ -1795,49 +1757,411 @@ export default function App() {
             )}
 
             {activeTab === 'users' && (
-              <div className="glass-card mb-6" style={{ borderTop: '4px solid var(--primary)', position: 'relative' }}>
-                <div className="flex-between mb-6">
+              <div className="enterprise-card p-8">
+                <div className="flex-between mb-8">
                   <div>
-                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      <Users className="text-primary pulse-icon" size={24} /> Customer Master Database
-                    </h3>
-                    <p className="text-muted small">Live synchronized record of all {customers.length} identities.</p>
+                    <h3 style={{ fontSize: '1.5rem' }}>Account Management Terminal</h3>
+                    <p className="text-muted">Direct control and monitoring of system identities.</p>
                   </div>
-                  <div className="search-box" style={{ position: 'relative' }}>
-                    <input type="text" placeholder="Quantum Search..." className="input-field" value={customerSearch} onChange={e => setCustomerSearch(e.target.value)} style={{ paddingLeft: '2.5rem', background: 'var(--surface-solid)', border: '1px solid var(--primary-glow)', boxShadow: '0 0 15px rgba(14,165,233,0.1)', width: '250px' }} />
-                    <User size={16} className="text-primary" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
+                  <div className="search-box">
+                    <input type="text" placeholder="Identity Search..." className="input-field" value={customerSearch} onChange={e => setCustomerSearch(e.target.value)} style={{ width: '300px' }} />
                   </div>
                 </div>
-                <div className="table-container" style={{ maxHeight: '600px', overflowY: 'auto' }}>
+                <div className="table-container">
                   <table className="data-table">
-                    <thead><tr><th>Account ID</th><th>Identity</th><th>Status</th><th>Classification</th><th>Actions</th></tr></thead>
+                    <thead><tr><th>Reference</th><th>Identity</th><th>Classification</th><th>Status</th><th>Actions</th></tr></thead>
                     <tbody>
                       {filteredCustomers.map(c => (
-                        <tr key={c.account_number} className="group hover-row" style={{ transition: 'all 0.3s ease' }}>
+                        <tr key={c.account_number}>
+                          <td className="font-mono small fw-700">#{c.account_number}</td>
+                          <td className="fw-700">{c.first_name} {c.last_name}</td>
+                          <td><span className="badge">{c.customer_type}</span></td>
+                          <td><span className="badge success">ACTIVE</span></td>
                           <td>
-                            <div className="badge primary font-mono" style={{ background: 'rgba(14,165,233,0.1)', border: '1px solid var(--primary-glow)' }}>
-                              <History size={12} style={{ marginRight: '4px' }} /> {c.account_number}
+                            <div className="flex gap-2">
+                              <button className="btn small" onClick={() => setEditingCustomer(c)}><Settings size={14} /></button>
+                              <button className="btn small text-error" onClick={() => handleDeleteCustomer(c.account_number)}><LogOut size={14} /></button>
                             </div>
                           </td>
-                          <td className="fw-700">
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                              <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--primary), var(--secondary))', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 800 }}>
-                                {c.first_name?.[0]}{c.last_name?.[0]}
-                              </div>
-                              {c.first_name} {c.last_name}
-                            </div>
-                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Onboarding Form */}
+                <div className="mt-12 p-8 rounded-3xl" style={{ background: '#f8fafc', border: '1px solid #e2e8f0' }}>
+                  <h4 className="mb-6 flex items-center gap-3">
+                    <UserPlus size={20} className="text-primary" />
+                    {editingCustomer ? 'Modify Identity: ' + editingCustomer.account_number : 'Onboard New Identity'}
+                  </h4>
+                  <form onSubmit={editingCustomer ? handleUpdateCustomer : handleAddCustomer} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <input className="input-field" placeholder="First Name" value={editingCustomer ? editingCustomer.first_name : newCustomer.first_name} onChange={e => editingCustomer ? setEditingCustomer({...editingCustomer, first_name: e.target.value}) : setNewCustomer({...newCustomer, first_name: e.target.value})} required />
+                    <input className="input-field" placeholder="Last Name" value={editingCustomer ? editingCustomer.last_name : newCustomer.last_name} onChange={e => editingCustomer ? setEditingCustomer({...editingCustomer, last_name: e.target.value}) : setNewCustomer({...newCustomer, last_name: e.target.value})} required />
+                    <input className="input-field" placeholder="Email" value={editingCustomer ? editingCustomer.email : newCustomer.email} onChange={e => editingCustomer ? setEditingCustomer({...editingCustomer, email: e.target.value}) : setNewCustomer({...newCustomer, email: e.target.value})} required />
+                    <select className="input-field" value={editingCustomer ? editingCustomer.customer_type : newCustomer.customer_type} onChange={e => editingCustomer ? setEditingCustomer({...editingCustomer, customer_type: e.target.value}) : setNewCustomer({...newCustomer, customer_type: e.target.value})}>
+                      <option value="Residential">Residential</option>
+                      <option value="Commercial">Commercial</option>
+                      <option value="Industrial">Industrial</option>
+                    </select>
+                    <input className="input-field" style={{ gridColumn: 'span 2' }} placeholder="Physical Address" value={editingCustomer ? editingCustomer.address : newCustomer.address} onChange={e => editingCustomer ? setEditingCustomer({...editingCustomer, address: e.target.value}) : setNewCustomer({...newCustomer, address: e.target.value})} required />
+                    {!editingCustomer && (
+                      <>
+                        <input className="input-field" placeholder="Username" value={newCustomer.username} onChange={e => setNewCustomer({...newCustomer, username: e.target.value})} required />
+                        <input className="input-field" type="password" placeholder="Password" value={newCustomer.password} onChange={e => setNewCustomer({...newCustomer, password: e.target.value})} required />
+                      </>
+                    )}
+                    <button type="submit" className="btn-enterprise w-full" style={{ gridColumn: 'span 2', height: '55px' }}>
+                      {editingCustomer ? 'COMMIT_IDENTITY_OVERRIDES' : 'INITIALIZE_ONBOARDING'}
+                    </button>
+                    {editingCustomer && <button type="button" className="btn w-full mt-2" onClick={() => setEditingCustomer(null)} style={{ gridColumn: 'span 2', background: 'transparent', border: 'none', color: 'var(--error)' }}>ABORT_MODIFICATION</button>}
+                  </form>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'reports' && (
+              <div className="enterprise-card p-8">
+                <div className="flex-between mb-8">
+                  <div>
+                    <h3 style={{ fontSize: '1.5rem' }}>Incident Command</h3>
+                    <p className="text-muted">Real-time fault monitoring and resource dispatch.</p>
+                  </div>
+                  <div className="impact-badge" style={{ background: 'var(--warning)' }}>{leakages.filter(l => l.status !== 'Fixed').length} ACTIVE_FAULTS</div>
+                </div>
+                <div className="table-container">
+                  <table className="data-table">
+                    <thead><tr><th>ID</th><th>Timestamp</th><th>Geographic Location</th><th>Status</th><th>Response</th></tr></thead>
+                    <tbody>
+                      {leakages.map(l => (
+                        <tr key={l.report_id}>
+                          <td className="font-mono">#L-{l.report_id}</td>
+                          <td className="small text-muted">{new Date(l.report_date).toLocaleString()}</td>
+                          <td className="fw-600">{l.location}</td>
+                          <td><span className={`badge ${l.status === 'Fixed' ? 'success' : 'warning'}`}>{l.status}</span></td>
                           <td>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                              <span className="dot-indicator" style={{ display: 'inline-block', width: '8px', height: '8px', background: 'var(--success)', borderRadius: '50%', marginRight: '6px' }}></span>
-                              <span className="small fw-600 text-success">Active</span>
-                            </div>
+                            {l.status !== 'Fixed' && user.role?.toLowerCase() === 'admin' && (
+                              <button className="btn-enterprise small" onClick={() => handleUpdateLeakageStatus(l.report_id, 'Fixed')}>Dispatch Team</button>
+                            )}
                           </td>
-                          <td><span className="badge" style={{ background: 'var(--surface-solid)' }}>{c.customer_type}</span></td>
-                          <td>
-                            <div className="flex gap-2" style={{ display: 'flex', gap: '0.5rem' }}>
-                              <button className="btn small glass-btn" style={{ padding: '0.4rem', borderRadius: '8px' }}><Settings size={14} /></button>
-                              <button className="btn small text-error" onClick={() => handleDeleteCustomer(c.account_number)} style={{ padding: '0.4rem', borderRadius: '8px', background: 'rgba(239,68,68,0.1)', border: 'none' }}><LogOut size={14} /></button>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'rates' && view === 'admin' && (
+              <div className="animate-in">
+                <div className="flex-between mb-8">
+                  <div>
+                    <h2 className="hero-title-pro" style={{ fontSize: '2.2rem' }}>Tariff Configuration</h2>
+                    <p className="text-muted">Economic model for revenue extraction and usage tiers.</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                  {rates.slice(0, 3).map(r => (
+                    <div key={r.rate_id} className="enterprise-card p-8">
+                      <div className="text-muted small fw-800 mb-2 uppercase">{r.tier_name}</div>
+                      <div style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--primary)' }}>LSL {parseFloat(r.rate_per_unit).toFixed(2)}</div>
+                      <div className="flex-between mt-4">
+                         <span className="small text-muted">{r.minimum_units} - {r.maximum_units > 9000 ? '∞' : r.maximum_units} kl</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="enterprise-card p-8">
+                  <h3 style={{ marginBottom: '2rem' }}>Global Rate Grid</h3>
+                  <div className="table-container mb-12">
+                    <table className="data-table">
+                      <thead><tr><th>Tier</th><th>Operational Bounds</th><th>Rate Multiplier</th><th className="text-right">Actions</th></tr></thead>
+                      <tbody>
+                        {rates.map(r => (
+                          <tr key={r.rate_id}>
+                            <td><span className="fw-700">{r.tier_name}</span></td>
+                            <td><span className="badge" style={{ background: '#f1f5f9' }}>{r.minimum_units} kl — {r.maximum_units > 9000 ? 'MAX' : r.maximum_units + ' kl'}</span></td>
+                            <td><span className="fw-800 text-primary">LSL {parseFloat(r.rate_per_unit).toFixed(2)}</span></td>
+                            <td className="text-right">
+                              <button className="btn" onClick={() => startEditRate(r)}><Settings size={16} /></button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="p-8 rounded-3xl" style={{ background: '#f8fafc', border: '1px solid #e2e8f0' }}>
+                    <h4 className="mb-6">{editingRate ? 'Modify Tier: ' + editingRate.tier_name : 'Initialize New Billing Tier'}</h4>
+                    <form onSubmit={editingRate ? handleUpdateRate : handleAddRate} className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                      <input className="input-field" placeholder="Tier Name" value={newTierName} onChange={e => setNewTierName(e.target.value)} required />
+                      <input type="number" className="input-field" placeholder="Min Units" value={newMinUnits} onChange={e => setNewMinUnits(e.target.value)} required />
+                      <input type="number" className="input-field" placeholder="Max Units" value={newMaxUnits} onChange={e => setNewMaxUnits(e.target.value)} required />
+                      <input type="number" step="0.01" className="input-field" placeholder="Rate" value={newRate} onChange={e => setNewRate(e.target.value)} required />
+                      <button type="submit" className="btn-enterprise w-full" style={{ gridColumn: 'span 4', height: '55px' }}>{editingRate ? 'COMMIT_TIER_OVERRIDES' : 'DEPLOY_NEW_BILLING_TIER'}</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'manual' && view === 'admin' && (
+              <div className="animate-in">
+                <div className="flex-between mb-8">
+                  <div>
+                    <h2 className="hero-title-pro" style={{ fontSize: '2.2rem' }}>Manual Telemetry Recording</h2>
+                    <p className="text-muted">Direct input station for localized meter readings.</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                  <div className="lg:col-span-2 enterprise-card p-8">
+                    <h3>Entry Terminal</h3>
+                    {usageMsg && <div className="p-4 rounded-xl mb-6 bg-emerald-50 text-emerald-700 fw-700">{usageMsg}</div>}
+                    <form onSubmit={handleManualUsage} className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+                      <select className="input-field" value={selectedCustomer || ''} onChange={e => setSelectedCustomer(e.target.value)} required style={{ height: '60px' }}>
+                        <option value="" disabled>-- SEARCH ACCOUNTS --</option>
+                        {customers.map(c => (
+                          <option key={c.account_number} value={c.account_number}>{c.account_number} - {c.first_name} {c.last_name}</option>
+                        ))}
+                      </select>
+                      <input className="input-field" placeholder="Billing Cycle (e.g. Oct 2026)" value={manualUsage.month} onChange={e => setManualUsage({...manualUsage, month: e.target.value})} required style={{ height: '60px' }} />
+                      <input type="number" className="input-field" style={{ gridColumn: 'span 2', height: '60px', fontSize: '1.5rem' }} placeholder="Meter Delta (kl)" value={manualUsage.units} onChange={e => setManualUsage({...manualUsage, units: e.target.value})} required />
+                      <button type="submit" className="btn-enterprise w-full" style={{ gridColumn: 'span 2', height: '60px' }}>COMMIT TELEMETRY RECORD</button>
+                    </form>
+                  </div>
+                  <div className="enterprise-card p-8">
+                    <h3>Real-time Valuation</h3>
+                    <div className="p-6 rounded-2xl text-center mt-6" style={{ background: '#f8fafc', border: '1px solid #e2e8f0' }}>
+                      <div className="text-muted small fw-700 mb-2 uppercase">Estimated Invoice Total</div>
+                      <div style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--primary)' }}>
+                        LSL {manualUsage.units ? (calculateBill(Number(manualUsage.units), rates, customers.find(c => c.account_number === selectedCustomer)?.customer_type || 'Residential')).toFixed(2) : '0.00'}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'audit' && view === 'admin' && (
+              <div className="animate-in">
+                <div className="glass-card mb-6" style={{ background: '#0c1a2e', color: '#00ff41', fontFamily: 'monospace', border: '1px solid #00ff41', padding: '1.5rem' }}>
+                   <div className="flex-between mb-4 border-b border-emerald-900 pb-2">
+                      <span className="fw-800">CORE_SYSTEM_AUDIT_LOG_V2.0</span>
+                      <span className="badge" style={{ background: 'rgba(0,255,65,0.1)', color: '#00ff41' }}>LIVE_STREAM</span>
+                   </div>
+                   <div style={{ height: '200px', overflowY: 'auto', fontSize: '0.85rem' }}>
+                      {forensicLogs.map(log => (
+                        <div key={log.id} className="mb-1"><span style={{ opacity: 0.5 }}>[{log.time}]</span> <span style={{ color: log.type === 'SECURITY' ? '#ff3e3e' : '#0ea5e9' }}>{log.type}:</span> {log.msg}</div>
+                      ))}
+                   </div>
+                </div>
+                <div className="enterprise-card p-8">
+                   <h3>Historical DB Audit Logs</h3>
+                   <div className="table-container mt-6">
+                      <table className="data-table">
+                         <thead><tr><th>Timestamp</th><th>Identity</th><th>Action</th><th>Details</th></tr></thead>
+                         <tbody>
+                            {auditLogs.map(log => (
+                              <tr key={log.id}>
+                                <td className="small text-muted">{new Date(log.timestamp).toLocaleString()}</td>
+                                <td className="fw-700">{log.performed_by}</td>
+                                <td><span className="badge">{log.action}</span></td>
+                                <td className="small text-muted">{log.details}</td>
+                              </tr>
+                            ))}
+                         </tbody>
+                      </table>
+                   </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {view === 'customer' && (
+          <div className="animate-in">
+            {activeTab === 'dashboard' && (
+              <div className="animate-in">
+                <div className="flex-between mb-8">
+                  <div>
+                    <h2 className="hero-title-pro" style={{ fontSize: '2.2rem', marginBottom: '0.5rem' }}>Welcome back, {user.first_name}</h2>
+                    <p className="text-muted">Executive overview of your utility account and network status.</p>
+                  </div>
+                  <div className="stat-pill">
+                    <span className="text-success">●</span> SESSION_SECURE
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                  <div className="enterprise-card p-8" style={{ borderLeft: '4px solid var(--error)' }}>
+                    <div className="flex items-center gap-4 mb-6">
+                      <div style={{ background: 'rgba(220, 38, 38, 0.1)', padding: '12px', borderRadius: '16px', color: 'var(--error)' }}>
+                        <Wallet size={28} />
+                      </div>
+                      <div>
+                        <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Outstanding Balances</h3>
+                        <p className="text-muted small">Immediate action required to maintain service.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-baseline gap-2 mb-4">
+                      <span style={{ fontSize: '3rem', fontWeight: 800, color: '#1e293b' }}>LSL {balances.find(b => b.account_number === user.account_number)?.total_outstanding || '0.00'}</span>
+                    </div>
+                    <div className="flex gap-4">
+                      <button className="btn-enterprise" style={{ flex: 1 }} onClick={() => { setActiveTab('history'); addToast('Redirecting to secure gateway...', 'info'); }}>PAY NOW</button>
+                      <button className="btn" style={{ flex: 1, border: '1px solid #e2e8f0' }} onClick={() => setActiveTab('history')}>VIEW BILLS</button>
+                    </div>
+                  </div>
+
+                  <div className="enterprise-card p-8" style={{ borderLeft: '4px solid var(--primary)' }}>
+                    <div className="flex items-center gap-4 mb-6">
+                      <div style={{ background: 'rgba(37, 99, 235, 0.1)', padding: '12px', borderRadius: '16px', color: 'var(--primary)' }}>
+                        <Activity size={28} />
+                      </div>
+                      <div>
+                        <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Smart Meter Telemetry</h3>
+                        <p className="text-muted small">Live sync with District Grid Sector 02.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-baseline gap-2 mb-4">
+                      <span style={{ fontSize: '3rem', fontWeight: 800, color: '#1e293b' }}>12.4 <span style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>kl</span></span>
+                      <span className="text-success small fw-700">↓ 12% vs last month</span>
+                    </div>
+                    <div className="p-4 rounded-xl" style={{ background: '#f8fafc', border: '1px solid #e2e8f0' }}>
+                      <div className="flex-between">
+                        <span className="small fw-600 text-muted">Network Status</span>
+                        <span className="badge success">OPTIMAL</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="enterprise-card p-8 mb-8">
+                  <h3 style={{ marginBottom: '1.5rem' }}>Quick Actions</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    {[
+                      { label: 'File Incident', icon: <AlertTriangle />, color: 'var(--warning)', tab: 'reports' },
+                      { label: 'Green Impact', icon: <Leaf />, color: 'var(--accent)', tab: 'green' },
+                      { label: 'Update Profile', icon: <Settings />, color: 'var(--primary)', tab: 'dashboard' },
+                      { label: 'Support Ticket', icon: <ShieldCheck />, color: 'var(--secondary)', tab: 'reports' }
+                    ].map((action, i) => (
+                      <div key={i} className="p-6 rounded-2xl cursor-pointer hover:bg-slate-50 border border-slate-100 transition-all text-center" onClick={() => setActiveTab(action.tab)}>
+                        <div style={{ color: action.color, marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}>
+                          {React.cloneElement(action.icon, { size: 28 })}
+                        </div>
+                        <div className="fw-700 small uppercase tracking-wider">{action.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'green' && (
+              <div className="animate-in">
+                <div className="flex-between mb-8">
+                  <div>
+                    <h2 className="hero-title-pro" style={{ fontSize: '2.2rem' }}>Sustainability Portal</h2>
+                    <p className="text-muted">Tracking your contribution to Lesotho's water conservation goals.</p>
+                  </div>
+                  <div className="impact-badge">LVL 4 CONSERVATOR</div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                  <div className="metric-card">
+                    <div className="text-primary mb-2"><Droplets size={24} /></div>
+                    <div className="text-muted small fw-600">Liters Saved</div>
+                    <div style={{ fontSize: '1.8rem', fontWeight: 800 }}>12,402 L</div>
+                  </div>
+                  <div className="metric-card">
+                    <div className="text-success mb-2"><Leaf size={24} /></div>
+                    <div className="text-muted small fw-600">Green Points</div>
+                    <div style={{ fontSize: '1.8rem', fontWeight: 800 }}>2,450</div>
+                  </div>
+                  <div className="metric-card">
+                    <div className="text-secondary mb-2"><Users size={24} /></div>
+                    <div className="text-muted small fw-600">Community Rank</div>
+                    <div style={{ fontSize: '1.8rem', fontWeight: 800 }}>Top 5%</div>
+                  </div>
+                  <div className="metric-card">
+                    <div className="text-warning mb-2"><Activity size={24} /></div>
+                    <div className="text-muted small fw-600">Conservation Credit</div>
+                    <div style={{ fontSize: '1.8rem', fontWeight: 800 }}>LSL 45.00</div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <div className="enterprise-card p-8">
+                    <h3 style={{ marginBottom: '1.5rem' }}>Consumption Benchmarking</h3>
+                    <div className="space-y-6">
+                      <div>
+                        <div className="flex-between mb-2">
+                          <span className="small fw-600">Your Average Usage</span>
+                          <span className="small text-muted">145 kl / month</span>
+                        </div>
+                        <div style={{ height: '8px', background: '#f1f5f9', borderRadius: '4px', overflow: 'hidden' }}>
+                          <div style={{ width: '40%', height: '100%', background: 'var(--primary)' }}></div>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex-between mb-2">
+                          <span className="small fw-600">Maseru District Average</span>
+                          <span className="small text-muted">182 kl / month</span>
+                        </div>
+                        <div style={{ height: '8px', background: '#f1f5f9', borderRadius: '4px', overflow: 'hidden' }}>
+                          <div style={{ width: '60%', height: '100%', background: '#cbd5e1' }}></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-8 p-6 rounded-2xl" style={{ background: 'rgba(5, 150, 105, 0.05)', border: '1px solid rgba(5, 150, 105, 0.1)' }}>
+                      <p className="small text-success fw-600" style={{ margin: 0 }}>
+                        Awesome! You are consuming 20% less water than your neighborhood average. This qualifies you for the 'Eco-Saver' tariff next month!
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="enterprise-card p-8">
+                    <h3 style={{ marginBottom: '1.5rem' }}>Personalized Tips</h3>
+                    <div className="space-y-4">
+                      {[
+                        { tip: 'Fix dripping faucets promptly to save up to 20 liters a day.', icon: <Settings /> },
+                        { tip: 'Install low-flow showerheads for a 30% reduction in water use.', icon: <Droplets /> },
+                        { tip: 'Water your garden during early morning or late evening hours.', icon: <ShieldCheck /> }
+                      ].map((item, i) => (
+                        <div key={i} className="flex gap-4 items-start p-4 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-all">
+                          <div style={{ color: 'var(--accent)' }}>{React.cloneElement(item.icon, { size: 20 })}</div>
+                          <p className="small text-muted" style={{ margin: 0 }}>{item.tip}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'history' && (
+              <div className="enterprise-card p-8">
+                <div className="flex-between mb-8">
+                  <div>
+                    <h2 style={{ fontSize: '1.8rem', fontWeight: 800 }}>Billing & Payment History</h2>
+                    <p className="text-muted">A comprehensive record of your utility invoices.</p>
+                  </div>
+                  <History className="text-muted" size={24} />
+                </div>
+                <div className="table-container">
+                  <table className="data-table">
+                    <thead>
+                      <tr><th>Month</th><th>Units Used</th><th>Invoice Total</th><th>Payment Status</th><th className="text-right">Action</th></tr>
+                    </thead>
+                    <tbody>
+                      {bills.filter(b => b.account_number === user.account_number).map(b => (
+                        <tr key={b.bill_id}>
+                          <td><span className="fw-700">{b.billing_month}</span></td>
+                          <td>{b.units_used} kl</td>
+                          <td><span className="fw-800">LSL {parseFloat(b.total_amount).toFixed(2)}</span></td>
+                          <td><span className={`badge ${b.payment_status === 'Paid' ? 'success' : 'unpaid'}`}>{b.payment_status}</span></td>
+                          <td className="text-right">
+                            <div className="flex gap-2 justify-end">
+                              {b.payment_status !== 'Paid' && <button className="btn-enterprise small" onClick={() => setPayingBill(b)}>Pay Now</button>}
+                              <button className="btn small" onClick={() => handlePrint(b)}><FileText size={14} /></button>
                             </div>
                           </td>
                         </tr>
@@ -1849,728 +2173,46 @@ export default function App() {
             )}
 
             {activeTab === 'reports' && (
-              <div className="glass-card mb-6" style={{ borderTop: '4px solid var(--warning)', position: 'relative', overflow: 'hidden' }}>
-                <div className="cyber-grid opacity-50"></div>
-                <div className="flex-between mb-6 relative z-10">
+              <div className="enterprise-card p-8">
+                <div className="flex-between mb-8">
                   <div>
-                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      <AlertTriangle className="text-warning pulse-icon" size={24} /> Incident Command Center
-                    </h3>
-                    <p className="text-muted small">Live geographic fault tracking and dispatch.</p>
+                    <h2 style={{ fontSize: '1.8rem', fontWeight: 800 }}>Incident Reporting</h2>
+                    <p className="text-muted">Report leaks or supply disruptions directly to dispatch.</p>
                   </div>
-                  <div className="badge warning p-2" style={{ border: '1px solid var(--warning)' }}>
-                    <span className="dot-indicator bg-warning mr-2"></span> {leakages.filter(l => l.status !== 'Fixed').length} CRITICAL FAULTS
-                  </div>
+                  <AlertTriangle className="text-warning" size={24} />
                 </div>
-                
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 relative z-10 mb-6">
-                  {leakages.filter(l => l.status !== 'Fixed').slice(0, 3).map(l => (
-                    <div key={l.report_id} className="hud-panel p-4 rounded-xl" style={{ borderLeft: '4px solid var(--warning)', background: 'rgba(245, 158, 11, 0.05)' }}>
-                      <div className="flex-between mb-2">
-                        <span className="font-mono text-warning text-sm font-bold">INCIDENT #{l.report_id}</span>
-                        <span className="text-xs text-muted">{new Date(l.report_date).toLocaleTimeString()}</span>
-                      </div>
-                      <div className="text-white fw-600 mb-1">{l.location}</div>
-                      <div className="small text-muted mb-3 line-clamp-2">Pressure drop detected in zone. Field dispatch required immediately.</div>
-                      {user.role?.toLowerCase() === 'admin' ? (
-                        <button className="btn btn-primary small w-full" onClick={() => handleUpdateLeakageStatus(l.report_id, 'Fixed')} style={{ background: 'var(--warning)', color: '#000' }}>Dispatch & Resolve</button>
-                      ) : <span className="text-muted italic small">Awaiting Dispatch</span>}
-                    </div>
-                  ))}
-                </div>
+                {leakageMsg && <div className="p-4 rounded-xl mb-6 bg-emerald-50 text-emerald-700 fw-700">{leakageMsg}</div>}
+                <form onSubmit={handleReportLeakage} className="grid grid-cols-1 gap-6 mb-12">
+                  <input className="input-field" placeholder="Incident Location / Landmark" value={leakageLocation} onChange={e => setLeakageLocation(e.target.value)} required />
+                  <textarea className="input-field" style={{ minHeight: '120px' }} placeholder="Detailed Description..." value={leakageDesc} onChange={e => setLeakageDesc(e.target.value)} required />
+                  <button type="submit" className="btn-enterprise" style={{ height: '55px' }}>Submit Incident Report</button>
+                </form>
 
-                <div className="table-container relative z-10" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                <h4 className="mb-4">My Recent Submissions</h4>
+                <div className="table-container">
                   <table className="data-table">
-                    <thead><tr><th>Incident ID</th><th>Date Logged</th><th>Location</th><th>Status</th><th>Resolution</th></tr></thead>
+                    <thead><tr><th>Date Reported</th><th>Location</th><th>Current Status</th></tr></thead>
                     <tbody>
-                      {leakages.map(l => (
-                        <tr key={l.report_id} className="hover-row group">
-                          <td><strong className="font-mono">#L-{l.report_id}</strong></td>
-                          <td className="small text-muted">{new Date(l.report_date).toLocaleString()}</td>
-                          <td className="fw-600">{l.location}</td>
-                          <td>
-                            <span className={"badge font-mono " + (l.status === 'Fixed' ? 'success' : 'warning')} style={{ border: `1px solid var(--${l.status === 'Fixed' ? 'success' : 'warning'})` }}>
-                              {l.status === 'Fixed' ? 'RESOLVED' : 'ACTIVE_FAULT'}
-                            </span>
-                          </td>
-                          <td>
-                            {l.status !== 'Fixed' && user.role?.toLowerCase() === 'admin' ? (
-                              <button className="btn btn-primary small opacity-0 group-hover-opacity-100 transition-opacity" onClick={() => handleUpdateLeakageStatus(l.report_id, 'Fixed')}>Resolve</button>
-                            ) : l.status === 'Fixed' ? <span className="text-success"><Check size={16} /></span> : <span className="text-muted italic small"><Activity size={14} className="animate-spin" /></span>}
-                          </td>
-                        </tr>
-                      ))}
+                      {myLeakages.length === 0 ? (
+                        <tr><td colSpan={3} className="text-center text-muted p-8">No active incident reports found.</td></tr>
+                      ) : (
+                        myLeakages.map(l => (
+                          <tr key={l.report_id || Math.random()}>
+                            <td className="small">{new Date(l.report_date).toLocaleDateString()}</td>
+                            <td><span className="fw-600">{l.location}</span></td>
+                            <td><span className={`badge ${l.status === 'Fixed' ? 'success' : 'warning'}`}>{l.status}</span></td>
+                          </tr>
+                        ))
+                      )}
                     </tbody>
                   </table>
                 </div>
               </div>
             )}
-          </>
+          </div>
         )}
-
-        {view === 'admin' && (
-  <>
-    {activeTab === 'dashboard' && (
-      <>
-        <div className="stats-grid mb-6">
-          <div className="glass-card flex-between" style={{ borderLeft: '4px solid var(--primary)' }}>
-            <div><h3 className="stat-value">{customers.length}</h3><p className="stat-label">Master Accounts</p></div>
-            <div className="stat-icon-wrap"><Users size={22} /></div>
-          </div>
-          <div className="glass-card flex-between" style={{ borderLeft: '4px solid var(--success)' }}>
-            <div><h3 className="stat-value">LSL {(bills.reduce((acc, b) => acc + parseFloat(b.total_amount), 0) / 1000).toFixed(1)}k</h3><p className="stat-label">Total Billed</p></div>
-            <div className="stat-icon-wrap" style={{ color: 'var(--success)' }}><Wallet size={22} /></div>
-          </div>
-          <div className="glass-card flex-between" style={{ borderLeft: '4px solid var(--warning)' }}>
-            <div><h3 className="stat-value">{leakages.filter(l => l.status === 'Pending').length}</h3><p className="stat-label">Active Faults</p></div>
-            <div className="stat-icon-wrap" style={{ color: 'var(--warning)' }}><AlertTriangle size={22} /></div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <div className="glass-card">
-            <div className="flex-between mb-4">
-              <h4 className="font-mono small text-muted uppercase">Usage_Analytics_Stream</h4>
-              <select className="input-field" value={insightTimeframe} onChange={(e) => setInsightTimeframe(e.target.value)} style={{ width: '120px', padding: '0.2rem', fontSize: '0.75rem' }}>
-                <option value="Daily">Daily</option><option value="Weekly">Weekly</option><option value="Monthly">Monthly</option>
-              </select>
-            </div>
-            <ResponsiveContainer width="100%" height={260}>
-              <BarChart data={getUsageTrendsData()}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
-                <XAxis dataKey="period" stroke="var(--text-muted)" fontSize={11} />
-                <YAxis stroke="var(--text-muted)" fontSize={11} />
-                <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: 'var(--shadow-md)' }} />
-                <Bar dataKey="total_units" fill="var(--primary)" name="Units (kl)" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className="glass-card hud-panel" style={{ borderTop: '4px solid var(--secondary)', position: 'relative' }}>
-            <div className="cyber-grid opacity-10"></div>
-            <div className="flex-between mb-4 relative z-10">
-              <h4 className="font-mono small uppercase text-secondary">[ SEGMENTED_CONTRIBUTION ]</h4>
-              <div className="flex gap-2">
-                <button className={`btn small font-mono ${segmentMetric === 'total_units' ? 'btn-primary' : ''}`} onClick={() => setSegmentMetric('total_units')} style={{ padding: '2px 8px', fontSize: '10px' }}>USAGE</button>
-                <button className={`btn small font-mono ${segmentMetric === 'total_revenue' ? 'btn-primary' : ''}`} onClick={() => setSegmentMetric('total_revenue')} style={{ padding: '2px 8px', fontSize: '10px' }}>REVENUE</button>
-              </div>
-            </div>
-            <div className="relative z-10" style={{ height: '220px' }}>
-              <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }}>
-                <div className="font-mono text-muted" style={{ fontSize: '10px' }}>TOTAL</div>
-                <div className="font-mono fw-800" style={{ fontSize: '14px', color: 'var(--secondary)' }}>
-                  {segmentMetric === 'total_revenue' ? `LSL ${Math.round(segmentData.reduce((acc, curr) => acc + (curr.total_revenue || 0), 0) / 1000)}k` : `${Math.round(segmentData.reduce((acc, curr) => acc + (curr.total_units || 0), 0) / 1000)}k kl`}
-                </div>
-              </div>
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie data={segmentData.map(d => ({ name: d.segment, value: d[segmentMetric] }))} innerRadius={65} outerRadius={85} paddingAngle={8} dataKey="value" nameKey="name">
-                    {segmentData.map((entry, index) => (<Cell key={"cell-" + index} fill={['#0ea5e9', '#10b981', '#f59e0b', '#8b5cf6'][index % 4]} stroke="rgba(255,255,255,0.1)" />))}
-                  </Pie>
-                  <Tooltip contentStyle={{ background: 'rgba(15, 23, 42, 0.9)', border: '1px solid var(--secondary)', borderRadius: '12px' }} itemStyle={{ color: '#fff', fontSize: '12px' }} formatter={(value) => segmentMetric === 'total_revenue' ? `LSL ${parseFloat(value).toLocaleString()}` : `${value} kl`} />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
-      </>
-    )}
-
-    {activeTab === 'manual' && (
-      <>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-6 animate-in">
-        {/* Entry Form */}
-        <div className="lg:col-span-2 glass-card hud-panel" style={{ borderTop: '4px solid var(--primary)', position: 'relative' }}>
-          <div className="cyber-grid opacity-10"></div>
-          <div className="flex-between mb-6 relative z-10">
-            <div>
-              <h3 className="font-mono text-primary">[ USAGE_RECORDING_STATION ]</h3>
-              <p className="text-muted small">Input localized meter telemetry for automated bill generation.</p>
-            </div>
-            <Activity className="text-primary pulse-icon" size={28} />
-          </div>
-          
-          {usageMsg && (
-            <div style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', padding: '1rem', borderRadius: '12px', marginBottom: '1.5rem', fontWeight: 600, border: '1px solid var(--success)', display: 'flex', alignItems: 'center', gap: '0.75rem' }} className="font-mono">
-              <Check size={20} /> {usageMsg}
-            </div>
-          )}
-
-          <form onSubmit={handleManualUsage} className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
-            <div className="input-group">
-              <label className="font-mono small text-muted mb-2 block fw-800">TARGET_ACCOUNT_ID</label>
-              <select 
-                className="input-field font-mono" 
-                value={selectedCustomer || ''} 
-                onChange={e => setSelectedCustomer(e.target.value)} 
-                required
-                style={{ height: '56px', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border-color)' }}
-              >
-                <option value="" disabled>-- IDENTITY_LOOKUP --</option>
-                {customers.map(c => (
-                  <option key={c.account_number} value={c.account_number} style={{ background: 'var(--surface-solid)' }}>
-                    {c.account_number} - {c.first_name} {c.last_name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="input-group">
-              <label className="font-mono small text-muted mb-2 block fw-800">BILLING_CYCLE_PERIOD</label>
-              <input 
-                className="input-field font-mono" 
-                value={manualUsage.month} 
-                onChange={e => setManualUsage({ ...manualUsage, month: e.target.value })} 
-                placeholder="e.g. May 2026" 
-                required 
-                style={{ height: '56px', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border-color)' }}
-              />
-            </div>
-            <div className="input-group">
-              <label className="font-mono small text-muted mb-2 block fw-800">METER_DELTA_UNITS (kl)</label>
-              <input 
-                type="number" 
-                className="input-field font-mono" 
-                value={manualUsage.units} 
-                onChange={e => setManualUsage({ ...manualUsage, units: e.target.value })} 
-                placeholder="0.00" 
-                required 
-                style={{ height: '56px', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border-color)' }}
-              />
-            </div>
-            
-            <div className="flex items-end">
-              <button type="submit" className="btn btn-primary w-full font-mono text-lg" style={{ height: '56px', borderRadius: '12px', boxShadow: '0 0 20px var(--primary-glow)' }}>
-                [ COMMIT_TRANSACTION ]
-              </button>
-            </div>
-          </form>
-
-          <div className="mt-8 p-4 bg-surface-solid rounded-xl border border-dashed border-color opacity-60">
-            <h4 className="font-mono small text-muted mb-2">SYSTEM_VALIDATION_PROTOCOL:</h4>
-            <ul className="text-muted small font-mono" style={{ paddingLeft: '1.2rem', listStyle: 'square' }}>
-              <li>Accounts must exist in the Master Database.</li>
-              <li>Unit metrics are calculated based on current tiered WASCO rates.</li>
-              <li>Commitment triggers an immutable billing record and SMS/Email dispatch.</li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Live Bill Preview */}
-        <div className="glass-card hud-panel" style={{ borderTop: '4px solid var(--accent)', background: 'rgba(16, 185, 129, 0.03)' }}>
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-3 rounded-xl" style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--accent)' }}>
-              <FileText size={24} />
-            </div>
-            <h4 className="font-mono uppercase text-accent">Real-time_Valuation</h4>
-          </div>
-
-          <div className="flex flex-col gap-6">
-            <div className="p-6 rounded-2xl text-center" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(16,185,129,0.3)' }}>
-              <div className="font-mono text-muted text-xs mb-2">ESTIMATED_INVOICE_TOTAL</div>
-              <div className="font-mono text-4xl fw-800 text-accent" style={{ textShadow: '0 0 15px rgba(16,185,129,0.4)' }}>
-                LSL {manualUsage.units ? (calculateBill(Number(manualUsage.units), rates, customers.find(c => c.account_number === selectedCustomer)?.customer_type || 'Residential')).toFixed(2) : '0.00'}
-              </div>
-            </div>
-
-            <div className="hud-panel p-4 rounded-xl border-accent-glow">
-              <div className="flex-between mb-2">
-                <span className="font-mono text-xs text-muted">CUSTOMER_TYPE</span>
-                <span className="font-mono text-xs fw-700 text-accent">{customers.find(c => c.account_number === selectedCustomer)?.customer_type || 'N/A'}</span>
-              </div>
-              <div className="flex-between mb-2">
-                <span className="font-mono text-xs text-muted">UNIT_VOLUME</span>
-                <span className="font-mono text-xs fw-700 text-accent">{manualUsage.units || 0} kl</span>
-              </div>
-              <div className="flex-between">
-                <span className="font-mono text-xs text-muted">BILL_STATUS</span>
-                <span className="font-mono text-xs fw-700 text-accent">DRAFT_PENDING</span>
-              </div>
-            </div>
-
-            <div className="p-4 rounded-xl" style={{ background: 'rgba(245, 158, 11, 0.05)', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
-              <div className="flex gap-3">
-                <AlertTriangle className="text-warning" size={18} />
-                <p className="text-xs text-muted font-mono" style={{ color: 'var(--warning)' }}>
-                  VERIFY_DATA: Transaction will be permanent once committed.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="glass-card hud-panel animate-in" style={{ animationDelay: '0.1s' }}>
-        <div className="flex-between mb-4">
-          <h4 className="font-mono text-muted uppercase small">Recent_Reading_Activity_Log</h4>
-          <Activity size={16} className="text-muted" />
-        </div>
-        <div className="table-container">
-          <table className="data-table">
-            <thead><tr><th>Reference</th><th>Timestamp</th><th>Account</th><th>Units</th><th>Action_Status</th></tr></thead>
-            <tbody>
-              {usageReports.slice(0, 5).map((r, i) => (
-                <tr key={i} className="hover-row">
-                  <td><span className="badge font-mono" style={{ fontSize: '10px' }}>#{Math.random().toString(36).substring(7).toUpperCase()}</span></td>
-                  <td className="small text-muted">{new Date(r.reading_date || Date.now()).toLocaleString()}</td>
-                  <td className="fw-700">{r.account_number || 'BATCH_SYSTEM'}</td>
-                  <td className="text-primary fw-800">{r.units_used || r.total_units} kl</td>
-                  <td><span className="badge success">COMMITTED</span></td>
-                </tr>
-              ))}
-              {usageReports.length === 0 && (
-                <tr><td colSpan={5} className="text-center text-muted p-6">No recent telemetry recorded.</td></tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </>
-    )}
-
-    {activeTab === 'audit' && (
-      <>
-        <div className="glass-card mb-6" style={{ background: '#0c1a2e', color: '#00ff41', fontFamily: 'monospace', border: '1px solid #00ff41' }}>
-          <div className="flex-between mb-4" style={{ borderBottom: '1px solid #00ff4133', paddingBottom: '0.5rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Activity size={18} />
-              <span style={{ fontWeight: 800 }}>CORE_SYSTEM_AUDIT_LOG_V2.0</span>
-            </div>
-            <span className="badge" style={{ background: '#00ff4133', color: '#00ff41', fontSize: '0.65rem' }}>LIVE_STREAM</span>
-          </div>
-          <div style={{ height: '180px', overflowY: 'auto', fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            {forensicLogs.map(log => (
-              <div key={log.id}>
-                <span style={{ opacity: 0.5 }}>[{log.time}]</span>{' '}
-                <span style={{ color: log.type === 'SECURITY' ? '#ff3e3e' : '#0ea5e9', fontWeight: 'bold' }}>{log.type}:</span>{' '}
-                {log.msg}
-              </div>
-            ))}
-          </div>
-        </div>
-        
-        <div className="glass-card mb-6" style={{ borderTop: '4px solid var(--primary)' }}>
-          <div className="stat-header mb-6">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <div style={{ background: 'rgba(14, 165, 233, 0.1)', padding: '0.5rem', borderRadius: '12px' }}>
-                <History className="text-primary" size={20} />
-              </div>
-              <h3>Historical DB Audit Logs</h3>
-            </div>
-          </div>
-          <div className="table-container" style={{ maxHeight: '300px', overflowY: 'auto' }}>
-            <table className="data-table">
-              <thead><tr><th>Timestamp</th><th>Performed By</th><th>Action</th><th>Target</th><th>Details</th></tr></thead>
-              <tbody>
-                {auditLogs.length === 0 ? (
-                  <tr><td colSpan={5} className="text-center text-muted p-4">No audit logs found.</td></tr>
-                ) : (
-                  auditLogs.map(log => (
-                    <tr key={log.id}>
-                      <td className="small text-muted">{new Date(log.timestamp).toLocaleString()}</td>
-                      <td><span className="badge" style={{ background: 'rgba(0,0,0,0.05)' }}>{log.performed_by}</span></td>
-                      <td className="fw-600">{log.action}</td>
-                      <td>{log.target}</td>
-                      <td className="small text-muted">{log.details}</td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </>
-    )}
-
-    {activeTab === 'users' && (
-      <div className="glass-card mb-6">
-        <div className="flex-between mb-6">
-          <h3>Customer Management</h3>
-          <div className="search-box">
-            <input type="text" placeholder="Search customer..." value={customerSearch} onChange={e => setCustomerSearch(e.target.value)} className="input-field" style={{ width: '220px', padding: '0.5rem 1rem' }} />
-          </div>
-        </div>
-        <div className="table-container" style={{ maxHeight: '350px', overflowY: 'auto' }}>
-          <table className="data-table">
-            <thead>
-              <tr><th>Account Number</th><th>Full Name</th><th>Customer Type</th><th className="text-right">Actions</th></tr>
-            </thead>
-            <tbody>
-              {customers.map(c => (
-                <tr key={c.account_number} style={{ background: editingCustomer?.account_number === c.account_number ? 'rgba(14, 165, 233, 0.05)' : 'transparent' }}>
-                  <td><span className="badge primary" style={{ fontFamily: 'monospace' }}>{c.account_number}</span></td>
-                  <td className="fw-600">{c.first_name} {c.last_name}</td>
-                  <td>
-                    <span className={'badge ' + (c.customer_type === 'Industrial' ? 'error' : (c.customer_type === 'Commercial' ? 'warning' : 'success'))} style={{ opacity: 0.8 }}>
-                      {c.customer_type}
-                    </span>
-                  </td>
-                  <td className="text-right">
-                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
-                      <button className="btn small" onClick={() => setEditingCustomer(c)} style={{ background: 'rgba(14, 165, 233, 0.1)' }}><Settings size={14} /></button>
-                      <button className="btn small" onClick={() => handleDeleteCustomer(c.account_number)} style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--error)' }}><LogOut size={14} /></button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className={'mt-8 p-6 ' + (editingCustomer ? 'edit-mode-active' : '')} style={{
-          background: editingCustomer ? 'rgba(14, 165, 233, 0.03)' : 'var(--surface-solid)',
-          borderRadius: '20px', border: editingCustomer ? '1px solid var(--primary)' : '1px solid var(--border-color)',
-        }}>
-          <div className="flex-between mb-4">
-            <h4 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              {editingCustomer ? <Settings size={18} className="text-primary" /> : <UserPlus size={18} className="text-primary" />}
-              {editingCustomer ? 'Editing Account: ' + editingCustomer.account_number : 'Onboard New Customer'}
-            </h4>
-            {editingCustomer && <button className="badge" onClick={() => setEditingCustomer(null)} style={{ cursor: 'pointer', border: 'none' }}>Cancel Edit</button>}
-          </div>
-          <form onSubmit={editingCustomer ? handleUpdateCustomer : handleAddCustomer} className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-3">
-            <div className="input-group">
-              <label className="small text-muted mb-1 block">First Name</label>
-              <input className="input-field" value={editingCustomer ? editingCustomer.first_name : newCustomer.first_name} onChange={e => editingCustomer ? setEditingCustomer({ ...editingCustomer, first_name: e.target.value }) : setNewCustomer({ ...newCustomer, first_name: e.target.value })} required />
-            </div>
-            <div className="input-group">
-              <label className="small text-muted mb-1 block">Last Name</label>
-              <input className="input-field" value={editingCustomer ? editingCustomer.last_name : newCustomer.last_name} onChange={e => editingCustomer ? setEditingCustomer({ ...editingCustomer, last_name: e.target.value }) : setNewCustomer({ ...newCustomer, last_name: e.target.value })} required />
-            </div>
-            <div className="input-group">
-              <label className="small text-muted mb-1 block">Email Address</label>
-              <input type="email" className="input-field" value={editingCustomer ? editingCustomer.email : newCustomer.email} onChange={e => editingCustomer ? setEditingCustomer({ ...editingCustomer, email: e.target.value }) : setNewCustomer({ ...newCustomer, email: e.target.value })} />
-            </div>
-            <div className="input-group">
-              <label className="small text-muted mb-1 block">Category</label>
-              <select className="input-field" value={editingCustomer ? editingCustomer.customer_type : newCustomer.customer_type} onChange={e => editingCustomer ? setEditingCustomer({ ...editingCustomer, customer_type: e.target.value }) : setNewCustomer({ ...newCustomer, customer_type: e.target.value })}>
-                <option value="Residential">Residential</option>
-                <option value="Commercial">Commercial</option>
-                <option value="Industrial">Industrial</option>
-              </select>
-            </div>
-            <div className="input-group" style={{ gridColumn: 'span 2' }}>
-              <label className="small text-muted mb-1 block">Physical Address</label>
-              <input className="input-field" value={editingCustomer ? editingCustomer.address : newCustomer.address} onChange={e => editingCustomer ? setEditingCustomer({ ...editingCustomer, address: e.target.value }) : setNewCustomer({ ...newCustomer, address: e.target.value })} required />
-            </div>
-            {!editingCustomer && (
-              <>
-                <div className="input-group">
-                  <label className="small text-muted mb-1 block">Portal Username</label>
-                  <input className="input-field" value={newCustomer.username} onChange={e => setNewCustomer({ ...newCustomer, username: e.target.value })} required />
-                </div>
-                <div className="input-group">
-                  <label className="small text-muted mb-1 block">Portal Password</label>
-                  <input type="password" className="input-field" value={newCustomer.password} onChange={e => setNewCustomer({ ...newCustomer, password: e.target.value })} required />
-                </div>
-              </>
-            )}
-            <button className={'btn ' + (editingCustomer ? 'btn-primary' : 'btn-success')} style={{ gridColumn: 'span 2', marginTop: '1rem', height: '50px', fontSize: '1rem' }}>
-              {editingCustomer ? 'Confirm Updates' : 'Onboard Customer'}
-            </button>
-          </form>
-        </div>
-      </div>
-    )}
-
-    {activeTab === 'rates' && (
-      <div className="glass-card mb-6" style={{ borderTop: '4px solid var(--accent)', position: 'relative', overflow: 'hidden' }}>
-        <div className="radar-sweep" style={{ opacity: 0.05, background: 'conic-gradient(from 0deg, transparent 70%, var(--accent) 100%)' }}></div>
-        <div className="stat-header mb-6 relative z-10">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <div className="pulse-icon" style={{ background: 'var(--accent)', color: 'white', padding: '0.6rem', borderRadius: '12px', boxShadow: '0 0 20px var(--accent)' }}>
-              <CreditCard size={24} />
-            </div>
-            <div>
-              <h3 style={{ margin: 0 }}>Global Economic Engine</h3>
-              <p className="text-muted small">Real-time configuration of tier-based revenue extraction models.</p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 relative z-10">
-          {rates.slice(0, 3).map(r => (
-            <div key={r.rate_id} className="hud-panel p-5 rounded-2xl" style={{ border: '1px solid rgba(52, 211, 153, 0.2)', background: 'linear-gradient(135deg, rgba(0,0,0,0.2), rgba(52, 211, 153, 0.05))' }}>
-              <div className="text-muted small uppercase mb-1 font-mono tracking-widest">{r.tier_name}</div>
-              <div className="flex items-end gap-2 mb-3">
-                <span className="text-3xl font-bold" style={{ color: 'var(--accent)', fontFamily: 'Outfit' }}>{parseFloat(r.rate_per_unit).toFixed(2)}</span>
-                <span className="text-sm text-muted mb-1 font-mono">LSL/kl</span>
-              </div>
-              <div className="w-full h-1 bg-surface-solid rounded-full overflow-hidden">
-                <div className="h-full bg-accent" style={{ width: `${(parseFloat(r.rate_per_unit) / 50) * 100}%` }}></div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="table-container mb-6 relative z-10" style={{ border: '1px solid var(--glass-border)', borderRadius: '16px' }}>
-          <table className="data-table">
-            <thead><tr><th>Configuration Array</th><th>Usage Bounds</th><th>Value Extractor</th><th className="text-right">Overrides</th></tr></thead>
-            <tbody>
-              {rates.map(r => (
-                <tr key={r.rate_id} className="hover-row group" style={{ background: editingRate?.rate_id === r.rate_id ? 'rgba(52, 211, 153, 0.1)' : 'transparent' }}>
-                  <td><strong className="text-main font-mono">{r.tier_name}</strong></td>
-                  <td>
-                    <span className="badge font-mono" style={{ background: 'var(--surface-hover)', border: '1px solid var(--border-color)' }}>
-                      [ {r.minimum_units} , {r.maximum_units > 9000 ? 'MAX' : r.maximum_units} ]
-                    </span>
-                  </td>
-                  <td style={{ color: 'var(--accent)', fontWeight: 'bold', fontFamily: 'monospace', fontSize: '1.1rem' }}>LSL {parseFloat(r.rate_per_unit).toFixed(2)}</td>
-                  <td className="text-right">
-                    <div className="flex gap-2 justify-end opacity-0 group-hover-opacity-100 transition-opacity">
-                      <button className="btn small glass-btn" onClick={() => startEditRate(r)}><Settings size={14} /></button>
-                      <button className="btn small text-error" onClick={() => handleDeleteRate(r.rate_id)} style={{ background: 'rgba(239, 68, 68, 0.1)' }}><LogOut size={14} /></button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        
-        <div className={'p-6 relative z-10 transition-all ' + (editingRate ? 'edit-mode-active' : '')} style={{
-          background: editingRate ? 'rgba(52, 211, 153, 0.05)' : 'var(--surface-solid)',
-          borderRadius: '20px', border: editingRate ? '1px solid var(--accent)' : '1px dashed var(--border-color)',
-        }}>
-          <div className="flex-between mb-4">
-            <h4 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'monospace', color: 'var(--text-main)' }}>
-              <Settings size={18} className="text-accent" />
-              {editingRate ? 'OVERRIDE_TIER: ' + editingRate.tier_name : 'INITIALIZE_NEW_TIER'}
-            </h4>
-            {editingRate && <button className="badge" onClick={() => { setEditingRate(null); setNewTierName(''); setNewMinUnits(''); setNewMaxUnits(''); setNewRate(''); }} style={{ cursor: 'pointer', border: 'none', background: 'rgba(239,68,68,0.1)', color: 'var(--error)' }}>ABORT_EDIT</button>}
-          </div>
-          <form onSubmit={editingRate ? handleUpdateRate : handleAddRate} className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-3">
-            <div className="input-group">
-              <label className="small text-muted mb-1 block font-mono">TIER_LABEL</label>
-              <input className="input-field font-mono" value={newTierName} onChange={e => setNewTierName(e.target.value)} placeholder="T-X" required />
-            </div>
-            <div className="input-group">
-              <label className="small text-muted mb-1 block font-mono">MIN_BOUND</label>
-              <input type="number" className="input-field font-mono" value={newMinUnits} onChange={e => setNewMinUnits(e.target.value)} required />
-            </div>
-            <div className="input-group">
-              <label className="small text-muted mb-1 block font-mono">MAX_BOUND</label>
-              <input type="number" className="input-field font-mono" value={newMaxUnits} onChange={e => setNewMaxUnits(e.target.value)} required />
-            </div>
-            <div className="input-group">
-              <label className="small text-muted mb-1 block font-mono">RATE_MULTIPLIER</label>
-              <input type="number" step="0.01" className="input-field font-mono text-accent fw-700" value={newRate} onChange={e => setNewRate(e.target.value)} required />
-            </div>
-            <button className={'btn w-full font-mono ' + (editingRate ? 'btn-primary' : '')} style={{ gridColumn: 'span 4', marginTop: '1rem', height: '50px', background: editingRate ? 'var(--accent)' : 'var(--surface-hover)', color: editingRate ? '#000' : 'var(--text-main)' }}>
-              {editingRate ? 'COMMIT_CHANGES' : 'INJECT_NEW_TIER'}
-            </button>
-          </form>
-        </div>
-      </div>
-    )}
-    {activeTab === 'reports' && (
-      <div className="glass-card mb-6" style={{ borderTop: '4px solid var(--warning)', position: 'relative', overflow: 'hidden' }}>
-        <div className="cyber-grid opacity-50"></div>
-        <div className="flex-between mb-6 relative z-10">
-          <div>
-            <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <AlertTriangle className="text-warning pulse-icon" size={24} /> Incident Command Center
-            </h3>
-            <p className="text-muted small">Live geographic fault tracking and dispatch.</p>
-          </div>
-          <div className="badge warning p-2" style={{ border: '1px solid var(--warning)' }}>
-            <span className="dot-indicator bg-warning mr-2"></span> {leakages.filter(l => l.status !== 'Fixed').length} CRITICAL FAULTS
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 relative z-10 mb-6">
-          {leakages.filter(l => l.status !== 'Fixed').slice(0, 3).map(l => (
-            <div key={l.report_id} className="hud-panel p-4 rounded-xl" style={{ borderLeft: '4px solid var(--warning)', background: 'rgba(245, 158, 11, 0.05)' }}>
-              <div className="flex-between mb-2">
-                <span className="font-mono text-warning text-sm font-bold">INCIDENT #{l.report_id}</span>
-                <span className="text-xs text-muted">{new Date(l.report_date).toLocaleTimeString()}</span>
-              </div>
-              <div className="text-white fw-600 mb-1">{l.location}</div>
-              <div className="small text-muted mb-3 line-clamp-2">Pressure drop detected in zone. Field dispatch required immediately.</div>
-              {user.role?.toLowerCase() === 'admin' ? (
-                <button className="btn btn-primary small w-full" onClick={() => handleUpdateLeakageStatus(l.report_id, 'Fixed')} style={{ background: 'var(--warning)', color: '#000' }}>Dispatch & Resolve</button>
-              ) : <span className="text-muted italic small">Awaiting Dispatch</span>}
-            </div>
-          ))}
-        </div>
-
-        <div className="table-container relative z-10" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-          <table className="data-table">
-            <thead><tr><th>Incident ID</th><th>Date Logged</th><th>Location</th><th>Status</th><th>Resolution</th></tr></thead>
-            <tbody>
-              {leakages.map(l => (
-                <tr key={l.report_id} className="hover-row group">
-                  <td><strong className="font-mono">#L-{l.report_id}</strong></td>
-                  <td className="small text-muted">{new Date(l.report_date).toLocaleString()}</td>
-                  <td className="fw-600">{l.location}</td>
-                  <td>
-                    <span className={"badge font-mono " + (l.status === 'Fixed' ? 'success' : 'warning')} style={{ border: `1px solid var(--${l.status === 'Fixed' ? 'success' : 'warning'})` }}>
-                      {l.status === 'Fixed' ? 'RESOLVED' : 'ACTIVE_FAULT'}
-                    </span>
-                  </td>
-                  <td>
-                    {l.status !== 'Fixed' && user.role?.toLowerCase() === 'admin' ? (
-                      <button className="btn btn-primary small opacity-0 group-hover-opacity-100 transition-opacity" onClick={() => handleUpdateLeakageStatus(l.report_id, 'Fixed')}>Resolve</button>
-                    ) : l.status === 'Fixed' ? <span className="text-success"><Check size={16} /></span> : <span className="text-muted italic small"><Activity size={14} className="animate-spin" /></span>}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    )}
-  </>
-)}
-
-{view === 'customer' && (
-  <>
-    {activeTab === 'dashboard' && (
-      <div className="glass-card mb-6" style={{ borderTop: '4px solid var(--primary)', position: 'relative', overflow: 'hidden' }}>
-        <div className="radar-sweep" style={{ opacity: 0.05, background: 'conic-gradient(from 0deg, transparent 70%, var(--primary) 100%)' }}></div>
-        <div className="relative z-10">
-          <div className="flex-between mb-8">
-            <div>
-              <h2 className="font-mono mb-1" style={{ fontSize: '2rem' }}>WELCOME_BACK, {user.first_name}</h2>
-              <p className="text-muted small font-mono">ACCOUNT_ID: {user.account_number} | SECURE_SESSION_ACTIVE</p>
-            </div>
-            <div className="badge primary p-3" style={{ boxShadow: '0 0 20px rgba(14,165,233,0.2)' }}>
-              <span className="dot-indicator bg-success mr-2"></span> LINK_STABLE
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div className="hud-panel p-6 rounded-2xl" style={{ background: 'var(--surface-solid)', border: '2px solid rgba(239,68,68,0.3)', boxShadow: '0 10px 30px rgba(239,68,68,0.1)' }}>
-              <div className="flex items-center gap-3 mb-4">
-                <div style={{ background: 'rgba(239,68,68,0.1)', padding: '0.6rem', borderRadius: '14px', boxShadow: 'inset 0 0 10px rgba(239,68,68,0.2)' }}><Wallet size={24} className="text-error pulse-icon" /></div>
-                <div className="font-mono text-muted text-sm tracking-widest fw-700">OUTSTANDING_TARIFFS</div>
-              </div>
-              <div className="text-5xl font-bold mb-3 font-mono" style={{ color: 'var(--text-main)' }}>
-                {bills.filter(b => b.account_number === user.account_number && b.payment_status === 'Unpaid').length} <span className="text-2xl text-error">BILLS</span>
-              </div>
-              <div className="w-full h-2 rounded-full overflow-hidden mb-3" style={{ background: 'rgba(239,68,68,0.1)' }}>
-                 <div className="h-full bg-error" style={{ width: '60%', boxShadow: '0 0 10px var(--error)' }}></div>
-              </div>
-              <div className="text-xs font-mono font-bold" style={{ color: 'var(--error)' }}>ACTION REQUIRED TO PREVENT SERVICE DISRUPTION.</div>
-            </div>
-
-            <div className="hud-panel p-6 rounded-2xl" style={{ background: 'var(--surface-solid)', border: '2px solid rgba(14,165,233,0.3)', boxShadow: '0 10px 30px rgba(14,165,233,0.1)' }}>
-              <div className="flex items-center gap-3 mb-4">
-                <div style={{ background: 'rgba(14,165,233,0.1)', padding: '0.6rem', borderRadius: '14px', boxShadow: 'inset 0 0 10px rgba(14,165,233,0.2)' }}><Activity size={24} className="text-primary pulse-icon" /></div>
-                <div className="font-mono text-muted text-sm tracking-widest fw-700">CURRENT_BALANCE</div>
-              </div>
-              <div className="text-5xl font-bold mb-3 font-mono" style={{ color: 'var(--text-main)' }}>
-                <span className="text-2xl text-primary">LSL</span> {balances.find(b => b.account_number === user.account_number)?.total_outstanding || '0.00'}
-              </div>
-              <div className="w-full h-2 rounded-full overflow-hidden mb-3" style={{ background: 'rgba(14,165,233,0.1)' }}>
-                 <div className="h-full bg-primary" style={{ width: '30%', boxShadow: '0 0 10px var(--primary)' }}></div>
-              </div>
-              <div className="text-xs font-mono font-bold text-muted">TOTAL ACCUMULATED DEBT.</div>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <button className="btn w-full font-mono flex-between" onClick={() => setActiveTab('history')} style={{ background: 'var(--surface-solid)', border: '1px solid var(--primary)', color: 'var(--primary)', height: '60px' }}>
-              <span>VIEW_HISTORY</span> <ChevronRight size={18} />
-            </button>
-            <button className="btn w-full font-mono flex-between" onClick={() => setActiveTab('reports')} style={{ background: 'var(--surface-solid)', border: '1px solid var(--warning)', color: 'var(--warning)', height: '60px' }}>
-              <span>LOG_INCIDENT</span> <AlertTriangle size={18} />
-            </button>
-            <button className="btn w-full font-mono flex-between" onClick={() => { setActiveTab('history'); addToast('Initiating secure payment gateway...', 'success'); }} style={{ background: 'var(--primary)', color: '#fff', height: '60px', boxShadow: '0 0 20px rgba(14,165,233,0.4)' }}>
-              <span>PAY_NOW</span> <CreditCard size={18} />
-            </button>
-          </div>
-          
-          <div className="p-4 rounded-xl" style={{ background: 'rgba(52,211,153,0.05)', border: '1px dashed var(--success)' }}>
-            <div className="flex items-center gap-3">
-              <Check size={24} className="text-success" />
-              <div>
-                <div className="font-mono fw-700 text-success text-sm">TELEMETRY_SYNCED</div>
-                <div className="text-muted text-xs font-mono">Your smart meter last reported usage 4 minutes ago.</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    )}
-
-    {activeTab === 'history' && (
-      <div className="glass-card">
-        <div className="flex-between mb-4">
-          <h3>Billing & Payment History</h3>
-          <History className="text-muted" size={20} />
-        </div>
-        <div className="table-container">
-          <table className="data-table">
-            <thead>
-              <tr><th>Month</th><th>Units (kl)</th><th>Amount (LSL)</th><th>Status</th><th className="text-right">Action</th></tr>
-            </thead>
-            <tbody>
-              {bills.filter(b => b.account_number === user.account_number).map(b => (
-                <tr key={b.bill_id}>
-                  <td><strong>{b.billing_month}</strong></td>
-                  <td>{b.units_used}</td>
-                  <td className="fw-700">LSL {parseFloat(b.total_amount).toFixed(2)}</td>
-                  <td><span className={`badge ${b.payment_status === 'Paid' ? 'success' : 'unpaid'}`}>{b.payment_status}</span></td>
-                  <td className="text-right">
-                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
-                      {b.payment_status !== 'Paid' && <button className="btn btn-primary small" onClick={() => setPayingBill(b)}>Pay Now</button>}
-                      <button className="btn small" style={{ background: 'var(--surface-hover)' }} onClick={() => handlePrint(b)}><FileText size={14} /></button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    )}
-
-    {activeTab === 'reports' && (
-      <div className="glass-card">
-        <div className="flex-between mb-6">
-          <h3>Report a Leakage or Incident</h3>
-          <AlertTriangle className="text-warning" size={20} />
-        </div>
-        {leakageMsg && <div style={{ color: 'var(--success)', marginBottom: '1rem', fontWeight: 600 }}>{leakageMsg}</div>}
-        <form onSubmit={handleReportLeakage} className="grid grid-cols-1 gap-4">
-          <div className="input-group">
-            <label className="small text-muted mb-1 block">Physical Location / Landmark</label>
-            <input className="input-field" placeholder="e.g. Near Plot 45, Maseru West" value={leakageLocation} onChange={e => setLeakageLocation(e.target.value)} required />
-          </div>
-          <div className="input-group">
-            <label className="small text-muted mb-1 block">Description of Incident</label>
-            <textarea className="input-field" style={{ minHeight: '120px' }} placeholder="Please describe the issue in detail..." value={leakageDesc} onChange={e => setLeakageDesc(e.target.value)} required />
-          </div>
-          <button type="submit" className="btn btn-primary" style={{ height: '50px' }}>Submit Report</button>
-        </form>
-
-        <div className="mt-8">
-          <h4 className="mb-4">My Recent Reports</h4>
-          <div className="table-container">
-            <table className="data-table">
-              <thead><tr><th>Date</th><th>Location</th><th>Status</th></tr></thead>
-              <tbody>
-                {myLeakages.length === 0 ? (
-                  <tr><td colSpan={3} className="text-center text-muted">No reports filed yet.</td></tr>
-                ) : (
-                  myLeakages.map(l => (
-                    <tr key={l.report_id || Math.random()}>
-                      <td className="small">{new Date(l.report_date).toLocaleDateString()}</td>
-                      <td>{l.location}</td>
-                      <td><span className={`badge ${l.status === 'Fixed' ? 'success' : 'warning'}`}>{l.status}</span></td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    )}
-  </>
-)}
-
-</main>
-</div>
+      </main>
+    </div>
 
 {/* PAYMENT METHOD SELECTOR MODAL */}
 {payingBill && (
